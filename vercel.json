@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/api/admin/(.*)", "dest": "/api/admin/$1" },
+    { "src": "/api/(.*)",       "dest": "/api/$1"       },
+    { "src": "/(.*\\.html)",    "dest": "/$1"           },
+    { "src": "/(.*\\.css)",     "dest": "/$1"           },
+    { "src": "/(.*\\.js)",      "dest": "/$1"           },
+    { "src": "/(.*\\.jpg)",     "dest": "/$1"           },
+    { "src": "/(.*\\.png)",     "dest": "/$1"           },
+    { "src": "/(.*\\.pdf)",     "dest": "/$1"           },
+    { "src": "/gallery/(.*)",   "dest": "/gallery/$1"   },
+    { "src": "/",               "dest": "/index.html"   }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control",           "value": "no-store" },
+        { "key": "X-Content-Type-Options",  "value": "nosniff"  }
+      ]
+    },
+    {
+      "source": "/(.*\\.html)",
+      "headers": [
+        { "key": "X-Frame-Options",         "value": "DENY"     },
+        { "key": "X-Content-Type-Options",  "value": "nosniff"  }
+      ]
+    }
+  ]
+}
