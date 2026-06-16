@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | Portfolio AI Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Admin-specific additions — all within Kintsugi palette */
+    .admin-input {
+      width: 100%;
+      background: #FCFAF2;
+      border: 1px solid #E0E0E0;
+      color: #2C2C2C;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      padding: 10px 12px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .admin-input:focus { border-color: #2C2C2C; }
+
+    .admin-textarea {
+      width: 100%;
+      height: 320px;
+      background: #FCFAF2;
+      border: 1px solid #E0E0E0;
+      color: #2C2C2C;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      padding: 12px;
+      outline: none;
+      resize: vertical;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+    }
+    .admin-textarea:focus { border-color: #2C2C2C; }
+
+    .admin-btn {
+      background: #2C2C2C;
+      border: none;
+      color: #FCFAF2;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 10px 22px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+    .admin-btn:hover { background: #BC2026; }
+    .admin-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .admin-btn-secondary {
+      background: none;
+      border: 1px solid #E0E0E0;
+      color: #888888;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      padding: 10px 18px;
+      text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .admin-btn-secondary:hover { border-color: #2C2C2C; color: #2C2C2C; }
+
+    .status-bar {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      padding: 8px 12px;
+      border: 1px solid #E0E0E0;
+      color: #888888;
+      margin-top: 6px;
+      min-height: 36px;
+      line-height: 1.4;
+    }
+    .status-bar.ok  { border-color: #2C2C2C; color: #2C2C2C; }
+    .status-bar.err { border-color: #BC2026; color: #BC2026; }
+
+    .drop-zone {
+      border: 1px dashed #E0E0E0;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #2C2C2C;
+      background: rgba(44,44,44,0.03);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      width: 1px; height: 1px;
+      opacity: 0; overflow: hidden;
+    }
+
+    #admin-lock {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #admin-content { display: none; }
+
+    .tag-note {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      border: 1px solid #E0E0E0;
+      padding: 2px 8px;
+      color: #aaaaaa;
+      margin-right: 4px;
+    }
+  </style>
+</head>
+
+<body bgcolor="#FCFAF2" text="#2C2C2C" link="#2C2C2C" vlink="#2C2C2C" alink="#BC2026">
+<center>
+<table width="720" border="0" cellpadding="0" cellspacing="0">
+<tr><td>
+
+  <br /><br /><br />
+
+  <font face="Courier New" size="2" color="#bbbbbb">PORTFOLIO &nbsp;&mdash;&nbsp; ADMIN</font>
+  <br />
+  <hr color="#E0E0E0" size="1" />
+  <br />
+
+  <font face="Courier New" size="2">
+    <font color="#888888"><a href="index.html">HOME</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="about.html">ABOUT</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="education.html">EDUCATION</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="projects.html">PROJECTS</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="gallery.html">GALLERY</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="contact.html">CONTACT</a></font>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#888888"><a href="cv.html" target="_blank">CV &nearr;</a></font>
+  </font>
+
+  <br /><br /><br /><br />
+
+  <font face="Courier New" size="2" color="#aaaaaa">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</font>
+  <br /><br />
+  <font face="Georgia" size="7"><b>ADMIN</b></font>
+  <br /><br /><br /><br />
+  <font face="Courier New" size="2" color="#aaaaaa">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</font>
+  <br />
+  <hr color="#E0E0E0" size="1" />
+  <br />
+  <font face="Courier New" size="2" color="#888888">AI KNOWLEDGE BASE MANAGER</font>
+  <br /><br /><br />
+
+  <hr color="#BC2026" size="2" />
+  <br /><br />
+
+  <!-- ── LOCK SCREEN ─────────────────────────────────────── -->
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" id="admin-lock">
+    <tr>
+      <td width="180" valign="top">
+        <font face="Courier New" size="2" color="#aaaaaa">AUTHENTICATE</font>
+      </td>
+      <td valign="top">
+        <font face="Courier New" size="2" color="#888888">ADMIN PASSWORD</font>
+        <br />
+        <input type="password" id="pwd-input" class="admin-input" style="width:320px;"
+               placeholder="Enter admin password" autocomplete="current-password" />
+        <br /><br />
+        <button class="admin-btn" id="login-btn">Unlock &rarr;</button>
+        <div class="status-bar" id="login-status">Enter the admin password to manage AI knowledge.</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- ── ADMIN CONTENT (shown after auth) ───────────────── -->
+  <div id="admin-content">
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <!-- Upload Files -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">UPLOAD<br />FILES</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Upload text files about your work, projects, and experience.<br />
+            Supported: <span class="tag-note">.txt</span>
+            <span class="tag-note">.md</span>
+            <span class="tag-note">.csv</span>
+            (plain text only)
+          </font>
+          <br /><br />
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" multiple
+                   accept=".txt,.md,.csv,.text,.markdown" />
+            <font face="Courier New" size="2" color="#aaaaaa">
+              [ Drop files here or click to browse ]<br />
+            </font>
+            <font face="Courier New" size="2" color="#bbbbbb">
+              Content will be appended to the knowledge editor below
+            </font>
+          </div>
+          <div class="status-bar" id="file-status">No files loaded.</div>
+        </td>
+      </tr>
+    </table>
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <!-- Knowledge Editor -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">KNOWLEDGE<br />EDITOR</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Write or paste any information about your work, projects, achievements,<br />
+            or anything else you want the AI to know and discuss on your behalf.
+          </font>
+          <br /><br />
+          <textarea id="knowledge-editor" class="admin-textarea"
+placeholder="Examples of what to include:
+
+PROJECT — Sales Dashboard (Power BI, 2025)
+Built an executive-level dashboard for a retail client tracking 200K+ records.
+Used DAX measures for YoY growth, moving averages, and cohort analysis.
+
+PROJECT — SQL Performance Optimization (2024)
+Reduced query execution time by 68% on a 5M-row database by redesigning
+indexes and rewriting CTEs as temp tables.
+
+ACHIEVEMENT — HackerRank SQL Gold (2023)
+Achieved 5-star Gold rating in SQL on HackerRank. Consistently ranked
+in top 10% globally.
+
+Add as much or as little context as you like. Be specific."></textarea>
+          <br />
+          <div id="char-count" style="font-family:'Courier New',Courier,monospace;font-size:11px;color:#aaaaaa;text-align:right;">0 characters</div>
+          <br />
+          <button class="admin-btn" id="save-btn">Save Knowledge &rarr;</button>
+          &nbsp;&nbsp;
+          <button class="admin-btn-secondary" id="clear-btn">Clear</button>
+          &nbsp;&nbsp;
+          <button class="admin-btn-secondary" id="reload-btn">Reload from Server</button>
+          <br />
+          <div class="status-bar" id="save-status">Knowledge not yet saved.</div>
+        </td>
+      </tr>
+    </table>
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <!-- Test Chat -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">TEST<br />CHAT AI</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Send a test message to the AI to verify it's using your knowledge.
+          </font>
+          <br /><br />
+          <input type="text" id="test-input" class="admin-input" style="width:100%;max-width:420px;"
+                 placeholder="e.g. Tell me about the Sales Dashboard project" />
+          <br /><br />
+          <button class="admin-btn" id="test-btn">Send Test &rarr;</button>
+          <br />
+          <div class="status-bar" id="test-reply" style="margin-top:10px;min-height:60px;line-height:1.6;white-space:pre-wrap;font-family:Georgia,serif;font-size:14px;color:#2C2C2C;">&nbsp;</div>
+        </td>
+      </tr>
+    </table>
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <!-- Setup Guide -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">VERCEL<br />SETUP</font>
+        </td>
+        <td valign="top">
+          <font face="Georgia" size="3">
+            Set these environment variables in your <b>Vercel Project Settings &rarr; Environment Variables</b>:
+          </font>
+          <br /><br />
+          <table width="100%" border="1" frame="void" rules="rows" cellpadding="10" cellspacing="0" bordercolor="#E0E0E0">
+            <tr bgcolor="#FCFAF2">
+              <th align="left"><font face="Courier New" size="2" color="#777777">Variable</font></th>
+              <th align="left"><font face="Courier New" size="2" color="#777777">Description</font></th>
+            </tr>
+            <tr>
+              <td><font face="Courier New" size="2">NVIDIA_API_KEY</font></td>
+              <td><font face="Georgia" size="3">Your NVIDIA NIM API key from integrate.api.nvidia.com (primary AI)</font></td>
+            </tr>
+            <tr bgcolor="#FCFAF2">
+              <td><font face="Courier New" size="2">GEMINI_API_KEY</font></td>
+              <td><font face="Georgia" size="3">Optional fallback — Google AI Studio key if NVIDIA is unavailable</font></td>
+            </tr>
+            <tr>
+              <td><font face="Courier New" size="2">ADMIN_PASSWORD</font></td>
+              <td><font face="Georgia" size="3">Password to access this admin panel</font></td>
+            </tr>
+            <tr bgcolor="#FCFAF2">
+              <td><font face="Courier New" size="2">KV_REST_API_URL</font></td>
+              <td><font face="Georgia" size="3">Auto-set when you add a Vercel KV database</font></td>
+            </tr>
+            <tr>
+              <td><font face="Courier New" size="2">KV_REST_API_TOKEN</font></td>
+              <td><font face="Georgia" size="3">Auto-set when you add a Vercel KV database</font></td>
+            </tr>
+          </table>
+          <br />
+          <font face="Courier New" size="2" color="#888888">
+            AI Model: <b>MiniMax-M3</b> via NVIDIA NIM &middot; RAG: keyword-scored chunk retrieval from your knowledge base &middot;
+            To add Vercel KV: Dashboard &rarr; Storage &rarr; Create KV &rarr; link to your project.
+          </font>
+        </td>
+      </tr>
+    </table>
+
+  </div><!-- end admin-content -->
+
+  <br /><br /><br />
+  <hr color="#E0E0E0" size="1" />
+  <br />
+  <font face="Courier New" size="2" color="#bbbbbb">
+    &copy; 2026 Mahfujul Kader Touhid &nbsp;&middot;&nbsp;
+    <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
+    <a href="about.html">About</a> &nbsp;&middot;&nbsp;
+    <a href="projects.html">Projects</a> &nbsp;&middot;&nbsp;
+    <a href="contact.html">Contact</a>
+  </font>
+  <br /><br /><br />
+
+</td></tr>
+</table>
+</center>
+
+<script>
+(function () {
+  var pwd      = '';
+  var isLocalMock = false;
+  var pwdInput = document.getElementById('pwd-input');
+  var loginBtn = document.getElementById('login-btn');
+  var loginStatus = document.getElementById('login-status');
+
+  var lockEl   = document.getElementById('admin-lock');
+  var contentEl = document.getElementById('admin-content');
+
+  var dropZone    = document.getElementById('drop-zone');
+  var fileInput   = document.getElementById('file-input');
+  var fileStatus  = document.getElementById('file-status');
+
+  var editor     = document.getElementById('knowledge-editor');
+  var charCount  = document.getElementById('char-count');
+  var saveBtn    = document.getElementById('save-btn');
+  var clearBtn   = document.getElementById('clear-btn');
+  var reloadBtn  = document.getElementById('reload-btn');
+  var saveStatus = document.getElementById('save-status');
+
+  var testInput = document.getElementById('test-input');
+  var testBtn   = document.getElementById('test-btn');
+  var testReply = document.getElementById('test-reply');
+
+  /* ── Status helpers ─────────────────────────────────── */
+  function setStatus(el, msg, cls) {
+    el.textContent = msg;
+    el.className = 'status-bar' + (cls ? ' ' + cls : '');
+  }
+
+  /* ── Auth ───────────────────────────────────────────── */
+  function enableLocalMock() {
+    isLocalMock = true;
+    setStatus(loginStatus, 'Authenticated (Local Mock Mode \u2014 using localStorage).', 'ok');
+    lockEl.style.display = 'none';
+    contentEl.style.display = 'block';
+    editor.value = localStorage.getItem('touhid_knowledge') || '';
+    updateCharCount();
+  }
+
+  function unlock() {
+    pwd = pwdInput.value.trim();
+    if (!pwd) { setStatus(loginStatus, 'Please enter a password.', 'err'); return; }
+
+    setStatus(loginStatus, 'Checking\u2026', '');
+    loginBtn.disabled = true;
+
+    /* Validate by attempting a GET */
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/admin/get', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      loginBtn.disabled = false;
+      if (xhr.status === 200) {
+        setStatus(loginStatus, 'Authenticated.', 'ok');
+        lockEl.style.display = 'none';
+        contentEl.style.display = 'block';
+        var data = JSON.parse(xhr.responseText);
+        editor.value = data.knowledge || '';
+        updateCharCount();
+      } else if (xhr.status === 401) {
+        setStatus(loginStatus, 'Wrong password.', 'err');
+      } else if (xhr.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '8000')) {
+        enableLocalMock();
+      } else {
+        setStatus(loginStatus, 'Error: ' + xhr.status + '. Check Vercel env vars.', 'err');
+      }
+    };
+    xhr.onerror = function () {
+      loginBtn.disabled = false;
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '8000') {
+        enableLocalMock();
+      } else {
+        setStatus(loginStatus, 'Network error. Make sure you are on the deployed site.', 'err');
+      }
+    };
+    xhr.send();
+  }
+
+  loginBtn.addEventListener('click', unlock);
+  pwdInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') unlock(); });
+
+  /* ── Char count ─────────────────────────────────────── */
+  function updateCharCount() {
+    charCount.textContent = editor.value.length.toLocaleString() + ' characters';
+  }
+  editor.addEventListener('input', updateCharCount);
+
+  /* ── File Upload ────────────────────────────────────── */
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+
+  dropZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', function () {
+    dropZone.classList.remove('drag-over');
+  });
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener('change', function () {
+    handleFiles(fileInput.files);
+  });
+
+  function handleFiles(files) {
+    if (!files.length) return;
+    var names = [];
+    var pending = files.length;
+
+    for (var i = 0; i < files.length; i++) {
+      (function (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var sep = '\n\n--- FILE: ' + file.name + ' ---\n\n';
+          editor.value += (editor.value ? sep : '') + e.target.result.trim();
+          names.push(file.name);
+          pending--;
+          updateCharCount();
+          if (pending === 0) {
+            setStatus(fileStatus, 'Loaded: ' + names.join(', '), 'ok');
+          }
+        };
+        reader.onerror = function () {
+          pending--;
+          if (pending === 0) setStatus(fileStatus, 'Error reading one or more files.', 'err');
+        };
+        reader.readAsText(file, 'utf-8');
+      })(files[i]);
+    }
+  }
+
+  /* ── Save ───────────────────────────────────────────── */
+  saveBtn.addEventListener('click', function () {
+    var knowledge = editor.value.trim();
+    setStatus(saveStatus, 'Saving\u2026', '');
+    saveBtn.disabled = true;
+
+    if (isLocalMock) {
+      setTimeout(function () {
+        localStorage.setItem('touhid_knowledge', knowledge);
+        saveBtn.disabled = false;
+        setStatus(saveStatus, 'Saved \u2714 (Local Mock Mode: stored in localStorage). Note: Local changes will not affect the live deployed Vercel KV store.', 'ok');
+      }, 300);
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/admin/save', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      saveBtn.disabled = false;
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        setStatus(saveStatus, 'Saved \u2714 (' + (data.chars || 0).toLocaleString() + ' chars). AI will use this knowledge for all future conversations.', 'ok');
+      } else {
+        setStatus(saveStatus, 'Save failed: ' + xhr.status + '. Check Vercel KV setup.', 'err');
+      }
+    };
+    xhr.onerror = function () {
+      saveBtn.disabled = false;
+      setStatus(saveStatus, 'Network error.', 'err');
+    };
+    xhr.send(JSON.stringify({ knowledge: knowledge }));
+  });
+
+  /* ── Clear ──────────────────────────────────────────── */
+  clearBtn.addEventListener('click', function () {
+    if (confirm('Clear all knowledge text from the editor?')) {
+      editor.value = '';
+      updateCharCount();
+      setStatus(saveStatus, 'Editor cleared. Save to apply.', '');
+    }
+  });
+
+  /* ── Reload ─────────────────────────────────────────── */
+  reloadBtn.addEventListener('click', function () {
+    if (isLocalMock) {
+      editor.value = localStorage.getItem('touhid_knowledge') || '';
+      updateCharCount();
+      setStatus(saveStatus, 'Reloaded from localStorage.', 'ok');
+      return;
+    }
+    reloadBtn.disabled = true;
+    setStatus(saveStatus, 'Reloading\u2026', '');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/admin/get', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      reloadBtn.disabled = false;
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        editor.value = data.knowledge || '';
+        updateCharCount();
+        setStatus(saveStatus, 'Reloaded from server.', 'ok');
+      } else {
+        setStatus(saveStatus, 'Reload failed: ' + xhr.status, 'err');
+      }
+    };
+    xhr.onerror = function () { reloadBtn.disabled = false; setStatus(saveStatus, 'Network error.', 'err'); };
+    xhr.send();
+  });
+
+  /* ── Test ───────────────────────────────────────────── */
+  testBtn.addEventListener('click', function () {
+    var msg = testInput.value.trim();
+    if (!msg) return;
+    testReply.textContent = 'Sending\u2026';
+    testReply.className = 'status-bar';
+    testBtn.disabled = true;
+
+    if (isLocalMock) {
+      setTimeout(function () {
+        testBtn.disabled = false;
+        if (window.PortfolioAssistantFallback) {
+          testReply.textContent = window.PortfolioAssistantFallback(msg);
+          testReply.className = 'status-bar ok';
+        } else {
+          testReply.textContent = 'Error: Chat fallback logic not loaded. Make sure chat-widget.js is active.';
+          testReply.className = 'status-bar err';
+        }
+      }, 400);
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/chat', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+      testBtn.disabled = false;
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        testReply.textContent = data.reply || '(no reply)';
+        testReply.className = 'status-bar ok';
+      } else {
+        testReply.textContent = 'Error ' + xhr.status + ': ' + xhr.responseText;
+        testReply.className = 'status-bar err';
+      }
+    };
+    xhr.onerror = function () {
+      testBtn.disabled = false;
+      testReply.textContent = 'Network error. Is NVIDIA_API_KEY set?';
+      testReply.className = 'status-bar err';
+    };
+    xhr.send(JSON.stringify({ message: msg }));
+  });
+
+  testInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') testBtn.click();
+  });
+
+}());
+</script>
+</body>
+</html>

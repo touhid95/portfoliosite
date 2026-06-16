@@ -1,0 +1,206 @@
+/* ============================================================
+   PORTFOLIO — MAHFUJUL KADER TOUHID
+   style.css — Additive only. Zero visual overrides to the
+   existing Kintsugi design. Adds: mobile layout, hover
+   micro-transitions, Fibonacci gallery grid, custom scrollbar.
+   ============================================================ */
+
+/* ---------- Custom Scrollbar (matches cream/gray palette) ---------- */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #FCFAF2; }
+::-webkit-scrollbar-thumb { background: #E0E0E0; }
+::-webkit-scrollbar-thumb:hover { background: #bbbbbb; }
+
+/* ---------- Selection colour ---------- */
+::selection { background: #BC2026; color: #FCFAF2; }
+
+/* ---------- Link micro-transition ---------- */
+a { transition: color 0.15s ease, opacity 0.15s ease; }
+
+/* ---------- Page entry fade-in ---------- */
+body { animation: page-in 0.3s ease; }
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Input focus polish (contact form) ---------- */
+input[type="text"],
+input[type="email"],
+textarea {
+  transition: border-color 0.15s ease;
+  outline: none;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  border-color: #2C2C2C !important;
+}
+input[type="submit"] {
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+input[type="submit"]:hover {
+  background: #BC2026;
+  color: #FCFAF2;
+}
+
+/* ============================================================
+   FIBONACCI GALLERY GRID
+   Container width in right-td: ~540px (720 - 180px label col)
+   Column split: 204px (6×F9=34) | 6px gap | 330px (6×F10=55)
+   Row split:    204px           | 6px gap | 126px (6×F8=21)
+   photo-A (tall):   204 × 336px — ratio ≈ 1/φ  (golden portrait)
+   photo-B (wide):   330 × 204px — ratio ≈ φ    (golden landscape)
+   photo-C (banner): 330 × 126px — ratio ≈ φ²   (golden banner)
+   ============================================================ */
+
+.fib-grid {
+  display: grid;
+  grid-template-columns: 204px 1fr;
+  grid-template-rows: 204px 126px;
+  gap: 6px;
+  width: 100%;
+}
+
+/* Photo A — tall left column, spans both rows */
+.fib-a {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+/* Photo B — landscape top-right */
+.fib-b {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Photo C — wide banner bottom-right */
+.fib-c {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* Every cell shares these base styles */
+.fib-cell {
+  position: relative;
+  overflow: hidden;
+  background: #f5f3e9;  /* slight warmth when no image */
+}
+
+/* Actual photo */
+.fib-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Accent shard — thin left strip echoing the kintsugi crack */
+.fib-a::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: #BC2026;
+  z-index: 2;
+}
+
+/* Caption overlay (bottom of each cell) */
+.fib-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 6px 10px 8px;
+  background: rgba(252, 250, 242, 0.93);
+  border-top: 1px solid #E0E0E0;
+  z-index: 3;
+}
+
+.fib-cap-name {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #2C2C2C;
+  line-height: 1.4;
+}
+
+.fib-cap-sub {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: #aaaaaa;
+  line-height: 1.3;
+}
+
+/* Placeholder look when image fails / missing */
+.fib-cell.ph-red   { background: #BC2026; }
+.fib-cell.ph-dark  { background: #2C2C2C; }
+.fib-cell.ph-mid   { background: #888888; }
+.fib-cell.ph-red  .fib-cap-name,
+.fib-cell.ph-dark .fib-cap-name,
+.fib-cell.ph-mid  .fib-cap-name { color: #FCFAF2; }
+.fib-cell.ph-red  .fib-cap-sub,
+.fib-cell.ph-dark .fib-cap-sub,
+.fib-cell.ph-mid  .fib-cap-sub  { color: rgba(252,250,242,0.6); }
+.fib-cell.ph-red  .fib-caption,
+.fib-cell.ph-dark .fib-caption,
+.fib-cell.ph-mid  .fib-caption  {
+  background: rgba(0,0,0,0.25);
+  border-top-color: rgba(255,255,255,0.15);
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+@media (max-width: 780px) {
+  /* Main container shrinks gracefully */
+  table[width="720"],
+  center > table { width: 95% !important; }
+
+  center {
+    display: block;
+    padding: 0 2.5%;
+  }
+
+  /* Stack two-col section rows vertically */
+  table[width="100%"] tr {
+    display: flex;
+    flex-direction: column;
+  }
+  table[width="100%"] td[width="180"],
+  table[width="100%"] td[width="28%"],
+  table[width="100%"] td[width="30%"] {
+    width: 100% !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* Fibonacci gallery — single column on mobile */
+  .fib-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .fib-a { grid-column: 1; grid-row: 1; min-height: 160px; }
+  .fib-b { grid-column: 2; grid-row: 1; min-height: 160px; }
+  .fib-c { grid-column: 1 / 3; grid-row: 2; min-height: 100px; }
+}
+
+@media (max-width: 480px) {
+  .fib-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .fib-a, .fib-b, .fib-c {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 180px;
+  }
+
+  font[size="7"] { font-size: 2em !important; }
+}
+
+/* ---------- Print: hide chat widget ---------- */
+@media print {
+  #ask-touhid-btn,
+  #ask-touhid-panel { display: none !important; }
+}
