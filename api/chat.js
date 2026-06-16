@@ -86,7 +86,7 @@ function getConfig() {
 
     nvidia: {
       apiKey:      process.env.NVIDIA_API_KEY || '',
-      model:       process.env.NVIDIA_MODEL       || 'minimaxai/minimax-m3',
+      model:       process.env.NVIDIA_MODEL       || 'meta/llama-3.1-8b-instruct',
       maxTokens:   parseInt(process.env.NVIDIA_MAX_TOKENS  || '512',  10),
       temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '0.7')
     },
