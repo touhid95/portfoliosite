@@ -22,7 +22,7 @@
  *  KV_REST_API_TOKEN    Vercel KV token (optional)
  * ──────────────────────────────────────────────────────────────────
  */
-export const config = { maxDuration: 60 }; // Node.js serverless — 60s timeout (fixes Edge 25s limit)
+export const config = { runtime: 'edge' };
 
 /* ── CORS ────────────────────────────────────────────────── */
 const CORS = {
@@ -207,62 +207,78 @@ function retrieveRelevantChunks(knowledge, query, maxChars = 3000) {
 
 /* ── NVIDIA NIM call ─────────────────────────────────────── */
 async function callNvidia(cfg, systemPrompt, message) {
-  const res = await fetch(
-    'https://integrate.api.nvidia.com/v1/chat/completions',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${cfg.nvidia.apiKey}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        model:       cfg.nvidia.model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user',   content: message }
-        ],
-        max_tokens:  cfg.nvidia.maxTokens,
-        temperature: cfg.nvidia.temperature,
-        top_p: 0.95,
-        stream: false
-      })
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 22000); // 22s — safely under Edge 25s limit
+
+  try {
+    const res = await fetch(
+      'https://integrate.api.nvidia.com/v1/chat/completions',
+      {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          Authorization: `Bearer ${cfg.nvidia.apiKey}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          model:       cfg.nvidia.model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user',   content: message }
+          ],
+          max_tokens:  cfg.nvidia.maxTokens,
+          temperature: cfg.nvidia.temperature,
+          top_p: 0.95,
+          stream: false
+        })
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`NVIDIA ${res.status}: ${errText}`);
     }
-  );
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`NVIDIA ${res.status}: ${errText}`);
+    const data  = await res.json();
+    const reply = data?.choices?.[0]?.message?.content;
+    if (!reply) throw new Error('NVIDIA returned empty response');
+    return reply.trim();
+  } finally {
+    clearTimeout(timer);
   }
-
-  const data  = await res.json();
-  const reply = data?.choices?.[0]?.message?.content;
-  if (!reply) throw new Error('NVIDIA returned empty response');
-  return reply.trim();
 }
 
 /* ── Gemini call ─────────────────────────────────────────── */
 async function callGemini(cfg, systemPrompt, message) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${cfg.gemini.model}:generateContent?key=${cfg.gemini.apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: 'user', parts: [{ text: message }] }],
-        generationConfig: {
-          temperature:     cfg.gemini.temperature,
-          maxOutputTokens: cfg.gemini.maxTokens
-        }
-      })
-    }
-  );
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 22000); // 22s safety timeout
 
-  const data  = await res.json();
-  const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!reply) throw new Error('Gemini returned empty response');
-  return reply.trim();
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${cfg.gemini.model}:generateContent?key=${cfg.gemini.apiKey}`,
+      {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: 'user', parts: [{ text: message }] }],
+          generationConfig: {
+            temperature:     cfg.gemini.temperature,
+            maxOutputTokens: cfg.gemini.maxTokens
+          }
+        })
+      }
+    );
+
+    const data  = await res.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error('Gemini returned empty response');
+    return reply.trim();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /* ── JSON response helper ────────────────────────────────── */
