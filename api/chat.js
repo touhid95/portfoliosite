@@ -22,7 +22,7 @@
  *  KV_REST_API_TOKEN    Vercel KV token (optional)
  * ──────────────────────────────────────────────────────────────────
  */
-export const config = { runtime: 'edge' };
+export const config = { maxDuration: 60 }; // Node.js serverless — 60s timeout (fixes Edge 25s limit)
 
 /* ── CORS ────────────────────────────────────────────────── */
 const CORS = {
