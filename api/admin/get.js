@@ -50,29 +50,26 @@ export default async function handler(request) {
   }
 
   try {
-    const res = await fetch(`${kvUrl}/get/touhid_knowledge`, {
-      headers: { Authorization: `Bearer ${kvToken}` }
-    });
+    /* Fetch both keys in parallel */
+    const [kvKnowledge, kvPrompt] = await Promise.all([
+      fetch(`${kvUrl}/get/touhid_knowledge`, { headers: { Authorization: `Bearer ${kvToken}` } }),
+      fetch(`${kvUrl}/get/touhid_system_prompt`, { headers: { Authorization: `Bearer ${kvToken}` } })
+    ]);
 
-    if (!res.ok) {
-      return new Response(
-        JSON.stringify({ knowledge: '' }),
-        { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
-      );
-    }
-
-    const data      = await res.json();
-    const knowledge = data.result || '';
+    const kData      = kvKnowledge.ok ? await kvKnowledge.json() : {};
+    const pData      = kvPrompt.ok    ? await kvPrompt.json()    : {};
+    const knowledge  = kData.result || '';
+    const systemPrompt = pData.result || '';
 
     return new Response(
-      JSON.stringify({ knowledge }),
+      JSON.stringify({ knowledge, systemPrompt }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
 
   } catch (err) {
     console.error('Get handler error:', err);
     return new Response(
-      JSON.stringify({ knowledge: '' }),
+      JSON.stringify({ knowledge: '', systemPrompt: '' }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }

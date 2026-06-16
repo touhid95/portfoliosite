@@ -39,10 +39,11 @@ export default async function handler(request) {
   }
 
   /* Parse body */
-  let knowledge;
+  let knowledge, systemPrompt;
   try {
-    const body = await request.json();
-    knowledge  = (body.knowledge || '').trim();
+    const body  = await request.json();
+    knowledge   = (body.knowledge   || '').trim();
+    systemPrompt = (body.systemPrompt || '').trim();
   } catch {
     return new Response(
       JSON.stringify({ error: 'Invalid JSON' }),
@@ -62,27 +63,36 @@ export default async function handler(request) {
   }
 
   try {
-    /* Store as JSON-safe string */
-    const res = await fetch(`${kvUrl}/set/touhid_knowledge`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${kvToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(knowledge)
-    });
+    /* Write both keys in parallel */
+    const writes = [
+      fetch(`${kvUrl}/set/touhid_knowledge`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(knowledge)
+      })
+    ];
 
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('KV save error:', res.status, err);
+    /* Only write system prompt if provided */
+    if (systemPrompt) {
+      writes.push(
+        fetch(`${kvUrl}/set/touhid_system_prompt`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(systemPrompt)
+        })
+      );
+    }
+
+    const results = await Promise.all(writes);
+    if (results.some(r => !r.ok)) {
       return new Response(
-        JSON.stringify({ error: 'Failed to save' }),
+        JSON.stringify({ error: 'Failed to save one or more fields' }),
         { status: 502, headers: { 'Content-Type': 'application/json', ...CORS } }
       );
     }
 
     return new Response(
-      JSON.stringify({ ok: true, chars: knowledge.length }),
+      JSON.stringify({ ok: true, chars: knowledge.length, promptChars: systemPrompt.length }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
 

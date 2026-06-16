@@ -167,6 +167,23 @@ async function getKnowledge() {
   }
 }
 
+/* ── Read custom system prompt from Vercel KV ────────────── */
+async function getCustomSystemPrompt() {
+  const url   = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return null;
+  try {
+    const res = await fetch(`${url}/get/touhid_system_prompt`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.result || null;
+  } catch {
+    return null;
+  }
+}
+
 /* ── Simple RAG: chunk retrieval by keyword relevance ────── */
 function retrieveRelevantChunks(knowledge, query, maxChars = 3000) {
   if (!knowledge) return BASE_KNOWLEDGE;
@@ -320,10 +337,23 @@ export default async function handler(request) {
     return jsonResponse({ error: 'AI service not configured' }, 503);
   }
 
-  /* Build RAG context */
-  const extraKnowledge  = await getKnowledge();
+  /* Build RAG context + system prompt */
+  const [extraKnowledge, customPrompt] = await Promise.all([
+    getKnowledge(),
+    getCustomSystemPrompt()
+  ]);
   const relevantContext = retrieveRelevantChunks(extraKnowledge, message);
-  const systemPrompt    = buildSystemPrompt(relevantContext);
+
+  /* Use admin-saved system prompt if available, otherwise use built-in */
+  let systemPrompt;
+  if (customPrompt) {
+    /* Inject knowledge into custom prompt if it contains the placeholder */
+    systemPrompt = customPrompt.includes('{{KNOWLEDGE}}')
+      ? customPrompt.replace('{{KNOWLEDGE}}', relevantContext)
+      : customPrompt + '\n\n## KNOWLEDGE BASE\n' + relevantContext;
+  } else {
+    systemPrompt = buildSystemPrompt(relevantContext);
+  }
 
   try {
     let reply;

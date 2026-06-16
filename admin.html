@@ -266,6 +266,49 @@ Add as much or as little context as you like. Be specific."></textarea>
     <hr color="#E0E0E0" size="1" />
     <br /><br />
 
+    <!-- System Prompt Editor -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">SYSTEM<br />PROMPT</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Directly instruct the AI model. This replaces the built-in system prompt.<br />
+            Use <b>{{KNOWLEDGE}}</b> anywhere to inject the knowledge base. Leave blank to use the default.
+          </font>
+          <br /><br />
+          <textarea id="prompt-editor" class="admin-textarea" style="height:260px;"
+placeholder="Example system prompt:
+
+You are the AI assistant for Mahfujul Kader Touhid's portfolio.
+You help visitors learn about his work and skills.
+
+## KNOWLEDGE
+{{KNOWLEDGE}}
+
+## RULES
+- Only answer based on the knowledge above
+- Be concise and friendly
+- If unsure, direct to m.k.touhid95@gmail.com"></textarea>
+          <br />
+          <div id="prompt-char-count" style="font-family:'Courier New',Courier,monospace;font-size:11px;color:#aaaaaa;text-align:right;">0 characters</div>
+          <br />
+          <button class="admin-btn" id="save-prompt-btn">Save System Prompt &rarr;</button>
+          &nbsp;&nbsp;
+          <button class="admin-btn-secondary" id="clear-prompt-btn">Clear</button>
+          &nbsp;&nbsp;
+          <button class="admin-btn-secondary" id="reset-prompt-btn">Reset to Default</button>
+          <br />
+          <div class="status-bar" id="prompt-status">System prompt not yet saved.</div>
+        </td>
+      </tr>
+    </table>
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
     <!-- Test Chat -->
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
       <tr>
@@ -377,6 +420,13 @@ Add as much or as little context as you like. Be specific."></textarea>
   var reloadBtn  = document.getElementById('reload-btn');
   var saveStatus = document.getElementById('save-status');
 
+  var promptEditor    = document.getElementById('prompt-editor');
+  var promptCharCount = document.getElementById('prompt-char-count');
+  var savePromptBtn   = document.getElementById('save-prompt-btn');
+  var clearPromptBtn  = document.getElementById('clear-prompt-btn');
+  var resetPromptBtn  = document.getElementById('reset-prompt-btn');
+  var promptStatus    = document.getElementById('prompt-status');
+
   var testInput = document.getElementById('test-input');
   var testBtn   = document.getElementById('test-btn');
   var testReply = document.getElementById('test-reply');
@@ -416,7 +466,9 @@ Add as much or as little context as you like. Be specific."></textarea>
         contentEl.style.display = 'block';
         var data = JSON.parse(xhr.responseText);
         editor.value = data.knowledge || '';
+        promptEditor.value = data.systemPrompt || '';
         updateCharCount();
+        updatePromptCharCount();
       } else if (xhr.status === 401) {
         setStatus(loginStatus, 'Wrong password.', 'err');
       } else if (xhr.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '8000')) {
@@ -439,11 +491,16 @@ Add as much or as little context as you like. Be specific."></textarea>
   loginBtn.addEventListener('click', unlock);
   pwdInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') unlock(); });
 
-  /* ── Char count ─────────────────────────────────────── */
+  /* ── Char counts ────────────────────────────────────── */
   function updateCharCount() {
     charCount.textContent = editor.value.length.toLocaleString() + ' characters';
   }
   editor.addEventListener('input', updateCharCount);
+
+  function updatePromptCharCount() {
+    promptCharCount.textContent = promptEditor.value.length.toLocaleString() + ' characters';
+  }
+  promptEditor.addEventListener('input', updatePromptCharCount);
 
   /* ── File Upload ────────────────────────────────────── */
   dropZone.addEventListener('click', function () { fileInput.click(); });
@@ -492,7 +549,7 @@ Add as much or as little context as you like. Be specific."></textarea>
     }
   }
 
-  /* ── Save ───────────────────────────────────────────── */
+  /* ── Save Knowledge ─────────────────────────────────── */
   saveBtn.addEventListener('click', function () {
     var knowledge = editor.value.trim();
     setStatus(saveStatus, 'Saving\u2026', '');
