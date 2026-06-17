@@ -199,9 +199,12 @@ input[type="submit"]:hover {
     padding: 10px 8px !important;
     line-height: 1.4;
   }
-  .data-table td:first-child {
+  .key-value-table td:first-child {
     white-space: nowrap;
     padding-right: 20px !important;
+  }
+  .data-table:not(.key-value-table) {
+    min-width: 550px;
   }
 
   /* Fibonacci gallery — single column on mobile */
