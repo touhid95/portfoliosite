@@ -43,7 +43,7 @@ UNIVERSITY: IBA, Jahangirnagar University, Savar, Dhaka — CGPA 3.24/4.00 (6 se
 LOCATION: Sector-6, Uttara, Dhaka, Bangladesh
 EMAIL: ${OWNER_EMAIL}
 PHONE: +880 1734773509
-LINKEDIN: linkedin.com/in/mahfujul-kader-touhid
+LINKEDIN: linkedin.com/in/mktouhid/
 GITHUB: github.com/touhid95/portfolio
 
 EDUCATION:

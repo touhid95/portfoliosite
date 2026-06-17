@@ -45,7 +45,7 @@
     },
     {
       k: ['contact', 'reach', 'email', 'phone', 'linkedin', 'connect', 'touch', 'hire', 'message'],
-      r: 'You can reach out directly at m.k.touhid95@gmail.com or +880 1734773509. Also on LinkedIn: linkedin.com/in/mahfujul-kader-touhid and GitHub: github.com/touhid95/portfolio. Responses come within 24 hours.'
+      r: 'You can reach out directly at m.k.touhid95@gmail.com or +880 1734773509. Also on LinkedIn: linkedin.com/in/mktouhid/ and GitHub: github.com/touhid95/portfolio. Responses come within 24 hours.'
     },
     {
       k: ['available', 'open', 'job', 'internship', 'opportunity', 'looking', 'position', 'recruit', 'hire'],
