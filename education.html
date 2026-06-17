@@ -7,6 +7,39 @@
   <title>Education | Mahfujul Kader Touhid</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="chat-widget.css" />
+  <style>
+    /* ─ Mobile: collapse 4-col tables to 2-col ─ */
+    @media (max-width: 600px) {
+      /* Make the outer layout table full-width and remove fixed label column */
+      table[width="720"] { width: 100% !important; }
+      center { display: block; }
+
+      /* The two data tables collapse: each tr wraps, td becomes 50% */
+      #edu-record-table td,
+      #edu-record-table th,
+      #cert-table td,
+      #cert-table th {
+        display: inline-block;
+        width: 50% !important;
+        box-sizing: border-box;
+        vertical-align: top;
+      }
+
+      /* First column in each data row: bold label treatment */
+      #edu-record-table td:first-child,
+      #cert-table td:first-child {
+        border-top: 1px solid #E0E0E0;
+      }
+
+      /* Header row: also 50% each */
+      #edu-record-table tr,
+      #cert-table tr {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+  </style>
 </head>
 
 <body bgcolor="#FCFAF2" text="#2C2C2C" link="#2C2C2C" vlink="#2C2C2C" alink="#BC2026">
@@ -66,7 +99,7 @@
               </td>
               <td valign="top">
 
-                <table width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
+                <table id="edu-record-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
                   <tr bgcolor="#FCFAF2">
                     <th align="left">
                       <font face="Courier New" size="2" color="#777777">Level</font>
@@ -173,7 +206,7 @@
               </td>
               <td valign="top">
 
-                <table width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
+                <table id="cert-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
                   <tr bgcolor="#FCFAF2">
                     <th align="left">
                       <font face="Courier New" size="2" color="#777777">Course</font>
