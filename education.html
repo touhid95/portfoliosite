@@ -8,37 +8,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="chat-widget.css" />
   <style>
-    /* ─ Mobile: collapse 4-col tables to 2-col ─ */
-    @media (max-width: 600px) {
-      /* Make the outer layout table full-width and remove fixed label column */
-      table[width="720"] { width: 100% !important; }
-      center { display: block; }
-
-      /* The two data tables collapse: each tr wraps, td becomes 50% */
-      #edu-record-table td,
-      #edu-record-table th,
-      #cert-table td,
-      #cert-table th {
-        display: inline-block;
-        width: 50% !important;
-        box-sizing: border-box;
-        vertical-align: top;
-      }
-
-      /* First column in each data row: bold label treatment */
-      #edu-record-table td:first-child,
-      #cert-table td:first-child {
-        border-top: 1px solid #E0E0E0;
-      }
-
-      /* Header row: also 50% each */
-      #edu-record-table tr,
-      #cert-table tr {
-        display: block;
-        width: 100%;
-        overflow: hidden;
-      }
-    }
+    /* Responsive layout constraints are globally handled by style.css */
   </style>
 </head>
 
@@ -99,75 +69,77 @@
               </td>
               <td valign="top">
 
-                <table id="edu-record-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
-                  <tr bgcolor="#FCFAF2">
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Level</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Institution</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Year</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Result</font>
-                    </th>
-                  </tr>
-                  <tr bgcolor="#FCFAF2">
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>BBA</b></font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">IBA, Jahangirnagar
-                        University</font><br />
-                      <font face="Courier New" size="2" color="#aaaaaa">Business Administration
-                      </font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">2021 &ndash; Present</font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>CGPA 3.24 / 4.00</b>
-                      </font><br />
-                      <font face="Courier New" size="2" color="#aaaaaa">6 Semesters</font>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>HSC</b></font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">Mirzapur Cadet College
-                      </font><br />
-                      <font face="Courier New" size="2" color="#aaaaaa">Science</font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">2020</font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>GPA 5.00 / 5.00</b>
-                      </font>
-                    </td>
-                  </tr>
-                  <tr bgcolor="#FCFAF2">
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>SSC</b></font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">Mirzapur Cadet College
-                      </font><br />
-                      <font face="Courier New" size="2" color="#aaaaaa">Science</font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3">2019</font>
-                    </td>
-                    <td valign="top">
-                      <font face="Georgia" size="3"><b>GPA 5.00 / 5.00</b>
-                      </font>
-                    </td>
-                  </tr>
-                </table>
+                <div class="table-container">
+                  <table id="edu-record-table" class="data-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
+                    <tr bgcolor="#FCFAF2">
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Level</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Institution</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Year</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Result</font>
+                      </th>
+                    </tr>
+                    <tr bgcolor="#FCFAF2">
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>BBA</b></font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">IBA, Jahangirnagar
+                          University</font><br />
+                        <font face="Courier New" size="2" color="#aaaaaa">Business Administration
+                        </font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">2021 &ndash; Present</font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>CGPA 3.24 / 4.00</b>
+                        </font><br />
+                        <font face="Courier New" size="2" color="#aaaaaa">6 Semesters</font>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>HSC</b></font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">Mirzapur Cadet College
+                        </font><br />
+                        <font face="Courier New" size="2" color="#aaaaaa">Science</font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">2020</font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>GPA 5.00 / 5.00</b>
+                        </font>
+                      </td>
+                    </tr>
+                    <tr bgcolor="#FCFAF2">
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>SSC</b></font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">Mirzapur Cadet College
+                        </font><br />
+                        <font face="Courier New" size="2" color="#aaaaaa">Science</font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3">2019</font>
+                      </td>
+                      <td valign="top">
+                        <font face="Georgia" size="3"><b>GPA 5.00 / 5.00</b>
+                        </font>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
 
               </td>
             </tr>
@@ -206,52 +178,54 @@
               </td>
               <td valign="top">
 
-                <table id="cert-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
-                  <tr bgcolor="#FCFAF2">
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Course</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Issuer</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Issued</font>
-                    </th>
-                    <th align="left">
-                      <font face="Courier New" size="2" color="#777777">Certificate ID</font>
-                    </th>
-                  </tr>
-                  <tr bgcolor="#FCFAF2">
-                    <td valign="top"><font face="Georgia" size="3"><b>Introduction to HTML</b></font></td>
-                    <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">31 March 2026</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-PCKFQGVS</font></td>
-                  </tr>
-                  <tr>
-                    <td valign="top"><font face="Georgia" size="3"><b>Python Core</b></font></td>
-                    <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">07 December 2022</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CT-VIWPDMXG</font></td>
-                  </tr>
-                  <tr bgcolor="#FCFAF2">
-                    <td valign="top"><font face="Georgia" size="3"><b>R</b></font></td>
-                    <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">09 December 2024</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-ONCVDTPD</font></td>
-                  </tr>
-                  <tr>
-                    <td valign="top"><font face="Georgia" size="3"><b>SQL</b></font></td>
-                    <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">05 October 2023</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-RPHT4UCX</font></td>
-                  </tr>
-                  <tr bgcolor="#FCFAF2">
-                    <td valign="top"><font face="Georgia" size="3"><b>Data Science</b></font></td>
-                    <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">29 August 2023</font></td>
-                    <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-9FYOGHRZ</font></td>
-                  </tr>
-                </table>
+                <div class="table-container">
+                  <table id="cert-table" class="data-table" width="100%" border="1" frame="void" rules="rows" cellpadding="11" cellspacing="0" bordercolor="#E0E0E0">
+                    <tr bgcolor="#FCFAF2">
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Course</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Issuer</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Issued</font>
+                      </th>
+                      <th align="left">
+                        <font face="Courier New" size="2" color="#777777">Certificate ID</font>
+                      </th>
+                    </tr>
+                    <tr bgcolor="#FCFAF2">
+                      <td valign="top"><font face="Georgia" size="3"><b>Introduction to HTML</b></font></td>
+                      <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">31 March 2026</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-PCKFQGVS</font></td>
+                    </tr>
+                    <tr>
+                      <td valign="top"><font face="Georgia" size="3"><b>Python Core</b></font></td>
+                      <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">07 December 2022</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CT-VIWPDMXG</font></td>
+                    </tr>
+                    <tr bgcolor="#FCFAF2">
+                      <td valign="top"><font face="Georgia" size="3"><b>R</b></font></td>
+                      <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">09 December 2024</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-ONCVDTPD</font></td>
+                    </tr>
+                    <tr>
+                      <td valign="top"><font face="Georgia" size="3"><b>SQL</b></font></td>
+                      <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">05 October 2023</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-RPHT4UCX</font></td>
+                    </tr>
+                    <tr bgcolor="#FCFAF2">
+                      <td valign="top"><font face="Georgia" size="3"><b>Data Science</b></font></td>
+                      <td valign="top"><font face="Georgia" size="3">Sololearn</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">29 August 2023</font></td>
+                      <td valign="top"><font face="Courier New" size="2" color="#aaaaaa">CC-9FYOGHRZ</font></td>
+                    </tr>
+                  </table>
+                </div>
 
               </td>
             </tr>

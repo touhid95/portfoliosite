@@ -7,6 +7,37 @@
   <title>Gallery | Mahfujul Kader Touhid</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="chat-widget.css" />
+  <style>
+    .gallery-dynamic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+    .gallery-dynamic-grid .gallery-item {
+      position: relative;
+      overflow: hidden;
+      background: #f0ede4;
+    }
+    .gallery-dynamic-grid .gallery-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .gallery-dynamic-grid .gallery-item:hover img {
+      transform: scale(1.04);
+    }
+    .gallery-dynamic-grid .gallery-caption {
+      padding: 8px 10px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #888888;
+      border-top: 1px solid #E0E0E0;
+      background: #FCFAF2;
+    }
+  </style>
 </head>
 
 <body bgcolor="#FCFAF2" text="#2C2C2C" link="#2C2C2C" vlink="#2C2C2C" alink="#BC2026">
@@ -65,10 +96,31 @@
           <hr color="#BC2026" size="2" />
           <br /><br />
 
+          <!-- ═══ CMS-MANAGED GALLERY ═══ -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+              <td width="180">
+                <font face="Courier New" size="2" color="#aaaaaa">PHOTOS</font>
+              </td>
+              <td>
+                <!-- Dynamic gallery loaded by gallery-cms.js -->
+                <div id="gallery-cms-container">
+                  <!-- Loading state -->
+                  <font face="Courier New" size="2" color="#aaaaaa">Loading photos&hellip;</font>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- ═══ STATIC FALLBACK SECTIONS (shown if no CMS photos) ═══ -->
+          <div id="gallery-static-sections" style="display:none;">
+
+          <br /><br />
+          <hr color="#E0E0E0" size="1" />
+          <br /><br />
+
           <!-- ═══════════════════════════════════════════
                SECTION 1 — PERSONAL
-               Grid: 204×336 | 330×204 / 330×126
-               All sizes are Fibonacci multiples of 6
                ═══════════════════════════════════════════ -->
           <table width="100%" border="0" cellpadding="0" cellspacing="0">
             <tr valign="top">
@@ -223,6 +275,8 @@
             </tr>
           </table>
 
+          </div><!-- end gallery-static-sections -->
+
           <br /><br /><br />
           <hr color="#E0E0E0" size="1" />
           <br />
@@ -242,6 +296,65 @@
       </tr>
     </table>
   </center>
+
+  <script>
+  (function() {
+    var container     = document.getElementById('gallery-cms-container');
+    var staticSections = document.getElementById('gallery-static-sections');
+
+    fetch('/api/gallery/list')
+      .then(function(r) { return r.json(); })
+      .then(function(photos) {
+        if (!photos || !photos.length) {
+          /* No CMS photos — show static hardcoded sections */
+          container.innerHTML = '<font face="Courier New" size="2" color="#aaaaaa">No photos uploaded yet.</font>';
+          staticSections.style.display = 'block';
+          return;
+        }
+
+        /* Group by section */
+        var sections = {};
+        photos.forEach(function(p) {
+          var sec = p.section || 'personal';
+          if (!sections[sec]) sections[sec] = [];
+          sections[sec].push(p);
+        });
+
+        var html = '';
+        Object.keys(sections).forEach(function(sec) {
+          var items = sections[sec];
+          var label = sec.toUpperCase().replace(/-/g, ' ');
+
+          html += '<br /><br />';
+          html += '<hr color="#E0E0E0" size="1" />';
+          html += '<br /><br />';
+          html += '<table width="100%" border="0" cellpadding="0" cellspacing="0">';
+          html += '<tr valign="top">';
+          html += '<td width="180"><font face="Courier New" size="2" color="#aaaaaa">' + label + '</font></td>';
+          html += '<td>';
+          html += '<div class="gallery-dynamic-grid">';
+
+          items.forEach(function(p) {
+            html += '<div class="gallery-item">';
+            html += '<img src="' + p.url + '" alt="' + (p.caption || '') + '" loading="lazy" />';
+            if (p.caption) {
+              html += '<div class="gallery-caption">' + p.caption + '</div>';
+            }
+            html += '</div>';
+          });
+
+          html += '</div>';
+          html += '</td></tr></table>';
+        });
+
+        container.innerHTML = html;
+      })
+      .catch(function() {
+        container.innerHTML = '';
+        staticSections.style.display = 'block';
+      });
+  })();
+  </script>
 
   <script src="chat-widget.js"></script>
 </body>

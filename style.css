@@ -153,6 +153,13 @@ input[type="submit"]:hover {
 /* ============================================================
    MOBILE RESPONSIVE
    ============================================================ */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 12px;
+}
+
 @media (max-width: 780px) {
   /* Main container shrinks gracefully */
   table[width="720"],
@@ -163,16 +170,29 @@ input[type="submit"]:hover {
     padding: 0 2.5%;
   }
 
-  /* Stack two-col section rows vertically */
-  table[width="100%"] tr {
+  /* Stack two-col section rows vertically (exclude data tables) */
+  table[width="100%"]:not(.data-table) tr {
     display: flex;
     flex-direction: column;
   }
-  table[width="100%"] td[width="180"],
-  table[width="100%"] td[width="28%"],
-  table[width="100%"] td[width="30%"] {
+  table[width="100%"]:not(.data-table) td[width="180"],
+  table[width="100%"]:not(.data-table) td[width="28%"],
+  table[width="100%"]:not(.data-table) td[width="30%"] {
     width: 100% !important;
     padding-bottom: 6px !important;
+  }
+
+  /* Reset nested data tables to standard behavior */
+  .data-table,
+  .data-table tr,
+  .data-table td,
+  .data-table th {
+    display: revert !important;
+  }
+  .data-table td,
+  .data-table th {
+    width: revert !important;
+    padding: revert !important;
   }
 
   /* Fibonacci gallery — single column on mobile */
