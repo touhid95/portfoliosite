@@ -170,14 +170,18 @@ input[type="submit"]:hover {
     padding: 0 2.5%;
   }
 
-  /* Stack two-col section rows vertically (exclude data tables) */
-  table[width="100%"]:not(.data-table) tr {
+  /* Stack two-col section rows vertically (exclude data tables) using child selectors */
+  table[width="100%"]:not(.data-table) > tr,
+  table[width="100%"]:not(.data-table) > tbody > tr {
     display: flex;
     flex-direction: column;
   }
-  table[width="100%"]:not(.data-table) td[width="180"],
-  table[width="100%"]:not(.data-table) td[width="28%"],
-  table[width="100%"]:not(.data-table) td[width="30%"] {
+  table[width="100%"]:not(.data-table) > tr > td[width="180"],
+  table[width="100%"]:not(.data-table) > tbody > tr > td[width="180"],
+  table[width="100%"]:not(.data-table) > tr > td[width="28%"],
+  table[width="100%"]:not(.data-table) > tbody > tr > td[width="28%"],
+  table[width="100%"]:not(.data-table) > tr > td[width="30%"],
+  table[width="100%"]:not(.data-table) > tbody > tr > td[width="30%"] {
     width: 100% !important;
     padding-bottom: 6px !important;
   }
@@ -192,7 +196,12 @@ input[type="submit"]:hover {
   .data-table td,
   .data-table th {
     width: revert !important;
-    padding: revert !important;
+    padding: 10px 8px !important;
+    line-height: 1.4;
+  }
+  .data-table td:first-child {
+    white-space: nowrap;
+    padding-right: 20px !important;
   }
 
   /* Fibonacci gallery — single column on mobile */
