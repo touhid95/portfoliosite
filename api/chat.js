@@ -32,7 +32,7 @@ const CORS = {
 };
 
 /* ── Owner info ──────────────────────────────────────────── */
-const OWNER_NAME  = 'Mahfujul Kader Touhid';
+const OWNER_NAME = 'Mahfujul Kader Touhid';
 const OWNER_EMAIL = 'm.k.touhid95@gmail.com';
 
 /* ── Built-in fallback knowledge ────────────────────────── */
@@ -82,19 +82,19 @@ PERSONAL STRENGTHS:
 /* ── Runtime config (resolved from env vars) ─────────────── */
 function getConfig() {
   return {
-    provider:          (process.env.AI_PROVIDER || 'auto').toLowerCase().trim(),
+    provider: (process.env.AI_PROVIDER || 'auto').toLowerCase().trim(),
 
     nvidia: {
-      apiKey:      process.env.NVIDIA_API_KEY || '',
-      model:       process.env.NVIDIA_MODEL       || 'meta/llama-3.1-8b-instruct',
-      maxTokens:   parseInt(process.env.NVIDIA_MAX_TOKENS  || '512',  10),
+      apiKey: process.env.NVIDIA_API_KEY || '',
+      model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct',
+      maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '512', 10),
       temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '0.7')
     },
 
     gemini: {
-      apiKey:      process.env.GEMINI_API_KEY || '',
-      model:       process.env.GEMINI_MODEL       || 'gemini-2.0-flash',
-      maxTokens:   parseInt(process.env.GEMINI_MAX_TOKENS  || '400',  10),
+      apiKey: process.env.GEMINI_API_KEY || '',
+      model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+      maxTokens: parseInt(process.env.GEMINI_MAX_TOKENS || '400', 10),
       temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.7')
     }
   };
@@ -152,7 +152,7 @@ Whenever a visitor expresses interest in collaborating, hiring, or asks somethin
 
 /* ── Read knowledge from Vercel KV ──────────────────────── */
 async function getKnowledge() {
-  const url   = process.env.KV_REST_API_URL;
+  const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   try {
@@ -169,7 +169,7 @@ async function getKnowledge() {
 
 /* ── Read custom system prompt from Vercel KV ────────────── */
 async function getCustomSystemPrompt() {
-  const url   = process.env.KV_REST_API_URL;
+  const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   try {
@@ -239,12 +239,12 @@ async function callNvidia(cfg, systemPrompt, message) {
           Accept: 'application/json'
         },
         body: JSON.stringify({
-          model:       cfg.nvidia.model,
+          model: cfg.nvidia.model,
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user',   content: message }
+            { role: 'user', content: message }
           ],
-          max_tokens:  cfg.nvidia.maxTokens,
+          max_tokens: cfg.nvidia.maxTokens,
           temperature: cfg.nvidia.temperature,
           top_p: 0.95,
           stream: false
@@ -257,7 +257,7 @@ async function callNvidia(cfg, systemPrompt, message) {
       throw new Error(`NVIDIA ${res.status}: ${errText}`);
     }
 
-    const data  = await res.json();
+    const data = await res.json();
     const reply = data?.choices?.[0]?.message?.content;
     if (!reply) throw new Error('NVIDIA returned empty response');
     return reply.trim();
@@ -282,14 +282,14 @@ async function callGemini(cfg, systemPrompt, message) {
           system_instruction: { parts: [{ text: systemPrompt }] },
           contents: [{ role: 'user', parts: [{ text: message }] }],
           generationConfig: {
-            temperature:     cfg.gemini.temperature,
+            temperature: cfg.gemini.temperature,
             maxOutputTokens: cfg.gemini.maxTokens
           }
         })
       }
     );
 
-    const data  = await res.json();
+    const data = await res.json();
     const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!reply) throw new Error('Gemini returned empty response');
     return reply.trim();

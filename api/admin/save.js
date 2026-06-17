@@ -30,7 +30,7 @@ export default async function handler(request) {
   }
 
   const authHeader = request.headers.get('Authorization') || '';
-  const provided   = authHeader.replace('Bearer ', '').trim();
+  const provided = authHeader.replace('Bearer ', '').trim();
   if (provided !== adminPwd) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
@@ -41,8 +41,8 @@ export default async function handler(request) {
   /* Parse body */
   let knowledge, systemPrompt;
   try {
-    const body  = await request.json();
-    knowledge   = (body.knowledge   || '').trim();
+    const body = await request.json();
+    knowledge = (body.knowledge || '').trim();
     systemPrompt = (body.systemPrompt || '').trim();
   } catch {
     return new Response(
@@ -52,7 +52,7 @@ export default async function handler(request) {
   }
 
   /* Write to Vercel KV */
-  const kvUrl   = process.env.KV_REST_API_URL;
+  const kvUrl = process.env.KV_REST_API_URL;
   const kvToken = process.env.KV_REST_API_TOKEN;
 
   if (!kvUrl || !kvToken) {
