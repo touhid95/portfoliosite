@@ -1,6 +1,6 @@
 /**
  * /api/admin/save.js
- * Vercel Edge Function — Save knowledge base to Vercel KV
+ * Vercel Edge Function — Save all admin data to Vercel KV
  * Protected by ADMIN_PASSWORD environment variable
  */
 export const config = { runtime: 'edge' };
@@ -30,7 +30,7 @@ export default async function handler(request) {
   }
 
   const authHeader = request.headers.get('Authorization') || '';
-  const provided = authHeader.replace('Bearer ', '').trim();
+  const provided   = authHeader.replace('Bearer ', '').trim();
   if (provided !== adminPwd) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
@@ -39,11 +39,12 @@ export default async function handler(request) {
   }
 
   /* Parse body */
-  let knowledge, systemPrompt;
+  let knowledge, systemPrompt, content;
   try {
-    const body = await request.json();
-    knowledge = (body.knowledge || '').trim();
+    const body   = await request.json();
+    knowledge    = (body.knowledge    || '').trim();
     systemPrompt = (body.systemPrompt || '').trim();
+    content      = body.content || null;
   } catch {
     return new Response(
       JSON.stringify({ error: 'Invalid JSON' }),
@@ -51,9 +52,9 @@ export default async function handler(request) {
     );
   }
 
-  /* Write to Vercel KV */
-  const kvUrl = process.env.KV_REST_API_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN;
+  /* Write to KV */
+  const kvUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!kvUrl || !kvToken) {
     return new Response(
@@ -63,14 +64,16 @@ export default async function handler(request) {
   }
 
   try {
-    /* Write both keys in parallel */
-    const writes = [
+    const writes = [];
+
+    /* Always write knowledge */
+    writes.push(
       fetch(`${kvUrl}/set/touhid_knowledge`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(knowledge)
       })
-    ];
+    );
 
     /* Only write system prompt if provided */
     if (systemPrompt) {
@@ -79,6 +82,17 @@ export default async function handler(request) {
           method: 'POST',
           headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(systemPrompt)
+        })
+      );
+    }
+
+    /* Write content object if provided */
+    if (content !== null) {
+      writes.push(
+        fetch(`${kvUrl}/set/touhid_content`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(JSON.stringify(content))
         })
       );
     }
@@ -92,7 +106,7 @@ export default async function handler(request) {
     }
 
     return new Response(
-      JSON.stringify({ ok: true, chars: knowledge.length, promptChars: systemPrompt.length }),
+      JSON.stringify({ ok: true }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
 

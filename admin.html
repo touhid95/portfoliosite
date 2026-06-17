@@ -380,6 +380,122 @@ You help visitors learn about his work and skills.
       </tr>
     </table>
 
+
+    <!-- ── CONTENT CMS ─────────────────────────────────── -->
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">CONTENT<br />MANAGER</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">Edit every piece of text on your portfolio site. Changes go live within seconds of saving.</font>
+          <br /><br />
+
+          <!-- Tab nav -->
+          <div id="cms-tabs" style="display:flex;gap:0;border-bottom:1px solid #E0E0E0;margin-bottom:20px;">
+            <button class="cms-tab active" data-tab="personal" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid #2C2C2C;padding:8px 16px;cursor:pointer;color:#2C2C2C;">PERSONAL</button>
+            <button class="cms-tab" data-tab="home" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">HOME</button>
+            <button class="cms-tab" data-tab="about" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">ABOUT</button>
+            <button class="cms-tab" data-tab="education" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">EDUCATION</button>
+            <button class="cms-tab" data-tab="projects" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">PROJECTS</button>
+            <button class="cms-tab" data-tab="contact" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">CONTACT</button>
+          </div>
+
+          <!-- PERSONAL TAB -->
+          <div class="cms-panel" id="cms-panel-personal">
+            <font face="Courier New" size="2" color="#888888">FULL NAME</font><br />
+            <input type="text" class="admin-input" id="cms-personal-name" placeholder="e.g. Mahfujul Kader Touhid" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">EMAIL ADDRESS</font><br />
+            <input type="text" class="admin-input" id="cms-personal-email" placeholder="e.g. m.k.touhid95@gmail.com" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">PHONE NUMBER</font><br />
+            <input type="text" class="admin-input" id="cms-personal-phone" placeholder="e.g. +880 1734773509" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">LOCATION</font><br />
+            <input type="text" class="admin-input" id="cms-personal-location" placeholder="e.g. Sector-6, Uttara, Dhaka, Bangladesh" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">UNIVERSITY</font><br />
+            <input type="text" class="admin-input" id="cms-personal-university" placeholder="e.g. IBA, Jahangirnagar University, Savar, Dhaka" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">LINKEDIN URL</font><br />
+            <input type="text" class="admin-input" id="cms-personal-linkedin" placeholder="e.g. https://www.linkedin.com/in/mahfujul-kader-touhid" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">LINKEDIN DISPLAY TEXT</font><br />
+            <input type="text" class="admin-input" id="cms-personal-linkedinText" placeholder="e.g. linkedin.com/in/mahfujul-kader-touhid" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">GITHUB URL</font><br />
+            <input type="text" class="admin-input" id="cms-personal-github" placeholder="e.g. https://github.com/touhid95/portfolio" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">GITHUB DISPLAY TEXT</font><br />
+            <input type="text" class="admin-input" id="cms-personal-githubText" placeholder="e.g. github.com/touhid95/portfolio" /><br /><br />
+          </div>
+
+          <!-- HOME TAB -->
+          <div class="cms-panel" id="cms-panel-home" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">SUBTITLE (shown under your name)</font><br />
+            <input type="text" class="admin-input" id="cms-home-subtitle" placeholder="e.g. UNDERGRADUATE &middot; DATA ANALYST &middot; IBA-JU" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">INTRODUCTION PARAGRAPH</font><br />
+            <textarea class="admin-textarea" id="cms-home-intro" rows="4" placeholder="Your intro paragraph on the home page..."></textarea><br /><br />
+            <font face="Courier New" size="2" color="#888888">DEGREE (profile table)</font><br />
+            <input type="text" class="admin-input" id="cms-home-degree" placeholder="e.g. B.B.A. (Ongoing) &mdash; 6 Semesters" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">DEPARTMENT</font><br />
+            <input type="text" class="admin-input" id="cms-home-department" placeholder="e.g. Institute of Business Administration" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">UNIVERSITY (profile table)</font><br />
+            <input type="text" class="admin-input" id="cms-home-university" placeholder="e.g. Jahangirnagar University, Savar, Dhaka" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">CGPA</font><br />
+            <input type="text" class="admin-input" id="cms-home-cgpa" placeholder="e.g. 3.24 / 4.00" /><br /><br />
+          </div>
+
+          <!-- ABOUT TAB -->
+          <div class="cms-panel" id="cms-panel-about" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">WHO AM I — PARAGRAPH 1</font><br />
+            <textarea class="admin-textarea" id="cms-about-whoami1" rows="4" placeholder="Introduction paragraph about yourself..."></textarea><br /><br />
+            <font face="Courier New" size="2" color="#888888">WHO AM I — PARAGRAPH 2</font><br />
+            <textarea class="admin-textarea" id="cms-about-whoami2" rows="4" placeholder="Second paragraph about vision/goals..."></textarea><br /><br />
+            <font face="Courier New" size="2" color="#888888">PERSONAL STRENGTHS (italic line)</font><br />
+            <input type="text" class="admin-input" id="cms-about-strengths" placeholder="e.g. My personal strengths: I learn fast and I maintain deadlines." /><br /><br />
+            <font face="Courier New" size="2" color="#888888">OBJECTIVE</font><br />
+            <textarea class="admin-textarea" id="cms-about-objective" rows="3" placeholder="Your objective statement..."></textarea><br /><br />
+            <font face="Courier New" size="2" color="#888888">EXPERIENCE TITLE</font><br />
+            <input type="text" class="admin-input" id="cms-about-expTitle" placeholder="e.g. Data Analyst" /><br /><br />
+            <font face="Courier New" size="2" color="#888888">EXPERIENCE DESCRIPTION</font><br />
+            <textarea class="admin-textarea" id="cms-about-expDesc" rows="3" placeholder="Describe your experience..."></textarea><br /><br />
+            <font face="Courier New" size="2" color="#888888">CAREER GOAL</font><br />
+            <textarea class="admin-textarea" id="cms-about-careerGoal" rows="3" placeholder="Your career goal..."></textarea><br /><br />
+          </div>
+
+          <!-- EDUCATION TAB -->
+          <div class="cms-panel" id="cms-panel-education" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">CURRENT STATUS PARAGRAPH</font><br />
+            <textarea class="admin-textarea" id="cms-education-currentStatus" rows="4" placeholder="Describe your current education status..."></textarea><br /><br />
+          </div>
+
+          <!-- PROJECTS TAB -->
+          <div class="cms-panel" id="cms-panel-projects" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">PROJECTS LIST</font><br />
+            <font face="Courier New" size="2" color="#aaaaaa">Add, edit, or remove projects. Each project will appear as a numbered entry on the Projects page.</font>
+            <br /><br />
+            <div id="cms-projects-list"></div>
+            <button class="admin-btn-secondary" id="add-project-btn" style="margin-top:8px;">+ Add Project</button>
+            <br /><br />
+          </div>
+
+          <!-- CONTACT TAB -->
+          <div class="cms-panel" id="cms-panel-contact" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">These fields update the Contact page information table.</font><br /><br />
+            <font face="Courier New" size="2" color="#888888">EMAIL (display text)</font><br />
+            <input type="text" class="admin-input" id="cms-contact-email" placeholder="Uses PERSONAL email above" disabled style="opacity:0.5;" /><br />
+            <font face="Courier New" size="2" color="#aaaaaa">&uarr; Controlled by Personal &rarr; Email Address field above</font>
+            <br /><br />
+            <font face="Courier New" size="2" color="#888888">All other contact fields (Phone, Address, LinkedIn, GitHub) are controlled by the PERSONAL tab above.</font>
+            <br /><br />
+          </div>
+
+          <br />
+          <button class="admin-btn" id="save-content-btn">Save Content &rarr;</button>
+          <div class="status-bar" id="content-status">Fill in any fields above and click Save Content.</div>
+
+        </td>
+      </tr>
+    </table>
+
   </div><!-- end admin-content -->
 
   <br /><br /><br />
@@ -431,6 +547,14 @@ You help visitors learn about his work and skills.
   var testBtn   = document.getElementById('test-btn');
   var testReply = document.getElementById('test-reply');
 
+  var saveContentBtn = document.getElementById('save-content-btn');
+  var contentStatus  = document.getElementById('content-status');
+  var addProjectBtn  = document.getElementById('add-project-btn');
+  var projectsList   = document.getElementById('cms-projects-list');
+
+  /* CMS content cache */
+  var cmsContent = {};
+
   /* ── Status helpers ─────────────────────────────────── */
   function setStatus(el, msg, cls) {
     el.textContent = msg;
@@ -469,6 +593,11 @@ You help visitors learn about his work and skills.
         promptEditor.value = data.systemPrompt || '';
         updateCharCount();
         updatePromptCharCount();
+        /* Populate CMS content fields */
+        if (data.content) {
+          cmsContent = data.content;
+          populateCmsFields(cmsContent);
+        }
       } else if (xhr.status === 401) {
         setStatus(loginStatus, 'Wrong password.', 'err');
       } else if (xhr.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '8000')) {
@@ -490,6 +619,172 @@ You help visitors learn about his work and skills.
 
   loginBtn.addEventListener('click', unlock);
   pwdInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') unlock(); });
+
+  /* ── CMS Tab switching ──────────────────────────────── */
+  document.querySelectorAll('.cms-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.cms-tab').forEach(function(t) {
+        t.style.borderBottom = '2px solid transparent';
+        t.style.color = '#888888';
+        t.classList.remove('active');
+      });
+      document.querySelectorAll('.cms-panel').forEach(function(p) { p.style.display = 'none'; });
+      tab.style.borderBottom = '2px solid #2C2C2C';
+      tab.style.color = '#2C2C2C';
+      tab.classList.add('active');
+      document.getElementById('cms-panel-' + tab.dataset.tab).style.display = 'block';
+    });
+  });
+
+  /* ── CMS populate fields from saved content ─────────── */
+  function v(obj, path) {
+    return path.split('.').reduce(function(a,k){return a&&a[k]!==undefined?a[k]:'';},obj);
+  }
+  function setField(id, val) {
+    var el = document.getElementById(id);
+    if (el && val !== undefined) el.value = val;
+  }
+  function populateCmsFields(c) {
+    setField('cms-personal-name',        v(c,'personal.name'));
+    setField('cms-personal-email',       v(c,'personal.email'));
+    setField('cms-personal-phone',       v(c,'personal.phone'));
+    setField('cms-personal-location',    v(c,'personal.location'));
+    setField('cms-personal-university',  v(c,'personal.university'));
+    setField('cms-personal-linkedin',    v(c,'personal.linkedin'));
+    setField('cms-personal-linkedinText',v(c,'personal.linkedinText'));
+    setField('cms-personal-github',      v(c,'personal.github'));
+    setField('cms-personal-githubText',  v(c,'personal.githubText'));
+    setField('cms-home-subtitle',        v(c,'home.subtitle'));
+    setField('cms-home-intro',           v(c,'home.intro'));
+    setField('cms-home-degree',          v(c,'home.degree'));
+    setField('cms-home-department',      v(c,'home.department'));
+    setField('cms-home-university',      v(c,'home.university'));
+    setField('cms-home-cgpa',            v(c,'home.cgpa'));
+    setField('cms-about-whoami1',        v(c,'about.whoami1'));
+    setField('cms-about-whoami2',        v(c,'about.whoami2'));
+    setField('cms-about-strengths',      v(c,'about.strengths'));
+    setField('cms-about-objective',      v(c,'about.objective'));
+    setField('cms-about-expTitle',       v(c,'about.expTitle'));
+    setField('cms-about-expDesc',        v(c,'about.expDesc'));
+    setField('cms-about-careerGoal',     v(c,'about.careerGoal'));
+    setField('cms-education-currentStatus', v(c,'education.currentStatus'));
+    /* Populate projects */
+    projectsList.innerHTML = '';
+    var projs = c.projects || [];
+    projs.forEach(function(p) { addProjectRow(p); });
+  }
+
+  /* ── Projects management ─────────────────────────────── */
+  function addProjectRow(data) {
+    data = data || {};
+    var idx = projectsList.children.length;
+    var div = document.createElement('div');
+    div.style.cssText = 'border:1px solid #E0E0E0;padding:16px;margin-bottom:12px;position:relative;';
+    div.innerHTML = [
+      '<font face="Courier New" size="2" color="#aaaaaa">PROJECT ' + String(idx+1).padStart(2,'0') + '</font>',
+      '<button onclick="this.parentNode.remove();reNumberProjects()" style="position:absolute;top:12px;right:12px;background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:11px;cursor:pointer;padding:4px 10px;">Remove</button>',
+      '<br /><br />',
+      '<font face="Courier New" size="2" color="#888888">TITLE</font><br />',
+      '<input type="text" class="admin-input proj-title" placeholder="Project title" value="' + (data.title||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">SUBTITLE</font><br />',
+      '<input type="text" class="admin-input proj-subtitle" placeholder="Short description / category" value="' + (data.subtitle||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">DESCRIPTION</font><br />',
+      '<textarea class="admin-textarea proj-description" rows="4" placeholder="Full project description...">' + (data.description||'') + '</textarea><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">TECH TAGS (comma-separated)</font><br />',
+      '<input type="text" class="admin-input proj-tech" placeholder="e.g. Python, Pandas, Power BI" value="' + (data.tech||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">LINK (optional)</font><br />',
+      '<input type="text" class="admin-input proj-link" placeholder="https://..." value="' + (data.link||'').replace(/"/g,'&quot;') + '" />'
+    ].join('');
+    projectsList.appendChild(div);
+  }
+
+  function reNumberProjects() {
+    var divs = projectsList.querySelectorAll(':scope > div');
+    divs.forEach(function(d, i) {
+      var label = d.querySelector('font');
+      if (label) label.textContent = 'PROJECT ' + String(i+1).padStart(2,'0');
+    });
+  }
+
+  function collectProjects() {
+    var divs = projectsList.querySelectorAll(':scope > div');
+    var projs = [];
+    divs.forEach(function(d) {
+      projs.push({
+        title:       (d.querySelector('.proj-title')?.value||'').trim(),
+        subtitle:    (d.querySelector('.proj-subtitle')?.value||'').trim(),
+        description: (d.querySelector('.proj-description')?.value||'').trim(),
+        tech:        (d.querySelector('.proj-tech')?.value||'').trim(),
+        link:        (d.querySelector('.proj-link')?.value||'').trim()
+      });
+    });
+    return projs;
+  }
+
+  addProjectBtn.addEventListener('click', function() { addProjectRow(); });
+
+  /* ── Collect all CMS content from form fields ─────── */
+  function collectContent() {
+    function gv(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
+    var email = gv('cms-personal-email');
+    return {
+      personal: {
+        name:        gv('cms-personal-name'),
+        email:       email,
+        emailLink:   email ? 'mailto:' + email : '',
+        phone:       gv('cms-personal-phone'),
+        location:    gv('cms-personal-location'),
+        university:  gv('cms-personal-university'),
+        linkedin:    gv('cms-personal-linkedin'),
+        linkedinText:gv('cms-personal-linkedinText'),
+        github:      gv('cms-personal-github'),
+        githubText:  gv('cms-personal-githubText')
+      },
+      home: {
+        subtitle:   gv('cms-home-subtitle'),
+        intro:      gv('cms-home-intro'),
+        degree:     gv('cms-home-degree'),
+        department: gv('cms-home-department'),
+        university: gv('cms-home-university'),
+        cgpa:       gv('cms-home-cgpa')
+      },
+      about: {
+        whoami1:    gv('cms-about-whoami1'),
+        whoami2:    gv('cms-about-whoami2'),
+        strengths:  gv('cms-about-strengths'),
+        objective:  gv('cms-about-objective'),
+        expTitle:   gv('cms-about-expTitle'),
+        expDesc:    gv('cms-about-expDesc'),
+        careerGoal: gv('cms-about-careerGoal')
+      },
+      education: {
+        currentStatus: gv('cms-education-currentStatus')
+      },
+      projects: collectProjects()
+    };
+  }
+
+  /* ── Save Content ────────────────────────────────────── */
+  saveContentBtn.addEventListener('click', function() {
+    var content = collectContent();
+    setStatus(contentStatus, 'Saving\u2026', '');
+    saveContentBtn.disabled = true;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/admin/save', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function() {
+      saveContentBtn.disabled = false;
+      if (xhr.status === 200) {
+        setStatus(contentStatus, 'Content saved \u2714 — changes are live on your site within seconds.', 'ok');
+      } else {
+        setStatus(contentStatus, 'Save failed: ' + xhr.status, 'err');
+      }
+    };
+    xhr.onerror = function() { saveContentBtn.disabled = false; setStatus(contentStatus, 'Network error.', 'err'); };
+    xhr.send(JSON.stringify({ knowledge: editor.value, content: content }));
+  });
+
 
   /* ── Char counts ────────────────────────────────────── */
   function updateCharCount() {

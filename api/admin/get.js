@@ -1,6 +1,6 @@
 /**
  * /api/admin/get.js
- * Vercel Edge Function — Read knowledge base from Vercel KV
+ * Vercel Edge Function — Read all admin data from Vercel KV
  * Protected by ADMIN_PASSWORD environment variable
  */
 export const config = { runtime: 'edge' };
@@ -30,7 +30,7 @@ export default async function handler(request) {
   }
 
   const authHeader = request.headers.get('Authorization') || '';
-  const provided = authHeader.replace('Bearer ', '').trim();
+  const provided   = authHeader.replace('Bearer ', '').trim();
   if (provided !== adminPwd) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
@@ -38,41 +38,42 @@ export default async function handler(request) {
     );
   }
 
-  /* Read from Vercel KV */
-  const kvUrl = process.env.KV_REST_API_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN;
+  /* Read from KV */
+  const kvUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!kvUrl || !kvToken) {
     return new Response(
-      JSON.stringify({ knowledge: '', note: 'KV not configured — using built-in knowledge only' }),
+      JSON.stringify({ knowledge: '', systemPrompt: '', content: {}, note: 'KV not configured' }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }
 
   try {
-    const res = await fetch(`${kvUrl}/get/touhid_knowledge`, {
-      headers: { Authorization: `Bearer ${kvToken}` }
-    });
+    const [kvKnowledge, kvPrompt, kvContent] = await Promise.all([
+      fetch(`${kvUrl}/get/touhid_knowledge`,     { headers: { Authorization: `Bearer ${kvToken}` } }),
+      fetch(`${kvUrl}/get/touhid_system_prompt`, { headers: { Authorization: `Bearer ${kvToken}` } }),
+      fetch(`${kvUrl}/get/touhid_content`,       { headers: { Authorization: `Bearer ${kvToken}` } })
+    ]);
 
-    if (!res.ok) {
-      return new Response(
-        JSON.stringify({ knowledge: '' }),
-        { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
-      );
-    }
+    const kData = kvKnowledge.ok ? await kvKnowledge.json() : {};
+    const pData = kvPrompt.ok    ? await kvPrompt.json()    : {};
+    const cData = kvContent.ok   ? await kvContent.json()   : {};
 
-    const data = await res.json();
-    const knowledge = data.result || '';
+    const knowledge    = kData.result || '';
+    const systemPrompt = pData.result || '';
+    let content = {};
+    try { content = cData.result ? JSON.parse(cData.result) : {}; } catch {}
 
     return new Response(
-      JSON.stringify({ knowledge }),
+      JSON.stringify({ knowledge, systemPrompt, content }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
 
   } catch (err) {
     console.error('Get handler error:', err);
     return new Response(
-      JSON.stringify({ knowledge: '' }),
+      JSON.stringify({ knowledge: '', systemPrompt: '', content: {} }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }
