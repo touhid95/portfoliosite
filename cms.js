@@ -77,6 +77,28 @@
           return '<span class="tech-tag">' + t.trim() + '</span>';
         }).join('\n');
 
+        var defC1 = "", defC2 = "", defC3 = "";
+        if (i === 0) {
+          defC1 = "Automated streaming of ticker histories with python `yfinance` api, performing daily data cleanses.";
+          defC2 = "Executed 5,000 portfolio simulation iterations, finding the optimal weights for the Sharpe Ratio.";
+          defC3 = "Crafted interactive dashboards displaying rolling standard deviations, beta values, and asset distributions.";
+        } else if (i === 1) {
+          defC1 = "Structured a 3NF database layout supporting 200,000 purchase logs.";
+          defC2 = "Wrote query pipelines using SQL Common Table Expressions (CTEs), Subqueries, and Window Functions.";
+          defC3 = "Designed retail performance boards mapped onto geographic areas with Tableau heatmaps.";
+        } else if (i === 2) {
+          defC1 = "Engineered cohort RFM scores from high-volume transactional audit files.";
+          defC2 = "Applied KMeans clustering algorithms, evaluating clusters via the Elbow method and Silhouette analysis.";
+          defC3 = "Profiled buyer segments, producing customized activation advice for the marketing division.";
+        } else if (i === 3) {
+          defC1 = "Consolidated, digitized, and normalized sports metrics spanning a 10-year period.";
+          defC2 = "Constructed predictive trends to project house standings under changing constraints.";
+          defC3 = "Configured an automated tracker using Excel VBA scripts to dynamically calculate house margins.";
+        }
+        var c1 = proj.contrib1 || defC1;
+        var c2 = proj.contrib2 || defC2;
+        var c3 = proj.contrib3 || defC3;
+
         var html = [
           '<table width="100%" border="0" cellpadding="0" cellspacing="0">',
           '  <tr valign="top">',
@@ -89,6 +111,15 @@
           '      <font face="Courier New" size="2" color="#888888"><span data-cms="projects.' + i + '.subtitle">' + (proj.subtitle || '') + '</span></font>',
           '      <br /><br />',
           '      <font face="Georgia" size="3"><span data-cms="projects.' + i + '.description">' + (proj.description || '') + '</span></font>',
+          '      <br /><br />',
+          '      <font face="Georgia" size="3">',
+          '        <b>Key Contributions:</b>',
+          '        <ul>',
+          '          <li><span data-cms="projects.' + i + '.contrib1">' + c1 + '</span></li>',
+          '          <li><span data-cms="projects.' + i + '.contrib2">' + c2 + '</span></li>',
+          '          <li><span data-cms="projects.' + i + '.contrib3">' + c3 + '</span></li>',
+          '        </ul>',
+          '      </font>',
       proj.link ? '      <br /><br /><font face="Georgia" size="3"><a data-cms-href="projects.' + i + '.link" href="' + proj.link + '" target="_blank">View Project &nearr;</a></font>' : '',
       proj.image ? '      <br /><img data-cms-src="projects.' + i + '.image" src="' + proj.image + '" class="project-img" />' : '',
       '      <br />',
