@@ -8,40 +8,53 @@
   <link rel="stylesheet" href="chat-widget.css" />
   <link rel="icon" type="image/png" href="gallery/jack/Gemini_Generated_Image_17jamr17jamr17ja.png" />
   <style>
-    .gallery-dynamic-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      width: 100%;
+    /* Add any custom gallery overrides here if necessary */
+    .brutalist-block {
+      padding: 40px 0;
+      display: flex;
+      gap: 0;
     }
-    .gallery-dynamic-grid .gallery-item {
+    .brutalist-img-container {
       position: relative;
       overflow: hidden;
-      background: #f0ede4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .gallery-dynamic-grid .gallery-item img {
+    .brutalist-img-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 180px;
+      height: 100%;
       object-fit: cover;
-      display: block;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
     }
-    .gallery-dynamic-grid .gallery-item:hover img {
-      transform: scale(1.04);
+    .brutalist-img-container:hover img {
+      transform: scale(1.05);
     }
-    .gallery-dynamic-grid .gallery-caption {
-      padding: 8px 10px;
+    .brutalist-caption {
+      position: absolute;
+      z-index: 2;
+      font-size: 10px;
       font-family: 'Courier New', Courier, monospace;
-      font-size: 11px;
-      color: #888888;
-      border-top: 1px solid #E0E0E0;
-      background: #FCFAF2;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 3px 6px;
+    }
+    .cap-light {
+      color: #2C2C2C;
+      background: rgba(255,255,255,0.85);
+    }
+    .cap-dark {
+      color: #fff;
+      background: rgba(0,0,0,0.75);
     }
   </style>
 </head>
 
 <body>
-<main class="container">
+<main class="container" style="overflow-x: hidden;">
 
   <div class="mb-4">
     <span class="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
@@ -58,146 +71,112 @@
     <a href="cv.html" target="_blank">CV &nearr;</a>
   </nav>
 
-  <div class="mb-5 mt-5">
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
-    <div class="mb-4 mt-4">
-      <h1 class="font-serif text-xxl m-0 font-bold" style="margin:0;">GALLERY</h1>
-    </div>
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+  <hr class="hr-light mt-4 mb-4" />
+
+  <!-- HERO: Massive Typography Block (Brutalist style adapted to Kintsugi colors) -->
+  <div style="padding: 40px 0 20px 0; position: relative;">
+      <!-- Top-right metadata tag -->
+      <div style="position: absolute; top: 40px; right: 0; text-align: right; display: none; @media(min-width: 768px) { display: block; }">
+          <div style="display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 8px;">
+              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
+              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
+              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
+          </div>
+          <div style="font-size: 9px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; letter-spacing: 1.5px; color: #888; line-height: 1.8;">
+              VISUAL MOMENTS<br>
+              KINTSUGI AESTHETICS
+          </div>
+      </div>
+
+      <!-- GIANT TITLE TEXT -->
+      <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(40px, 10vw, 120px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; color: #2C2C2C; text-transform: uppercase;">
+          CREATIVE</h1>
+
+      <div style="display: flex; align-items: center; gap: 15px; margin-top: 5px;">
+          <div style="width: clamp(40px, 8vw, 80px); height: clamp(4px, 1vw, 8px); background: #2C2C2C; flex-shrink: 0;"></div>
+          <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(40px, 10vw, 120px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; color: #BC2026; text-transform: uppercase;">
+              EXPLORATION</h1>
+      </div>
+
+      <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(35px, 8.5vw, 100px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; margin-top: 5px; color: #2C2C2C; text-transform: uppercase;">
+          EXPERIMENTATION</h1>
   </div>
 
-  <hr class="hr-red mb-3" />
-
-  <div class="font-mono text-sm text-muted mb-4">
-    PHOTOGRAPHS &amp; MOMENTS
-  </div>
-
-  <!-- Fibonacci note — subtle editorial touch -->
-  <div class="font-mono text-sm text-muted-border mb-5">
-    &phi; 1 &middot; 1 &middot; 2 &middot; 3 &middot; 5 &middot; 8 &middot; 13 &middot; 21 &middot; 34 &middot; 55 &middot; 89 &middot; 144 &middot; 233 &middot; &hellip;
-  </div>
-
-  <hr class="hr-red mb-4 mt-5" />
 
   <!-- ═══ CMS-MANAGED GALLERY ═══ -->
-  <section class="row mt-4">
-    <div class="col-label font-mono text-sm text-muted-light">PHOTOS</div>
-    <div class="col-content">
-      <!-- Dynamic gallery loaded by cms.js or this file's script -->
-      <div id="gallery-cms-container">
-        <!-- Loading state -->
-        <span class="font-mono text-sm text-muted-light">Loading photos&hellip;</span>
-      </div>
-    </div>
-  </section>
+  <!-- Dynamic gallery loaded by script -->
+  <div id="gallery-cms-container" style="min-height: 400px; margin-top: 40px;">
+    <!-- Loading state -->
+    <span class="font-mono text-sm text-muted-light">Loading photos&hellip;</span>
+  </div>
 
   <!-- ═══ STATIC FALLBACK SECTIONS (shown if no CMS photos) ═══ -->
-  <div id="gallery-static-sections" style="display:none;">
+  <div id="gallery-static-sections" style="display:none; margin-top: 40px;">
 
-    <hr class="hr-light mb-4 mt-4" />
+    <!-- Brutalist Grid -->
+    <div class="brutalist-block">
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 1 — PERSONAL
-         ═══════════════════════════════════════════ -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">PERSONAL</div>
-      <div class="col-content">
-        <div class="fib-grid">
-          <!-- A: Tall portrait — 204px wide, spans both rows (336px tall) -->
-          <div class="fib-cell fib-a ph-red" data-load="gallery/photo1.jpg">
-            <img src="gallery/photo1.jpg" alt="Mahfujul Kader Touhid" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Mahfujul Kader Touhid</span>
-              <span class="fib-cap-sub">Portrait</span>
+        <!-- Left Column -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; height: 280px;">
+                <div style="width: 45%; background: #BC2026;"></div>
+                <div class="brutalist-img-container" style="width: 55%; background: #1a1a1a;">
+                    <img src="gallery/photo1.jpg" alt="Portrait" onerror="this.style.display='none'" />
+                    <div class="brutalist-caption cap-dark" style="bottom:10px; left:10px;">01 &middot; Portrait</div>
+                </div>
             </div>
-          </div>
-          <!-- B: Landscape — remaining width, 204px tall -->
-          <div class="fib-cell fib-b ph-dark" data-load="gallery/photo2.jpg">
-            <img src="gallery/photo2.jpg" alt="Personal Moment" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Personal Moment</span>
-              <span class="fib-cap-sub">&mdash;</span>
+            <div class="brutalist-img-container" style="height: 240px; background: #e0ded9;">
+                <img src="gallery/photo2.jpg" alt="Personal Moment" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; right:10px;">02 &middot; Moment</div>
             </div>
-          </div>
-          <!-- C: Wide banner — remaining width, 126px tall -->
-          <div class="fib-cell fib-c ph-mid" data-load="gallery/photo3.jpg">
+        </div>
+
+        <!-- Center Column -->
+        <div style="flex: 1; display: flex; flex-direction: column; margin-top: 140px;">
+            <div class="brutalist-img-container" style="height: 240px; background: #dcdad5;">
+                <img src="gallery/photo4.jpg" alt="Campus" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">03 &middot; Campus</div>
+            </div>
+            <div class="brutalist-img-container" style="height: 240px; background: #2C2C2C;">
+                <img src="gallery/photo5.jpg" alt="University" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-dark" style="bottom:10px; right:10px;">04 &middot; University</div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; height: 280px;">
+                <div class="brutalist-img-container" style="width: 55%; background: #111; align-items: flex-end; padding: 20px; box-sizing: border-box;">
+                    <img src="gallery/photo7.jpg" alt="Cadet College" onerror="this.style.display='none'" />
+                    <div class="brutalist-caption cap-dark" style="position:relative; margin-bottom: 10px;">05 &middot; College</div>
+                </div>
+                <div style="width: 45%; background: #e8e6e1; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; color: #777; letter-spacing: 2px; writing-mode: vertical-rl;">GALLERY</span>
+                </div>
+            </div>
+            <div class="brutalist-img-container" style="height: 240px; background: #d0ceca;">
+                <img src="gallery/photo8.jpg" alt="Sports Day" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">06 &middot; Sports Day</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Second Row (Flex gaps) -->
+    <div style="padding: 20px 0 60px; display: flex; gap: 15px;">
+        <div class="brutalist-img-container" style="flex: 1; height: 200px; background: #BC2026; padding: 15px; align-items: flex-end; box-sizing: border-box;">
             <img src="gallery/photo3.jpg" alt="Personal" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Personal</span>
-              <span class="fib-cap-sub">&mdash;</span>
-            </div>
-          </div>
+            <span class="brutalist-caption cap-dark" style="position:relative;">07 &middot; Personal</span>
         </div>
-      </div>
-    </section>
-
-    <hr class="hr-light mb-4 mt-4" />
-
-    <!-- ═══════════════════════════════════════════
-         SECTION 2 — CAMPUS & UNIVERSITY
-         ═══════════════════════════════════════════ -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">CAMPUS &amp;<br />UNIVERSITY</div>
-      <div class="col-content">
-        <div class="fib-grid">
-          <div class="fib-cell fib-a ph-dark" data-load="gallery/photo4.jpg">
-            <img src="gallery/photo4.jpg" alt="IBA-JU Campus" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">IBA, Jahangirnagar University</span>
-              <span class="fib-cap-sub">Savar, Dhaka</span>
-            </div>
-          </div>
-          <div class="fib-cell fib-b ph-mid" data-load="gallery/photo5.jpg">
-            <img src="gallery/photo5.jpg" alt="University Grounds" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">University Grounds</span>
-              <span class="fib-cap-sub">Savar, Dhaka</span>
-            </div>
-          </div>
-          <div class="fib-cell fib-c ph-red" data-load="gallery/photo6.jpg">
+        <div class="brutalist-img-container" style="flex: 2; height: 200px; background: #1a1a1a; padding: 15px; align-items: flex-end; box-sizing: border-box;">
             <img src="gallery/photo6.jpg" alt="Campus Life" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Campus Life</span>
-              <span class="fib-cap-sub">&mdash;</span>
-            </div>
-          </div>
+            <span class="brutalist-caption cap-dark" style="position:relative;">08 &middot; Campus Life</span>
         </div>
-      </div>
-    </section>
-
-    <hr class="hr-light mb-4 mt-4" />
-
-    <!-- ═══════════════════════════════════════════
-         SECTION 3 — CADET COLLEGE
-         ═══════════════════════════════════════════ -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">CADET<br />COLLEGE</div>
-      <div class="col-content">
-        <div class="fib-grid">
-          <div class="fib-cell fib-a ph-mid" data-load="gallery/photo7.jpg">
-            <img src="gallery/photo7.jpg" alt="Mirzapur Cadet College" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Mirzapur Cadet College</span>
-              <span class="fib-cap-sub">Mirzapur, Tangail</span>
-            </div>
-          </div>
-          <div class="fib-cell fib-b ph-red" data-load="gallery/photo8.jpg">
-            <img src="gallery/photo8.jpg" alt="Sports Day" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Sports Day</span>
-              <span class="fib-cap-sub">Mirzapur Cadet College</span>
-            </div>
-          </div>
-          <div class="fib-cell fib-c ph-dark" data-load="gallery/photo9.jpg">
+        <div class="brutalist-img-container" style="flex: 1; height: 200px; background: #dcdad5; padding: 15px; align-items: flex-end; box-sizing: border-box;">
             <img src="gallery/photo9.jpg" alt="Cadet Life" onerror="this.style.display='none'" />
-            <div class="fib-caption">
-              <span class="fib-cap-name">Cadet Life</span>
-              <span class="fib-cap-sub">&mdash;</span>
-            </div>
-          </div>
+            <span class="brutalist-caption cap-light" style="position:relative;">09 &middot; Cadet Life</span>
         </div>
-      </div>
-    </section>
+    </div>
 
   </div><!-- end gallery-static-sections -->
 
@@ -210,8 +189,7 @@
     <a href="education.html" class="text-muted-lighter">Education</a> &nbsp;&middot;&nbsp;
     <a href="projects.html" class="text-muted-lighter">Projects</a> &nbsp;&middot;&nbsp;
     <a href="gallery.html" class="text-muted-lighter">Gallery</a> &nbsp;&middot;&nbsp;
-    <a href="contact.html" class="text-muted-lighter">Contact</a> &nbsp;&middot;&nbsp;
-    <a href="cv.html" target="_blank" class="text-muted-lighter">CV</a>
+    <a href="contact.html" class="text-muted-lighter">Contact</a>
   </footer>
 
 </main>
@@ -221,46 +199,105 @@
   var container     = document.getElementById('gallery-cms-container');
   var staticSections = document.getElementById('gallery-static-sections');
 
+  // Helper to generate the 3-column brutalist block for exactly 6 photos
+  function buildBrutalistBlock(photos, offset) {
+    var p = photos; // Array of 6 items
+    var getSrc = function(idx) { return p[idx] ? p[idx].url : ''; };
+    var getCap = function(idx) { return p[idx] ? p[idx].caption || 'Photo ' + (offset + idx + 1) : ''; };
+
+    return `
+    <div class="brutalist-block">
+        <!-- Left Column -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; height: 280px;">
+                <div style="width: 45%; background: #BC2026;"></div>
+                <div class="brutalist-img-container" style="width: 55%; background: #1a1a1a;">
+                    <img src="${getSrc(0)}" loading="lazy" onerror="this.style.display='none'" />
+                    <div class="brutalist-caption cap-dark" style="bottom:10px; left:10px;">${getCap(0)}</div>
+                </div>
+            </div>
+            <div class="brutalist-img-container" style="height: 240px; background: #e0ded9;">
+                <img src="${getSrc(1)}" loading="lazy" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; right:10px;">${getCap(1)}</div>
+            </div>
+        </div>
+
+        <!-- Center Column -->
+        <div style="flex: 1; display: flex; flex-direction: column; margin-top: 140px;">
+            <div class="brutalist-img-container" style="height: 240px; background: #dcdad5;">
+                <img src="${getSrc(2)}" loading="lazy" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">${getCap(2)}</div>
+            </div>
+            <div class="brutalist-img-container" style="height: 240px; background: #2C2C2C;">
+                <img src="${getSrc(3)}" loading="lazy" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-dark" style="bottom:10px; right:10px;">${getCap(3)}</div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; height: 280px;">
+                <div class="brutalist-img-container" style="width: 55%; background: #111; align-items: flex-end; padding: 20px; box-sizing: border-box;">
+                    <img src="${getSrc(4)}" loading="lazy" onerror="this.style.display='none'" />
+                    <div class="brutalist-caption cap-dark" style="position:relative; margin-bottom: 10px;">${getCap(4)}</div>
+                </div>
+                <div style="width: 45%; background: #e8e6e1; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; color: #777; letter-spacing: 2px; writing-mode: vertical-rl;">GALLERY</span>
+                </div>
+            </div>
+            <div class="brutalist-img-container" style="height: 240px; background: #d0ceca;">
+                <img src="${getSrc(5)}" loading="lazy" onerror="this.style.display='none'" />
+                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">${getCap(5)}</div>
+            </div>
+        </div>
+    </div>
+    `;
+  }
+
+  // Helper to generate the flex row for remaining photos
+  function buildFlexRow(photos, offset) {
+    var html = '<div style="padding: 20px 0 60px; display: flex; gap: 15px; flex-wrap: wrap;">';
+    var bgColors = ['#BC2026', '#1a1a1a', '#dcdad5', '#111'];
+    var flexes = ['1', '2', '1', '1'];
+    
+    photos.forEach(function(p, i) {
+      var bg = bgColors[i % 4];
+      var flx = flexes[i % 4];
+      var isDark = (bg === '#1a1a1a' || bg === '#111' || bg === '#BC2026');
+      var capClass = isDark ? 'cap-dark' : 'cap-light';
+      var cap = p.caption || 'Photo ' + (offset + i + 1);
+
+      html += `
+        <div class="brutalist-img-container" style="flex: ${flx}; min-width: 150px; height: 200px; background: ${bg}; padding: 15px; align-items: flex-end; box-sizing: border-box;">
+            <img src="${p.url}" loading="lazy" onerror="this.style.display='none'" />
+            <span class="brutalist-caption ${capClass}" style="position:relative;">${cap}</span>
+        </div>
+      `;
+    });
+    html += '</div>';
+    return html;
+  }
+
+
   fetch('/api/gallery/list')
     .then(function(r) { return r.json(); })
     .then(function(photos) {
       if (!photos || !photos.length) {
         /* No CMS photos — show static hardcoded sections */
-        container.innerHTML = '<span class="font-mono text-sm text-muted-light">No photos uploaded yet.</span>';
+        container.innerHTML = '';
         staticSections.style.display = 'block';
         return;
       }
 
-      /* Group by section */
-      var sections = {};
-      photos.forEach(function(p) {
-        var sec = p.section || 'personal';
-        if (!sections[sec]) sections[sec] = [];
-        sections[sec].push(p);
-      });
-
       var html = '';
-      Object.keys(sections).forEach(function(sec) {
-        var items = sections[sec];
-        var label = sec.toUpperCase().replace(/-/g, ' ');
-
-        html += '<hr class="hr-light mb-4 mt-4" />';
-        html += '<section class="row mt-4">';
-        html += '<div class="col-label font-mono text-sm text-muted-light">' + label + '</div>';
-        html += '<div class="col-content">';
-        html += '<div class="gallery-dynamic-grid">';
-
-        items.forEach(function(p) {
-          html += '<div class="gallery-item">';
-          html += '<img src="' + p.url + '" alt="' + (p.caption || '') + '" loading="lazy" />';
-          if (p.caption) {
-            html += '<div class="gallery-caption">' + p.caption + '</div>';
-          }
-          html += '</div>';
-        });
-
-        html += '</div></div></section>';
-      });
+      for (var i = 0; i < photos.length; i += 6) {
+        var chunk = photos.slice(i, i + 6);
+        if (chunk.length === 6) {
+          html += buildBrutalistBlock(chunk, i);
+        } else {
+          html += buildFlexRow(chunk, i);
+        }
+      }
 
       container.innerHTML = html;
     })
