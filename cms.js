@@ -84,13 +84,13 @@
           '      <font face="Courier New" size="2" color="#aaaaaa">PROJECT ' + num + '</font>',
           '    </td>',
           '    <td>',
-          '      <font face="Georgia" size="4"><b>' + (proj.title || '') + '</b></font>',
+          '      <font face="Georgia" size="4"><b data-cms="projects.' + i + '.title">' + (proj.title || '') + '</b></font>',
           '      <br />',
-          '      <font face="Courier New" size="2" color="#888888">' + (proj.subtitle || '') + '</font>',
+          '      <font face="Courier New" size="2" color="#888888"><span data-cms="projects.' + i + '.subtitle">' + (proj.subtitle || '') + '</span></font>',
           '      <br /><br />',
-          '      <font face="Georgia" size="3">' + (proj.description || '') + '</font>',
-      proj.link ? '      <br /><br /><font face="Georgia" size="3"><a href="' + proj.link + '" target="_blank">View Project &nearr;</a></font>' : '',
-      proj.image ? '      <br /><img src="' + proj.image + '" class="project-img" />' : '',
+          '      <font face="Georgia" size="3"><span data-cms="projects.' + i + '.description">' + (proj.description || '') + '</span></font>',
+      proj.link ? '      <br /><br /><font face="Georgia" size="3"><a data-cms-href="projects.' + i + '.link" href="' + proj.link + '" target="_blank">View Project &nearr;</a></font>' : '',
+      proj.image ? '      <br /><img data-cms-src="projects.' + i + '.image" src="' + proj.image + '" class="project-img" />' : '',
       '      <br />',
       '      <div style="margin-top: 5px;">' + tags + '</div>',
           '    </td>',
@@ -112,8 +112,13 @@
   function loadContent() {
     fetch('/api/content')
       .then(function(res) { return res.json(); })
-      .then(function(data) { applyContent(data); })
-      .catch(function() { /* silently ignore — fallback HTML remains */ });
+      .then(function(data) { 
+        applyContent(data);
+        document.dispatchEvent(new Event('cms-loaded'));
+      })
+      .catch(function() { 
+        document.dispatchEvent(new Event('cms-loaded'));
+      });
   }
 
   // Run after DOM is ready
