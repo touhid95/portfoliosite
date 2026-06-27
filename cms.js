@@ -69,9 +69,9 @@
 
     // Projects dynamic rendering
     var projContainer = document.getElementById('cms-projects-container');
-    if (projContainer && content.projects && Array.isArray(content.projects) && content.projects.length > 0) {
+    if (projContainer && content.projects && (Array.isArray(content.projects) || typeof content.projects === 'object') && Object.keys(content.projects).length > 0) {
       projContainer.innerHTML = '';
-      content.projects.forEach(function(proj, i) {
+      Object.values(content.projects).forEach(function(proj, i) {
         var num = String(i + 1).padStart(2, '0');
         var tags = (proj.tech || '').split(',').map(function(t) {
           return '<span class="tech-tag">' + t.trim() + '</span>';
