@@ -45,6 +45,17 @@ input[type="submit"]:hover {
   color: #FCFAF2;
 }
 
+/* ---------- Project image with rounded corners ---------- */
+.project-img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  display: block;
+  margin: 14px 0 10px;
+  border: 1px solid #E0E0E0;
+  background: #f5f3e9;
+}
+
 /* ============================================================
    FIBONACCI GALLERY GRID
    Container width in right-td: ~540px (720 - 180px label col)

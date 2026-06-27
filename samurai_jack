@@ -1,0 +1,377 @@
+The GitHub repo only has data projects, not the website source.Let me fetch the actual site's HTML source directly:Ran a command, searched the webRan a command, searched the webThe raw HTML isn't accessible directly, but from your screenshots I can see exactly how the site is structured.Here's the complete, precise JS file — written specifically for your site:
+
+Step 1 — Add this image tag to your index.html, right after your red < hr > line(the one between the contact info and INTRODUCTION section):
+html < !--Samurai Jack — paste right after the red < hr > -->
+    <img
+        id="jack-samurai"
+        src="jack_slash.png"
+        alt=""
+        aria-hidden="true"
+    >
+
+        Step 2 — Add this CSS block inside your <style> tag or stylesheet:
+            css/* ── SAMURAI JACK SCROLL ANIMATION ── */
+            #jack-samurai {
+                position: fixed;
+            right: 48px;
+            bottom: 0;
+            width: 340px;
+            transform: scale(0.12) translateY(60px);
+            transform-origin: bottom center;
+            pointer-events: none;
+            z-index: 999;
+            filter: drop-shadow(0 4px 24px rgba(160, 30, 30, 0.0));
+            opacity: 0.85;
+            transition: none;
+}
+
+            /* speed lines overlay */
+            #jack-speedlines {
+                position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 998;
+            opacity: 0;
+}
+
+/* red line split — wraps your existing <hr> */
+                .red-hr-wrap {
+                    position: relative;
+                overflow: visible;
+}
+                .red-hr-wrap::before,
+                .red-hr-wrap::after {
+                    content: '';
+                position: absolute;
+                top: 0;
+                height: 100%;
+                width: calc(50% - 12px);
+                background: inherit;
+                transition: none;
+}
+
+                /* shards */
+                .jack-shard {
+                    position: fixed;
+                pointer-events: none;
+                z-index: 1000;
+                border-radius: 1px;
+                opacity: 0;
+}
+
+                /* flash overlay */
+                #jack-flash {
+                    position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 997;
+                opacity: 0;
+                background: radial-gradient(
+                ellipse at 70% 55%,
+                rgba(180, 20, 20, 0.18) 0%,
+                transparent 60%
+                );
+}
+
+                @media (max-width: 768px) {
+                    #jack - samurai {
+                    width: 200px;
+                right: 12px;
+  }
+}
+
+                Step 3 — Create jack-animation.js and link it at the bottom of your index.html with <script src="jack-animation.js"></script>:
+                js/* ============================================
+                SAMURAI JACK SCROLL ANIMATION
+                touhidkader.vercel.app — index.html only
+                ============================================ */
+
+                (function () {
+                    'use strict';
+
+                // ── Only run on home page ──
+                if (!document.querySelector('body')) return;
+
+                // ── CONFIG ──
+                const CONFIG = {
+                    imageFile:    'jack_slash.png',  // path to your image
+                startScale:   0.12,              // tiny at top of page
+                endScale:     1.0,               // full size when fully scrolled
+                startY:       80,                // starts below viewport edge (px)
+                endY:         0,                 // rests at bottom
+                slashTrigger: 0.38,              // 38% scroll = sword slash fires
+                fullSize:     0.72,              // scale at which full explosion shows
+                rightOffset:  '48px',           // distance from right edge
+                charWidth:    '340px',           // character width
+  };
+
+                // ── CREATE ELEMENTS ──
+                const jack = document.createElement('img');
+                jack.id = 'jack-samurai';
+                jack.src = CONFIG.imageFile;
+                jack.alt = '';
+                jack.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(jack);
+
+                // Flash overlay
+                const flash = document.createElement('div');
+                flash.id = 'jack-flash';
+                document.body.appendChild(flash);
+
+                // Speed lines SVG
+                const svgNS = 'http://www.w3.org/2000/svg';
+                const speedSVG = document.createElementNS(svgNS, 'svg');
+                speedSVG.id = 'jack-speedlines';
+                speedSVG.setAttribute('viewBox', '0 0 100 100');
+                speedSVG.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                speedSVG.style.cssText = `
+                position:fixed;inset:0;width:100%;height:100%;
+                pointer-events:none;z-index:998;opacity:0;
+                `;
+                const slashAngles = [
+                [75,55, 5,5],  [78,52, 15,2], [80,50, 25,8],
+                [82,48, 0,20], [74,56, 8,85], [76,54, 90,10],
+                [79,51, 95,40],[81,49, 92,70],[77,53, 50,2],
+                ];
+  slashAngles.forEach(([x1,y1,x2,y2]) => {
+    const line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#b03030');
+                line.setAttribute('stroke-width', '0.4');
+                line.setAttribute('opacity', '0.6');
+                speedSVG.appendChild(line);
+  });
+                document.body.appendChild(speedSVG);
+
+  // ── FIND THE RED HR ──
+  // Your site has a red <hr> — we target the one after the contact line
+                    // It sits between your links row and the INTRODUCTION table
+                    const allHR = Array.from(document.querySelectorAll('hr'));
+                    // The red one is typically the 3rd or 4th hr on your page
+                    // We detect it by computed border color or position
+                    let redHR = null;
+  allHR.forEach(hr => {
+    const style = window.getComputedStyle(hr);
+                    const color = style.borderTopColor || style.borderColor || '';
+                    // Red hr check — rgb with high R, low G, low B
+                    if (color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)) {
+      const [,r,g,b] = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/).map(Number);
+      if (r > 140 && g < 80 && b < 80) redHR = hr;
+    }
+  });
+                    // Fallback: 4th hr on page (matches your layout)
+                    if (!redHR && allHR[3]) redHR = allHR[3];
+                    if (!redHR && allHR[2]) redHR = allHR[2];
+
+                    // ── STATE ──
+                    let lastProgress = -1;
+                    let slashFired = false;
+                    let slashTimeout = null;
+                    let busy = false;
+
+                    // ── SHARD SPAWNER ──
+                    function spawnShards() {
+    const count = 14;
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+                    const cx = vw - parseInt(CONFIG.rightOffset) - 170; // sword contact area
+                    const cy = vh * 0.45;
+
+                    for (let i = 0; i < count; i++) {
+      const shard = document.createElement('div');
+                    shard.className = 'jack-shard';
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist  = 30 + Math.random() * 130;
+                    const tx    = Math.cos(angle) * dist;
+                    const ty    = Math.sin(angle) * dist;
+                    const rot   = (Math.random() - 0.5) * 360;
+                    const size  = 4 + Math.random() * 10;
+      const color = Math.random() > 0.4 ? '#b03030' : '#111111';
+
+                    shard.style.cssText = `
+                    left: ${cx + (Math.random() - 0.5) * 60}px;
+                    top:  ${cy + (Math.random() - 0.5) * 40}px;
+                    width: ${size}px;
+                    height: ${size * 0.35}px;
+                    background: ${color};
+                    border-radius: 1px;
+                    position: fixed;
+                    pointer-events: none;
+                    z-index: 1000;
+                    opacity: 0;
+                    `;
+                    document.body.appendChild(shard);
+
+                    shard.animate([
+                    {opacity: 1,   transform: `translate(0,0) rotate(0deg)` },
+                    {opacity: 0,   transform: `translate(${tx}px, ${ty}px) rotate(${rot}deg)` }
+                    ], {
+                        duration: 500 + Math.random() * 400,
+                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                    fill: 'forwards'
+      }).onfinish = () => shard.remove();
+    }
+  }
+
+                    // ── RED LINE SLASH ──
+                    function slashRedLine() {
+    if (!redHR || busy) return;
+                    busy = true;
+
+                    // Flash
+                    flash.animate([
+                    {opacity: 0 },
+                    {opacity: 1 },
+                    {opacity: 0.4 },
+                    {opacity: 0 }
+                    ], {duration: 500, easing: 'ease-out' });
+
+                    // Speed lines
+                    speedSVG.animate([
+                    {opacity: 0 },
+                    {opacity: 1 },
+                    {opacity: 0.5 },
+                    {opacity: 0 }
+                    ], {duration: 600, easing: 'ease-out' });
+
+                    // Shards
+                    setTimeout(spawnShards, 80);
+
+                    // Red HR split
+                    const rect = redHR.getBoundingClientRect();
+    if (rect.top > -100 && rect.top < window.innerHeight + 100) {
+      // Create split overlay on top of the real hr
+      const leftBar  = document.createElement('div');
+                    const rightBar = document.createElement('div');
+                    const baseStyle = `
+                    position:fixed;
+                    top:${rect.top + window.scrollY}px;
+                    height:${Math.max(redHR.offsetHeight, 2)}px;
+                    background:#b03030;
+                    pointer-events:none;
+                    z-index:1001;
+                    `;
+                    leftBar.style.cssText  = baseStyle + `left:0;width:calc(50% - 8px);`;
+                    rightBar.style.cssText = baseStyle + `right:0;width:calc(50% - 8px);`;
+                    document.body.appendChild(leftBar);
+                    document.body.appendChild(rightBar);
+
+                    // Hide original briefly
+                    redHR.style.opacity = '0';
+
+                    // Animate split apart then snap back
+                    leftBar.animate([
+                    {transform: 'translateX(0)',    opacity: 1 },
+                    {transform: 'translateX(-52px)', opacity: 0.7 },
+                    {transform: 'translateX(-52px)', opacity: 0.7 },
+                    {transform: 'translateX(0)',    opacity: 1 }
+                    ], {duration: 900, easing: 'cubic-bezier(0.25,1,0.5,1)' })
+      .onfinish = () => {
+                        leftBar.remove();
+                    redHR.style.opacity = '';
+                    busy = false;
+      };
+
+                    rightBar.animate([
+                    {transform: 'translateX(0)',    opacity: 1 },
+                    {transform: 'translateX(52px)', opacity: 0.7 },
+                    {transform: 'translateX(52px)', opacity: 0.7 },
+                    {transform: 'translateX(0)',    opacity: 1 }
+                    ], {duration: 900, easing: 'cubic-bezier(0.25,1,0.5,1)' });
+
+                    // Screen shake
+                    document.body.animate([
+                    {transform: 'translate(0,0)' },
+                    {transform: 'translate(-4px,-2px)' },
+                    {transform: 'translate(3px,2px)' },
+                    {transform: 'translate(-2px,-1px)' },
+                    {transform: 'translate(0,0)' }
+                    ], {duration: 300, easing: 'ease-out' });
+
+    } else {
+                        setTimeout(() => { busy = false; }, 1000);
+    }
+  }
+
+                    // ── MAIN SCROLL HANDLER ──
+                    function onScroll() {
+    const scrollY   = window.scrollY;
+                    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const progress  = maxScroll > 0 ? Math.min(scrollY / maxScroll, 1) : 0;
+
+                    // Avoid redundant updates
+                    if (Math.abs(progress - lastProgress) < 0.002) return;
+                    lastProgress = progress;
+
+                    // Scale: tiny → full
+                    const scale = CONFIG.startScale + (CONFIG.endScale - CONFIG.startScale) * progress;
+                    // Rise up from bottom
+                    const translateY = CONFIG.startY * (1 - progress);
+                    // Subtle horizontal drift (moves slightly left as it grows)
+                    const translateX = progress * -18;
+                    // Glow strengthens
+                    const glowAlpha  = progress * 0.25;
+                    const glowBlur   = 8 + progress * 28;
+
+                    jack.style.transform = `scale(${scale}) translateY(${translateY}px) translateX(${translateX}px)`;
+                    jack.style.filter    = `drop-shadow(0 ${glowBlur}px ${glowBlur * 1.5}px rgba(160,20,20,${glowAlpha}))`;
+                    jack.style.opacity   = 0.3 + progress * 0.7;
+
+    // Fire slash once at trigger point
+    if (progress >= CONFIG.slashTrigger && !slashFired) {
+                        slashFired = true;
+                    slashRedLine();
+                    // Jack wiggle
+                    jack.animate([
+                    {transform: `scale(${scale}) translateY(${translateY}px) rotate(0deg)` },
+                    {transform: `scale(${scale * 1.05}) translateY(${translateY - 8}px) rotate(-2deg)` },
+                    {transform: `scale(${scale * 1.08}) translateY(${translateY - 12}px) rotate(1.5deg)` },
+                    {transform: `scale(${scale}) translateY(${translateY}px) rotate(0deg)` }
+                    ], {duration: 400, easing: 'cubic-bezier(0.25,1,0.5,1)' });
+    }
+
+                    // Reset slash trigger when user scrolls back up
+                    if (progress < CONFIG.slashTrigger - 0.05) {
+                        slashFired = false;
+    }
+  }
+
+                    // ── IDLE BREATHING (runs always) ──
+                    function breathe() {
+    if (!jack) return;
+                    const t = Date.now() * 0.001;
+                    const breathe = 1 + Math.sin(t * 0.9) * 0.008;
+                    // Only apply if not mid-animation
+                    if (!busy) {
+                        jack.style.transformOrigin = 'bottom center';
+    }
+                    requestAnimationFrame(breathe);
+  }
+
+                    // ── CLICK TO SLASH ──
+                    jack.style.pointerEvents = 'auto';
+                    jack.style.cursor = 'pointer';
+  jack.addEventListener('click', () => {
+    if (!busy) slashRedLine();
+  });
+
+                    // ── INIT ──
+                    window.addEventListener('scroll', onScroll, {passive: true });
+                    onScroll(); // run once on load
+
+  // Initial entrance animation
+  setTimeout(() => {
+                        jack.animate([
+                            { opacity: 0, transform: 'scale(0.08) translateY(100px)' },
+                            { opacity: 0.85, transform: `scale(${CONFIG.startScale}) translateY(${CONFIG.startY}px)` }
+                        ], { duration: 800, easing: 'cubic-bezier(0.25,1,0.5,1)', fill: 'forwards' });
+  }, 400);
+
+})();
+
+                    Step 4 — Link everything in your index.html just before </body>:
+                html<script src="jack-animation.js"></script>
+
+                What this does on your actual site:
+                Scroll %Effect0%Jack appears tiny (12% size) at bottom-right, barely visible0–38%Grows smoothly as you scroll, rises from bottom38%Slash fires — red line splits, screen shakes, shards fly, speed lines flash38–100%Continues growing to full size with red glow strengtheningScroll back upResets, slash can fire againClick JackManual slash trigger anytime

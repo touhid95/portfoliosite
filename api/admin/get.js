@@ -50,23 +50,27 @@ export default async function handler(request) {
   }
 
   try {
-    const [kvKnowledge, kvPrompt, kvContent] = await Promise.all([
+    const [kvKnowledge, kvPrompt, kvContent, kvJobs] = await Promise.all([
       fetch(`${kvUrl}/get/touhid_knowledge`,     { headers: { Authorization: `Bearer ${kvToken}` } }),
       fetch(`${kvUrl}/get/touhid_system_prompt`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-      fetch(`${kvUrl}/get/touhid_content`,       { headers: { Authorization: `Bearer ${kvToken}` } })
+      fetch(`${kvUrl}/get/touhid_content`,       { headers: { Authorization: `Bearer ${kvToken}` } }),
+      fetch(`${kvUrl}/get/touhid_jobs`,          { headers: { Authorization: `Bearer ${kvToken}` } })
     ]);
 
     const kData = kvKnowledge.ok ? await kvKnowledge.json() : {};
     const pData = kvPrompt.ok    ? await kvPrompt.json()    : {};
     const cData = kvContent.ok   ? await kvContent.json()   : {};
+    const jData = kvJobs.ok      ? await kvJobs.json()      : {};
 
     const knowledge    = kData.result || '';
     const systemPrompt = pData.result || '';
     let content = {};
     try { content = cData.result ? JSON.parse(cData.result) : {}; } catch {}
+    let jobs = [];
+    try { jobs = jData.result ? JSON.parse(jData.result) : []; } catch {}
 
     return new Response(
-      JSON.stringify({ knowledge, systemPrompt, content }),
+      JSON.stringify({ knowledge, systemPrompt, content, jobs }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
 

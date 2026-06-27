@@ -39,12 +39,13 @@ export default async function handler(request) {
   }
 
   /* Parse body */
-  let knowledge, systemPrompt, content;
+  let knowledge, systemPrompt, content, jobs;
   try {
     const body   = await request.json();
     knowledge    = (body.knowledge    || '').trim();
     systemPrompt = (body.systemPrompt || '').trim();
     content      = body.content || null;
+    jobs         = body.jobs || null;
   } catch {
     return new Response(
       JSON.stringify({ error: 'Invalid JSON' }),
@@ -93,6 +94,17 @@ export default async function handler(request) {
           method: 'POST',
           headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(JSON.stringify(content))
+        })
+      );
+    }
+
+    /* Write jobs if provided */
+    if (jobs !== null) {
+      writes.push(
+        fetch(`${kvUrl}/set/touhid_jobs`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(JSON.stringify(jobs))
         })
       );
     }
