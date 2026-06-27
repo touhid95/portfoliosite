@@ -114,6 +114,275 @@
       color: #aaaaaa;
       margin-right: 4px;
     }
+    /* ── Jobs Tracker ──────────────────────────────────── */
+    .job-badge {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 2px 10px;
+      border: 1px solid #E0E0E0;
+      color: #888888;
+    }
+    .job-badge-wishlist   { border-color: #aaaaaa; color: #888888; }
+    .job-badge-applied    { border-color: #2C2C2C; color: #2C2C2C; }
+    .job-badge-oatest     { border-color: #cc8800; color: #cc8800; }
+    .job-badge-interview  { border-color: #0066cc; color: #0066cc; }
+    .job-badge-finalround { border-color: #6600cc; color: #6600cc; }
+    .job-badge-offer      { border-color: #2a8a2a; color: #2a8a2a; }
+    .job-badge-rejected   { border-color: #BC2026; color: #BC2026; }
+    .job-badge-withdrawn  { border-color: #aaaaaa; color: #aaaaaa; }
+    .job-urgent {
+      background: rgba(188,32,38,0.06);
+      border-left: 3px solid #BC2026;
+    }
+    .job-urgent-label {
+      color: #BC2026;
+      font-weight: bold;
+    }
+    .job-notification-banner {
+      border: 1px solid #BC2026;
+      background: rgba(188,32,38,0.04);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .job-cv-zone {
+      border: 1px dashed #E0E0E0;
+      padding: 8px 14px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.15s, background 0.15s;
+      min-width: 130px;
+      display: inline-block;
+    }
+    .job-cv-zone:hover, .job-cv-zone.drag-over {
+      border-color: #2C2C2C;
+      background: rgba(44,44,44,0.03);
+    }
+    .job-cv-zone input[type="file"] {
+      position: absolute;
+      width: 1px; height: 1px;
+      opacity: 0; overflow: hidden;
+    }
+    .jobs-table td, .jobs-table th {
+      padding: 8px 10px;
+      border-bottom: 1px solid #E0E0E0;
+      vertical-align: middle;
+    }
+    .jobs-table tr:hover {
+      background: rgba(44,44,44,0.02);
+    }
+
+    /* ── Visual Editor ─────────────────────────────────── */
+    #ve-section {
+      margin-top: 0;
+    }
+    #ve-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 0 14px;
+      border-bottom: 1px solid #E0E0E0;
+      margin-bottom: 14px;
+    }
+    #ve-page-select {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      background: #FCFAF2;
+      border: 1px solid #E0E0E0;
+      color: #2C2C2C;
+      padding: 7px 10px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      min-width: 180px;
+    }
+    #ve-page-select:focus { border-color: #2C2C2C; }
+    #ve-edit-toggle {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 7px 16px;
+      cursor: pointer;
+      border: 1px solid #E0E0E0;
+      background: none;
+      color: #888888;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+    #ve-edit-toggle:hover { border-color: #2C2C2C; color: #2C2C2C; }
+    #ve-edit-toggle.active {
+      background: #2C2C2C;
+      color: #FCFAF2;
+      border-color: #2C2C2C;
+    }
+    #ve-save-all {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 7px 18px;
+      cursor: pointer;
+      border: none;
+      background: #BC2026;
+      color: #FCFAF2;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+    #ve-save-all:hover { background: #8a1519; }
+    #ve-save-all:disabled { opacity: 0.35; cursor: default; background: #BC2026; }
+    #ve-status {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #888888;
+      margin-left: 4px;
+      flex: 1;
+    }
+    #ve-status.ok  { color: #2a8a2a; }
+    #ve-status.err { color: #BC2026; }
+    #ve-area {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      min-height: 640px;
+      border: 1px solid #E0E0E0;
+      position: relative;
+    }
+    #ve-frame-wrap {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    #ve-frame-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 640px;
+      background: repeating-linear-gradient(
+        45deg,
+        #FCFAF2,
+        #FCFAF2 10px,
+        #F5F2E8 10px,
+        #F5F2E8 20px
+      );
+    }
+    #vis-editor-frame {
+      width: 100%;
+      height: 680px;
+      border: none;
+      display: block;
+    }
+    #ve-panel {
+      width: 300px;
+      min-width: 300px;
+      border-left: 1px solid #E0E0E0;
+      background: #FCFAF2;
+      padding: 18px 16px;
+      box-sizing: border-box;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      align-self: stretch;
+    }
+    #ve-panel.visible { display: flex; }
+    #ve-panel-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: #aaaaaa;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    #ve-field-key {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      color: #BC2026;
+      background: rgba(188,32,38,0.06);
+      border: 1px solid rgba(188,32,38,0.18);
+      padding: 5px 9px;
+      word-break: break-all;
+    }
+    #ve-field-type-badge {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      color: #888888;
+      margin-bottom: 4px;
+    }
+    #ve-field-input {
+      width: 100%;
+      min-height: 90px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      background: #FCFAF2;
+      border: 1px solid #E0E0E0;
+      color: #2C2C2C;
+      padding: 8px 10px;
+      box-sizing: border-box;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.15s;
+      flex: 1;
+    }
+    #ve-field-input:focus { border-color: #2C2C2C; }
+    #ve-apply-field {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 8px 16px;
+      cursor: pointer;
+      border: none;
+      background: #2C2C2C;
+      color: #FCFAF2;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      width: 100%;
+    }
+    #ve-apply-field:hover { background: #BC2026; }
+    #ve-pending-count {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      color: #BC2026;
+      text-align: center;
+    }
+    #ve-panel-close {
+      background: none;
+      border: none;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #aaaaaa;
+      cursor: pointer;
+      text-align: right;
+      padding: 0;
+      margin-bottom: 4px;
+      align-self: flex-end;
+    }
+    #ve-panel-close:hover { color: #2C2C2C; }
+    #ve-no-selection {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #aaaaaa;
+      line-height: 1.7;
+      padding-top: 8px;
+    }
+    /* Injected into iframe */
+    .ve-highlight-ring {
+      outline: 2px solid #BC2026 !important;
+      outline-offset: 2px !important;
+      cursor: pointer !important;
+      transition: outline-color 0.15s !important;
+    }
+    .ve-highlight-ring:hover {
+      outline-color: #2C2C2C !important;
+      background: rgba(188,32,38,0.04) !important;
+    }
+    .ve-selected-ring {
+      outline: 2px solid #2C2C2C !important;
+      outline-offset: 2px !important;
+      background: rgba(44,44,44,0.04) !important;
+    }
   </style>
 </head>
 
@@ -181,6 +450,130 @@
 
   <!-- ── ADMIN CONTENT (shown after auth) ───────────────── -->
   <div id="admin-content">
+
+    <!-- ── JOBS TRACKER ────────────────────────────────── -->
+    <div id="jobs-notification" class="job-notification-banner" style="display:none;">
+      <font face="Courier New" size="2" color="#BC2026"><b id="jobs-notification-text"></b></font>
+    </div>
+
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">JOBS<br />TRACKER</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Track your job applications, deadlines, and statuses.
+          </font>
+          <br /><br />
+
+          <div id="jobs-form" style="border:1px solid #E0E0E0;padding:16px;margin-bottom:16px;">
+            <font face="Courier New" size="2" color="#aaaaaa" id="jobs-form-title">ADD NEW JOB</font>
+            <br /><br />
+
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">COMPANY</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="text" class="admin-input" id="job-company" placeholder="e.g. Google" style="max-width:300px;" />
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">POSITION</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="text" class="admin-input" id="job-position" placeholder="e.g. Data Analyst Intern" style="max-width:400px;" />
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">DEADLINE</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="date" class="admin-input" id="job-deadline" style="max-width:180px;" />
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">APPLY LINK</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="url" class="admin-input" id="job-applylink" placeholder="https://careers.company.com/job/..." style="max-width:500px;" />
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">CV</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="text" class="admin-input" id="job-cvurl" placeholder="CV URL (auto-filled on upload)" style="max-width:400px;" readonly />
+                  &nbsp;
+                  <div class="job-cv-zone" id="job-cv-zone">
+                    <input type="file" id="job-cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                    <font face="Courier New" size="2" color="#aaaaaa" id="job-cv-label">[ Upload CV ]</font>
+                  </div>
+                  <div class="status-bar" id="job-cv-status" style="margin-top:4px;min-height:auto;padding:4px 8px;">&nbsp;</div>
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">STATUS</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <select class="admin-input" id="job-status" style="max-width:200px;">
+                    <option value="Wishlist">Wishlist</option>
+                    <option value="Applied">Applied</option>
+                    <option value="OA/Test">OA/Test</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Final Round">Final Round</option>
+                    <option value="Offer">Offer</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Withdrawn">Withdrawn</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">NOTIFY<br />DAYS</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <input type="number" class="admin-input" id="job-notifydays" value="3" min="0" max="30" style="max-width:80px;" />
+                  <font face="Courier New" size="2" color="#aaaaaa"> &nbsp;days before deadline</font>
+                </td>
+              </tr>
+              <tr>
+                <td width="140" valign="top" style="padding-bottom:12px;">
+                  <font face="Courier New" size="2" color="#888888">NOTES</font>
+                </td>
+                <td style="padding-bottom:12px;">
+                  <textarea class="admin-textarea" id="job-notes" rows="3" placeholder="Any notes about this application..." style="height:60px;"></textarea>
+                </td>
+              </tr>
+            </table>
+
+            <br />
+            <button class="admin-btn" id="job-save-btn">Save Job &rarr;</button>
+            &nbsp;&nbsp;
+            <button class="admin-btn-secondary" id="job-cancel-btn" style="display:none;">Cancel</button>
+            <div class="status-bar" id="job-form-status">Fill in the fields and click Save Job.</div>
+          </div>
+
+          <font face="Courier New" size="2" color="#aaaaaa">EXISTING APPLICATIONS</font>
+          <br /><br />
+          <button class="admin-btn-secondary" id="jobs-refresh-btn" style="margin-bottom:12px;">Refresh List</button>
+          <div id="jobs-list">
+            <font face="Courier New" size="2" color="#aaaaaa">No jobs tracked yet. Add one above.</font>
+          </div>
+        </td>
+      </tr>
+    </table>
 
     <br /><br />
     <hr color="#E0E0E0" size="1" />
@@ -583,6 +976,35 @@ You help visitors learn about his work and skills.
               <button class="admin-btn-secondary" id="cv-cancel-btn" style="margin-left:8px;">Cancel</button>
               <div class="status-bar" id="cv-confirm-status">Review the fields above and click Confirm to apply them to the Content Manager.</div>
             </div>
+
+            <br /><br />
+            <hr color="#E0E0E0" size="1" />
+            <br /><br />
+
+            <!-- ── JOB DESCRIPTION → LATEX CV ────────────────────── -->
+            <font face="Courier New" size="2" color="#aaaaaa">JOB DESCRIPTION &rarr; LATEX CV</font><br /><br />
+            <font face="Courier New" size="2" color="#888888">
+              Paste a job description below to generate a tailored LaTeX CV using AI.<br />
+              Uses your fixed moderncv template (banking style, blue color) with AI-optimized content sections.
+            </font>
+            <br /><br />
+
+            <font face="Courier New" size="2" color="#888888">JOB DESCRIPTION</font><br />
+            <textarea class="admin-textarea" id="cv-latex-input" rows="6"
+              placeholder="Paste the full job description here... The AI will tailor your CV's Education, Technical Skills, Projects, and Certifications sections to match the keywords and requirements of this role."></textarea>
+            <br />
+            <button class="admin-btn" id="cv-latex-generate-btn">Generate LaTeX CV &rarr;</button>
+            <div class="status-bar" id="cv-latex-status">Paste a job description and click Generate.</div>
+            <br />
+
+            <font face="Courier New" size="2" color="#888888">LATEX OUTPUT</font><br />
+            <div class="status-bar" id="cv-latex-output" style="min-height:200px;max-height:400px;overflow-y:auto;white-space:pre-wrap;font-family:'Courier New',Courier,monospace;font-size:11px;color:#2C2C2C;line-height:1.6;">&nbsp;</div>
+            <br />
+            <button class="admin-btn" id="cv-latex-copy-btn" style="display:none;">Copy to Clipboard</button>
+            &nbsp;&nbsp;
+            <button class="admin-btn-secondary" id="cv-latex-download-btn" style="display:none;">Download .tex</button>
+            &nbsp;&nbsp;
+            <button class="admin-btn" id="cv-latex-pdf-btn" style="display:none;">Compile to PDF &darr;</button>
           </div>
 
           <br />
@@ -594,6 +1016,72 @@ You help visitors learn about his work and skills.
     </table>
 
   </div><!-- end admin-content -->
+
+  <!-- ── VISUAL EDITOR ────────────────────────────────── -->
+  <div id="ve-section" style="display:none;">
+    <br /><br />
+    <hr color="#E0E0E0" size="1" />
+    <br /><br />
+
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="180" valign="top">
+          <font face="Courier New" size="2" color="#aaaaaa">VISUAL<br />EDITOR</font>
+        </td>
+        <td valign="top">
+          <font face="Courier New" size="2" color="#888888">
+            Click any highlighted element on the page to edit it directly.
+            Changes are previewed live and saved to the content store on "Save All".
+          </font>
+          <br /><br />
+
+          <!-- Toolbar -->
+          <div id="ve-toolbar">
+            <select id="ve-page-select">
+              <option value="">— Select Page —</option>
+              <option value="index.html">Home (index.html)</option>
+              <option value="about.html">About (about.html)</option>
+              <option value="education.html">Education (education.html)</option>
+              <option value="projects.html">Projects (projects.html)</option>
+              <option value="contact.html">Contact (contact.html)</option>
+            </select>
+            <button id="ve-edit-toggle" disabled>Enable Editing</button>
+            <button id="ve-save-all" disabled>Save All</button>
+            <span id="ve-status">Select a page to begin.</span>
+          </div>
+
+          <!-- Iframe + Panel area -->
+          <div id="ve-area">
+            <div id="ve-frame-wrap">
+              <div id="ve-frame-placeholder">
+                <font face="Courier New" size="2" color="#bbbbbb">[ Select a page above to load it here ]</font>
+              </div>
+              <iframe id="vis-editor-frame" src="about:blank" style="display:none;"
+                sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+            </div>
+            <!-- Sidebar edit panel -->
+            <div id="ve-panel">
+              <button id="ve-panel-close" title="Close panel">[ &times; close ]</button>
+              <div id="ve-panel-label">CMS Field</div>
+              <div id="ve-field-key">&mdash;</div>
+              <div id="ve-field-type-badge">type: text</div>
+              <div id="ve-no-selection">
+                Enable editing, then click any<br />
+                highlighted element on the page<br />
+                to edit it here.
+              </div>
+              <textarea id="ve-field-input" placeholder="Edit value here..." style="display:none;"></textarea>
+              <button id="ve-apply-field" style="display:none;">Apply &rarr;</button>
+              <div id="ve-pending-count"></div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+    </table>
+  </div><!-- end ve-section -->
+
+
 
   <br /><br /><br />
   <hr color="#E0E0E0" size="1" />
@@ -724,6 +1212,42 @@ You help visitors learn about his work and skills.
   var cvConfirmStatus = document.getElementById('cv-confirm-status');
   var cvSelectedFile = null;
 
+  /* ── LaTeX CV Generator Elements ──────────────────────── */
+  var cvLatexInput     = document.getElementById('cv-latex-input');
+  var cvLatexGenerateBtn = document.getElementById('cv-latex-generate-btn');
+  var cvLatexStatus    = document.getElementById('cv-latex-status');
+  var cvLatexOutput    = document.getElementById('cv-latex-output');
+  var cvLatexCopyBtn   = document.getElementById('cv-latex-copy-btn');
+  var cvLatexDownloadBtn = document.getElementById('cv-latex-download-btn');
+  var cvLatexPdfBtn    = document.getElementById('cv-latex-pdf-btn');
+  var cvLatexResult    = ''; // stores the latest generated LaTeX
+  var LATEX_PREAMBLE   = '\\documentclass[11pt,a4paper]{moderncv}\n\\moderncvstyle{banking}\n\\moderncvcolor{blue}\n\\usepackage[scale=0.75]{geometry}\n\\usepackage{hyperref}\n\n\\name{Mahfujul Kader}{Touhid}\n\\email{m.k.touhid95@gmail.com}\n\\phone{+880 1734773509}\n\\address{Sector-6, Uttara, Dhaka, Bangladesh}\n\\social[linkedin]{linkedin.com/in/mktouhid/}\n\\social[github]{github.com/touhid95/portfolio}\n\n\\begin{document}\n\\makecvtitle\n\n';
+  var LATEX_POSTAMBLE  = '\n\n\\end{document}';
+
+  /* ── Jobs Tracker Elements ──────────────────────────── */
+  var jobsData = [];
+  var jobsEditingId = null;
+  var jobsCvFile = null;
+  var jobsNotification = document.getElementById('jobs-notification');
+  var jobsNotificationText = document.getElementById('jobs-notification-text');
+  var jobCompany = document.getElementById('job-company');
+  var jobPosition = document.getElementById('job-position');
+  var jobDeadline = document.getElementById('job-deadline');
+  var jobApplyLink = document.getElementById('job-applylink');
+  var jobCvUrl = document.getElementById('job-cvurl');
+  var jobCvZone = document.getElementById('job-cv-zone');
+  var jobCvFileInput = document.getElementById('job-cv-file');
+  var jobCvLabel = document.getElementById('job-cv-label');
+  var jobCvStatus = document.getElementById('job-cv-status');
+  var jobStatus = document.getElementById('job-status');
+  var jobNotifyDays = document.getElementById('job-notifydays');
+  var jobNotes = document.getElementById('job-notes');
+  var jobSaveBtn = document.getElementById('job-save-btn');
+  var jobCancelBtn = document.getElementById('job-cancel-btn');
+  var jobFormStatus = document.getElementById('job-form-status');
+  var jobsList = document.getElementById('jobs-list');
+  var jobsRefreshBtn = document.getElementById('jobs-refresh-btn');
+
   /* ── Status helpers ─────────────────────────────────── */
   function setStatus(el, msg, cls) {
     el.textContent = msg;
@@ -736,9 +1260,12 @@ You help visitors learn about his work and skills.
     setStatus(loginStatus, 'Authenticated (Local Mock Mode \u2014 using localStorage).', 'ok');
     lockEl.style.display = 'none';
     contentEl.style.display = 'block';
+    document.getElementById('ve-section').style.display = 'block';
+    document.body.setAttribute('data-admin-token', pwd);
     editor.value = localStorage.getItem('touhid_knowledge') || '';
     updateCharCount();
     refreshGallery();
+    loadJobs([]);
   }
 
   function unlock() {
@@ -758,6 +1285,8 @@ You help visitors learn about his work and skills.
         setStatus(loginStatus, 'Authenticated.', 'ok');
         lockEl.style.display = 'none';
         contentEl.style.display = 'block';
+        document.getElementById('ve-section').style.display = 'block';
+        document.body.setAttribute('data-admin-token', pwd);
         var data = JSON.parse(xhr.responseText);
         editor.value = data.knowledge || '';
         promptEditor.value = data.systemPrompt || '';
@@ -769,6 +1298,7 @@ You help visitors learn about his work and skills.
           populateCmsFields(cmsContent);
         }
         refreshGallery();
+        loadJobs(data.jobs || []);
       } else if (xhr.status === 401) {
         setStatus(loginStatus, 'Wrong password.', 'err');
       } else if (xhr.status === 404 && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '8000')) {
@@ -864,7 +1394,22 @@ You help visitors learn about his work and skills.
       '<font face="Courier New" size="2" color="#888888">TECH TAGS (comma-separated)</font><br />',
       '<input type="text" class="admin-input proj-tech" placeholder="e.g. Python, Pandas, Power BI" value="' + (data.tech||'').replace(/"/g,'&quot;') + '" /><br /><br />',
       '<font face="Courier New" size="2" color="#888888">LINK (optional)</font><br />',
-      '<input type="text" class="admin-input proj-link" placeholder="https://..." value="' + (data.link||'').replace(/"/g,'&quot;') + '" />'
+      '<input type="text" class="admin-input proj-link" placeholder="https://..." value="' + (data.link||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">IMAGE</font><br />',
+      '<div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;">',
+      '  <input type="text" class="admin-input proj-image" placeholder="Image URL" value="' + (data.image||'').replace(/"/g,'&quot;') + '" style="flex:1;min-width:160px;" />',
+      '  <div class="proj-image-zone" style="border:1px dashed #E0E0E0;padding:8px 14px;text-align:center;cursor:pointer;position:relative;transition:border-color 0.15s,background 0.15s;min-width:130px;">',
+      '    <input type="file" class="proj-image-file" accept="image/jpeg,image/png,image/webp" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" />',
+      '    <div class="proj-image-placeholder"' + (data.image ? ' style="display:none;"' : '') + '>',
+      '      <font face="Courier New" size="2" color="#aaaaaa">[ Browse / Drop ]</font>',
+      '    </div>',
+      '    <div class="proj-image-preview" style="display:' + (data.image ? 'block' : 'none') + ';">',
+      '      <img src="' + ((data.image||'').replace(/"/g,'&quot;')) + '" style="max-height:60px;max-width:100%;object-fit:contain;border:1px solid #E0E0E0;display:block;margin:0 auto;" />',
+      '      <button type="button" class="proj-image-remove-btn" style="margin-top:4px;background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:10px;cursor:pointer;padding:2px 8px;">Remove</button>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<div class="proj-image-status" style="font-family:Courier New,monospace;font-size:10px;color:#aaaaaa;padding:2px 0;">&nbsp;</div>'
     ].join('');
     projectsList.appendChild(div);
   }
@@ -886,13 +1431,116 @@ You help visitors learn about his work and skills.
         subtitle:    (d.querySelector('.proj-subtitle')?.value||'').trim(),
         description: (d.querySelector('.proj-description')?.value||'').trim(),
         tech:        (d.querySelector('.proj-tech')?.value||'').trim(),
-        link:        (d.querySelector('.proj-link')?.value||'').trim()
+        link:        (d.querySelector('.proj-link')?.value||'').trim(),
+        image:       (d.querySelector('.proj-image')?.value||'').trim()
       });
     });
     return projs;
   }
 
   addProjectBtn.addEventListener('click', function() { addProjectRow(); });
+
+  /* ── Project image upload ─────────────────────────────── */
+  projectsList.addEventListener('click', function(e) {
+    var zone = e.target.closest('.proj-image-zone');
+    if (zone) {
+      var fileInput = zone.querySelector('.proj-image-file');
+      if (fileInput) fileInput.click();
+      return;
+    }
+    var removeBtn = e.target.closest('.proj-image-remove-btn');
+    if (removeBtn) {
+      var rowDiv = removeBtn.closest('[style*="border:1px"]');
+      if (!rowDiv) return;
+      var imageInput = rowDiv.querySelector('.proj-image');
+      var zone = rowDiv.querySelector('.proj-image-zone');
+      var placeholder = zone ? zone.querySelector('.proj-image-placeholder') : null;
+      var preview = zone ? zone.querySelector('.proj-image-preview') : null;
+      if (imageInput) imageInput.value = '';
+      if (placeholder) placeholder.style.display = '';
+      if (preview) preview.style.display = 'none';
+      var statusEl = rowDiv.querySelector('.proj-image-status');
+      if (statusEl) statusEl.innerHTML = '&nbsp;';
+    }
+  });
+
+  projectsList.addEventListener('dragover', function(e) {
+    var zone = e.target.closest('.proj-image-zone');
+    if (!zone) return;
+    e.preventDefault();
+    zone.style.borderColor = '#2C2C2C';
+    zone.style.background = 'rgba(44,44,44,0.03)';
+  });
+
+  projectsList.addEventListener('dragleave', function(e) {
+    var zone = e.target.closest('.proj-image-zone');
+    if (!zone) return;
+    zone.style.borderColor = '#E0E0E0';
+    zone.style.background = 'transparent';
+  });
+
+  projectsList.addEventListener('drop', function(e) {
+    var zone = e.target.closest('.proj-image-zone');
+    if (!zone) return;
+    e.preventDefault();
+    zone.style.borderColor = '#E0E0E0';
+    zone.style.background = 'transparent';
+    if (e.dataTransfer.files.length) {
+      uploadProjectImage(zone, e.dataTransfer.files[0]);
+    }
+  });
+
+  projectsList.addEventListener('change', function(e) {
+    var fileInput = e.target;
+    if (!fileInput.classList.contains('proj-image-file')) return;
+    var zone = fileInput.closest('.proj-image-zone');
+    if (!zone || !fileInput.files.length) return;
+    uploadProjectImage(zone, fileInput.files[0]);
+  });
+
+  function uploadProjectImage(zone, file) {
+    var rowDiv = zone.closest('[style*="border:1px"]');
+    var imageInput = rowDiv ? rowDiv.querySelector('.proj-image') : null;
+    var statusEl = rowDiv ? rowDiv.querySelector('.proj-image-status') : null;
+
+    if (statusEl) statusEl.textContent = 'Uploading\u2026';
+
+    var formData = new FormData();
+    formData.append('image', file);
+    formData.append('section', 'projects');
+    formData.append('caption', 'Project image');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/gallery/upload', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        var url = data.url || '';
+        if (imageInput) imageInput.value = url;
+        showProjectPreview(zone, url);
+        if (statusEl) statusEl.textContent = 'Uploaded \u2714';
+      } else {
+        var errMsg = 'Upload failed';
+        try { var d = JSON.parse(xhr.responseText); errMsg = d.error || errMsg; } catch(ex) {}
+        if (statusEl) statusEl.textContent = errMsg;
+      }
+    };
+    xhr.onerror = function() {
+      if (statusEl) statusEl.textContent = 'Network error';
+    };
+    xhr.send(formData);
+    file.value = '';
+  }
+
+  function showProjectPreview(zone, url) {
+    var placeholder = zone.querySelector('.proj-image-placeholder');
+    var preview = zone.querySelector('.proj-image-preview');
+    var img = preview ? preview.querySelector('img') : null;
+    if (placeholder) placeholder.style.display = 'none';
+    if (preview) preview.style.display = 'block';
+    if (img) img.src = url;
+  }
 
   /* ── Collect all CMS content from form fields ─────── */
   function collectContent() {
@@ -1522,6 +2170,868 @@ You help visitors learn about his work and skills.
   cvCancelBtn.addEventListener('click', function () {
     cvConfirmPanel.style.display = 'none';
     setStatus(cvParseStatus, 'AI extraction review cancelled.', '');
+  });
+
+  /* ── LaTeX CV Generator Handlers ───────────────────────── */
+  cvLatexGenerateBtn.addEventListener('click', function () {
+    var desc = cvLatexInput.value.trim();
+    if (desc.length < 20) {
+      setStatus(cvLatexStatus, 'Please paste a full job description (at least 20 characters).', 'err');
+      return;
+    }
+
+    setStatus(cvLatexStatus, 'Generating LaTeX CV with AI (this might take 15-20 seconds)...', '');
+    cvLatexGenerateBtn.disabled = true;
+    cvLatexOutput.textContent = 'Generating...';
+    cvLatexOutput.className = 'status-bar';
+    cvLatexCopyBtn.style.display = 'none';
+    cvLatexDownloadBtn.style.display = 'none';
+    cvLatexPdfBtn.style.display = 'none';
+
+    if (isLocalMock) {
+      setTimeout(function () {
+        cvLatexGenerateBtn.disabled = false;
+        var mockLatex = '\\section{Education}\n\\cventry{2021--Present}{BBA}{IBA, Jahangirnagar University}{Dhaka}{}{\n  \\textit{CGPA: 3.24/4.00}\n  \\begin{itemize}\n    \\item Relevant coursework: Business Statistics, Financial Management, Marketing\n  \\end{itemize}}\n\n\\section{Technical Skills}\n\\cvitem{Programming}{Python (Pandas, NumPy, Scikit-Learn), R}\n\\cvitem{Database}{SQL (5-star Gold HackerRank), SQL Server}\n\\cvitem{Visualization}{Power BI, Tableau, Matplotlib, Seaborn}\n\\cvitem{Other}{Excel VBA, MS Office Suite}\n\n\\section{Projects}\n\\cventry{2025}{Customer Segmentation \\& RFM Analysis}{Academic Project}{}{}{\n  \\begin{itemize}\n    \\item Segmented retail buyers using KMeans clustering and RFM scoring\n    \\item Delivered tailored activation insights for marketing division\n  \\end{itemize}}\n\n\\section{Certifications}\n\\cvitem{Data Science}{Sololearn --- CC-9FYOGHRZ (2023)}\n\\cvitem{SQL}{Sololearn --- CC-RPHT4UCX (2023)}\n\\cvitem{Python Core}{Sololearn --- CT-VIWPDMXG (2022)}';
+        cvLatexResult = LATEX_PREAMBLE + mockLatex + LATEX_POSTAMBLE;
+        cvLatexOutput.textContent = cvLatexResult;
+        cvLatexOutput.className = 'status-bar ok';
+        cvLatexCopyBtn.style.display = '';
+        cvLatexDownloadBtn.style.display = '';
+        cvLatexPdfBtn.style.display = '';
+        setStatus(cvLatexStatus, 'LaTeX CV generated \u2714 — ' + mockLatex.length + ' chars of content.', 'ok');
+      }, 1500);
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/cv-generate', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      cvLatexGenerateBtn.disabled = false;
+      if (xhr.status === 200) {
+        var res = JSON.parse(xhr.responseText);
+        if (res.latex) {
+          cvLatexResult = res.latex;
+          cvLatexOutput.textContent = res.latex;
+          cvLatexOutput.className = 'status-bar ok';
+          cvLatexCopyBtn.style.display = '';
+          cvLatexDownloadBtn.style.display = '';
+          cvLatexPdfBtn.style.display = '';
+          setStatus(cvLatexStatus, 'LaTeX CV generated \u2714 (' + (res.contentLength || 0) + ' chars of content).', 'ok');
+        } else {
+          setStatus(cvLatexStatus, 'Generation failed: ' + (res.error || 'Unknown error'), 'err');
+        }
+      } else {
+        var errResponse = {};
+        try { errResponse = JSON.parse(xhr.responseText); } catch {}
+        cvLatexOutput.textContent = '';
+        setStatus(cvLatexStatus, 'Failed: ' + (errResponse.error || xhr.status), 'err');
+      }
+    };
+    xhr.onerror = function () {
+      cvLatexGenerateBtn.disabled = false;
+      setStatus(cvLatexStatus, 'Network error during generation.', 'err');
+    };
+    xhr.send(JSON.stringify({ jobDescription: desc }));
+  });
+
+  cvLatexCopyBtn.addEventListener('click', function () {
+    if (!cvLatexResult) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cvLatexResult).then(function () {
+        setStatus(cvLatexStatus, 'Copied to clipboard \u2714', 'ok');
+      }).catch(function () {
+        setStatus(cvLatexStatus, 'Failed to copy. Select and copy manually.', 'err');
+      });
+    } else {
+      /* Fallback: select the text area content */
+      var range = document.createRange();
+      range.selectNodeContents(cvLatexOutput);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      setStatus(cvLatexStatus, 'Text selected. Press Ctrl+C to copy.', 'ok');
+    }
+  });
+
+  cvLatexDownloadBtn.addEventListener('click', function () {
+    if (!cvLatexResult) return;
+    var blob = new Blob([cvLatexResult], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'cv-touhid-tailored.tex';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus(cvLatexStatus, 'Downloaded \u2714', 'ok');
+  });
+
+  cvLatexPdfBtn.addEventListener('click', function () {
+    if (!cvLatexResult) return;
+
+    setStatus(cvLatexStatus, 'Compiling LaTeX to PDF...', '');
+    cvLatexPdfBtn.disabled = true;
+
+    if (isLocalMock) {
+      setTimeout(function () {
+        cvLatexPdfBtn.disabled = false;
+        setStatus(cvLatexStatus, 'PDF compilation requires the Vercel-deployed API or a local LaTeX installation. Download the .tex file and compile it with pdflatex or open in Overleaf.', '');
+      }, 500);
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/cv-compile', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.responseType = 'blob';
+    xhr.onload = function () {
+      cvLatexPdfBtn.disabled = false;
+      if (xhr.status === 200) {
+        var blob = xhr.response;
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'cv-touhid-tailored.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setStatus(cvLatexStatus, 'PDF downloaded \u2714', 'ok');
+      } else {
+        var errMsg = 'Compilation failed';
+        try {
+          var reader = new FileReader();
+          reader.onload = function () {
+            try {
+              var errJson = JSON.parse(reader.result);
+              errMsg = errJson.error || errMsg;
+              if (errJson.hint) errMsg += ' \u2014 ' + errJson.hint;
+            } catch {}
+            setStatus(cvLatexStatus, errMsg, 'err');
+          };
+          reader.readAsText(xhr.response);
+        } catch {
+          setStatus(cvLatexStatus, errMsg, 'err');
+        }
+      }
+    };
+    xhr.onerror = function () {
+      cvLatexPdfBtn.disabled = false;
+      setStatus(cvLatexStatus, 'Network error. Download the .tex file and compile manually.', 'err');
+    };
+    xhr.send(JSON.stringify({ latex: cvLatexResult }));
+  });
+
+  /* ── Jobs Tracker ──────────────────────────────────────── */
+
+  /* ── CV Upload for Jobs ──────────────────────────────── */
+  jobCvZone.addEventListener('click', function () { jobCvFileInput.click(); });
+  jobCvZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    jobCvZone.classList.add('drag-over');
+  });
+  jobCvZone.addEventListener('dragleave', function () {
+    jobCvZone.classList.remove('drag-over');
+  });
+  jobCvZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    jobCvZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) {
+      jobsCvFile = e.dataTransfer.files[0];
+      jobCvLabel.textContent = jobsCvFile.name;
+      setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
+      uploadJobCv();
+    }
+  });
+  jobCvFileInput.addEventListener('change', function () {
+    if (jobCvFileInput.files.length) {
+      jobsCvFile = jobCvFileInput.files[0];
+      jobCvLabel.textContent = jobsCvFile.name;
+      setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
+      uploadJobCv();
+    }
+  });
+
+  function uploadJobCv() {
+    if (!jobsCvFile) return;
+    setStatus(jobCvStatus, 'Uploading CV...', '');
+    var formData = new FormData();
+    formData.append('file', jobsCvFile);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/jobs/upload-cv', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        var url = data.url || '';
+        jobCvUrl.value = url;
+        jobCvLabel.textContent = '[ CV uploaded ]';
+        setStatus(jobCvStatus, 'CV uploaded \u2714', 'ok');
+        jobsCvFile = null;
+        jobCvFileInput.value = '';
+      } else {
+        var errMsg = 'Upload failed';
+        try { var d = JSON.parse(xhr.responseText); errMsg = d.error || errMsg; } catch(ex) {}
+        setStatus(jobCvStatus, errMsg, 'err');
+      }
+    };
+    xhr.onerror = function () { setStatus(jobCvStatus, 'Network error.', 'err'); };
+    xhr.send(formData);
+  }
+
+  /* ── Load Jobs ──────────────────────────────────────── */
+  function loadJobs(jobs) {
+    jobsData = jobs || [];
+    renderJobsTable();
+    checkDeadlines();
+  }
+
+  /* ── Render Jobs Table ──────────────────────────────── */
+  function renderJobsTable() {
+    if (!jobsData.length) {
+      jobsList.innerHTML = '<font face="Courier New" size="2" color="#aaaaaa">No jobs tracked yet. Add one above.</font>';
+      return;
+    }
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var sorted = jobsData.slice().sort(function (a, b) {
+      return (a.deadline || '9999-12-31').localeCompare(b.deadline || '9999-12-31');
+    });
+
+    var html = '<table class="jobs-table" width="100%" border="0" cellpadding="0" cellspacing="0">';
+    html += '<tr style="border-bottom:2px solid #E0E0E0;">';
+    html += '<th align="left"><font face="Courier New" size="2" color="#777777">Company</font></th>';
+    html += '<th align="left"><font face="Courier New" size="2" color="#777777">Position</font></th>';
+    html += '<th align="left"><font face="Courier New" size="2" color="#777777">Deadline</font></th>';
+    html += '<th align="left"><font face="Courier New" size="2" color="#777777">Status</font></th>';
+    html += '<th align="left"><font face="Courier New" size="2" color="#777777">Links</font></th>';
+    html += '<th></th>';
+    html += '</tr>';
+
+    sorted.forEach(function (job) {
+      var deadlineDate = job.deadline ? new Date(job.deadline + 'T23:59:59') : null;
+      var isExpired = deadlineDate && deadlineDate < today;
+      var isUrgent = false;
+      if (deadlineDate && !isExpired) {
+        var diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+        isUrgent = diffDays <= (job.notifyDays || 3);
+      }
+
+      var statusClass = 'job-badge-' + (job.status || '').toLowerCase().replace(/[\s/]+/g, '');
+      var rowClass = isUrgent ? 'job-urgent' : '';
+
+      var safeCompany = (job.company || '').replace(/"/g, '&quot;');
+      var safePosition = (job.position || '').replace(/"/g, '&quot;');
+
+      html += '<tr class="' + rowClass + '">';
+      html += '<td><font face="Courier New" size="2">' + (isUrgent ? '<span class="job-urgent-label">&#9888;</span> ' : '') + safeCompany + '</font></td>';
+      html += '<td><font face="Courier New" size="2">' + safePosition + '</font></td>';
+      html += '<td><font face="Courier New" size="2"' + (isExpired ? ' color="#BC2026"' : '') + '>' + (job.deadline || '-') + (isExpired ? ' (past)' : '') + '</font></td>';
+      html += '<td><span class="job-badge ' + statusClass + '">' + (job.status || 'Wishlist') + '</span></td>';
+      html += '<td>';
+      if (job.applyLink) html += '<a href="' + job.applyLink.replace(/"/g, '&quot;') + '" target="_blank" style="text-decoration:none;"><font face="Courier New" size="2" color="#2C2C2C">Apply &nearr;</font></a>';
+      if (job.applyLink && job.cvUrl) html += ' &nbsp;|&nbsp; ';
+      if (job.cvUrl) html += '<a href="' + job.cvUrl.replace(/"/g, '&quot;') + '" target="_blank" style="text-decoration:none;"><font face="Courier New" size="2" color="#2C2C2C">CV &darr;</font></a>';
+      html += '</td>';
+      html += '<td align="right" style="white-space:nowrap;">';
+      html += '<button class="admin-btn-secondary job-edit-btn" style="font-size:10px;padding:4px 10px;" data-id="' + job.id + '">Edit</button>';
+      html += '&nbsp;';
+      html += '<button class="admin-btn-secondary job-delete-btn" style="font-size:10px;padding:4px 10px;color:#BC2026;border-color:#E0E0E0;" data-id="' + job.id + '">Delete</button>';
+      html += '</td>';
+      html += '</tr>';
+    });
+
+    html += '</table>';
+    jobsList.innerHTML = html;
+
+    /* Attach edit event listeners */
+    jobsList.querySelectorAll('.job-edit-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        editJob(btn.getAttribute('data-id'));
+      });
+    });
+
+    /* Attach delete event listeners */
+    jobsList.querySelectorAll('.job-delete-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        deleteJob(btn.getAttribute('data-id'));
+      });
+    });
+  }
+
+  /* ── Check Deadlines ────────────────────────────────── */
+  function checkDeadlines() {
+    if (!jobsData.length) {
+      jobsNotification.style.display = 'none';
+      return;
+    }
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var urgent = [];
+
+    jobsData.forEach(function (job) {
+      if (!job.deadline) return;
+      var deadlineDate = new Date(job.deadline + 'T23:59:59');
+      if (deadlineDate < today) return;
+      var diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+      if (diffDays <= (job.notifyDays || 3)) {
+        urgent.push({ company: job.company, position: job.position, daysLeft: diffDays });
+      }
+    });
+
+    if (urgent.length) {
+      var text = '\u26A0 ' + urgent.length + ' application deadline(s) approaching: ';
+      text += urgent.map(function (u) { return u.company + ' (' + u.position + ') — ' + u.daysLeft + ' day(s)'; }).join(' | ');
+      jobsNotificationText.textContent = text;
+      jobsNotification.style.display = 'block';
+    } else {
+      jobsNotification.style.display = 'none';
+    }
+  }
+
+  /* ── Reset Job Form ─────────────────────────────────── */
+  function resetJobForm() {
+    jobsEditingId = null;
+    jobCompany.value = '';
+    jobPosition.value = '';
+    jobDeadline.value = '';
+    jobApplyLink.value = '';
+    jobCvUrl.value = '';
+    jobCvLabel.textContent = '[ Upload CV ]';
+    jobCvFileInput.value = '';
+    jobsCvFile = null;
+    jobStatus.value = 'Wishlist';
+    jobNotifyDays.value = '3';
+    jobNotes.value = '';
+    jobCancelBtn.style.display = 'none';
+    document.getElementById('jobs-form-title').textContent = 'ADD NEW JOB';
+    setStatus(jobFormStatus, 'Fill in the fields and click Save Job.', '');
+    setStatus(jobCvStatus, '');
+  }
+
+  /* ── Edit Job ────────────────────────────────────────── */
+  function editJob(id) {
+    var job = null;
+    for (var i = 0; i < jobsData.length; i++) {
+      if (jobsData[i].id === id) { job = jobsData[i]; break; }
+    }
+    if (!job) return;
+
+    jobsEditingId = id;
+    jobCompany.value = job.company || '';
+    jobPosition.value = job.position || '';
+    jobDeadline.value = job.deadline || '';
+    jobApplyLink.value = job.applyLink || '';
+    jobCvUrl.value = job.cvUrl || '';
+    jobCvLabel.textContent = job.cvUrl ? '[ CV uploaded ]' : '[ Upload CV ]';
+    jobCvFileInput.value = '';
+    jobsCvFile = null;
+    jobStatus.value = job.status || 'Wishlist';
+    jobNotifyDays.value = (job.notifyDays || 3).toString();
+    jobNotes.value = job.notes || '';
+    jobCancelBtn.style.display = '';
+    document.getElementById('jobs-form-title').textContent = 'EDIT JOB — ' + job.company;
+    setStatus(jobCvStatus, '');
+    setStatus(jobFormStatus, 'Edit fields and click Save Job to update.', '');
+
+    /* Scroll to form */
+    document.getElementById('jobs-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Delete Job ──────────────────────────────────────── */
+  function deleteJob(id) {
+    if (!confirm('Are you sure you want to delete this job application?')) return;
+    jobsData = jobsData.filter(function (j) { return j.id !== id; });
+    saveJobsToServer('Job deleted \u2714');
+  }
+
+  /* ── Save Job (Add / Update) ────────────────────────── */
+  jobSaveBtn.addEventListener('click', function () {
+    var company = jobCompany.value.trim();
+    var position = jobPosition.value.trim();
+    var deadline = jobDeadline.value.trim();
+
+    if (!company) { setStatus(jobFormStatus, 'Company name is required.', 'err'); return; }
+    if (!position) { setStatus(jobFormStatus, 'Position is required.', 'err'); return; }
+    if (!deadline) { setStatus(jobFormStatus, 'Deadline is required.', 'err'); return; }
+
+    var now = new Date().toISOString();
+    var job = {
+      company: company,
+      position: position,
+      deadline: deadline,
+      applyLink: jobApplyLink.value.trim(),
+      cvUrl: jobCvUrl.value.trim(),
+      status: jobStatus.value,
+      notifyDays: parseInt(jobNotifyDays.value, 10) || 3,
+      notes: jobNotes.value.trim(),
+      updatedAt: now
+    };
+
+    if (jobsEditingId) {
+      /* Update existing */
+      for (var i = 0; i < jobsData.length; i++) {
+        if (jobsData[i].id === jobsEditingId) {
+          job.id = jobsEditingId;
+          job.createdAt = jobsData[i].createdAt || now;
+          jobsData[i] = job;
+          break;
+        }
+      }
+      resetJobForm();
+      saveJobsToServer('Job updated \u2714');
+    } else {
+      /* Add new */
+      job.id = 'job_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+      job.createdAt = now;
+      jobsData.push(job);
+      resetJobForm();
+      saveJobsToServer('Job added \u2714');
+    }
+  });
+
+  /* ── Cancel Edit ────────────────────────────────────── */
+  jobCancelBtn.addEventListener('click', function () {
+    if (confirm('Cancel editing? Unsaved changes will be lost.')) {
+      resetJobForm();
+    }
+  });
+
+  /* ── Save Jobs to Server ────────────────────────────── */
+  function saveJobsToServer(successMsg) {
+    renderJobsTable();
+    checkDeadlines();
+
+    if (isLocalMock) {
+      localStorage.setItem('touhid_jobs', JSON.stringify(jobsData));
+      setStatus(jobFormStatus, successMsg + ' (Local Mock Mode)', 'ok');
+      return;
+    }
+
+    jobSaveBtn.disabled = true;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/admin/save', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      jobSaveBtn.disabled = false;
+      if (xhr.status === 200) {
+        setStatus(jobFormStatus, successMsg, 'ok');
+      } else {
+        setStatus(jobFormStatus, 'Save failed: ' + xhr.status, 'err');
+      }
+    };
+    xhr.onerror = function () { jobSaveBtn.disabled = false; setStatus(jobFormStatus, 'Network error.', 'err'); };
+    xhr.send(JSON.stringify({ knowledge: editor.value, systemPrompt: promptEditor.value, content: collectContent(), jobs: jobsData }));
+  }
+
+  /* ── Refresh Jobs List ──────────────────────────────── */
+  jobsRefreshBtn.addEventListener('click', function () {
+    if (isLocalMock) {
+      try { jobsData = JSON.parse(localStorage.getItem('touhid_jobs')) || []; } catch(ex) { jobsData = []; }
+      renderJobsTable();
+      checkDeadlines();
+      setStatus(jobFormStatus, 'Reloaded from localStorage.', 'ok');
+      return;
+    }
+    jobsRefreshBtn.disabled = true;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/admin/get', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.onload = function () {
+      jobsRefreshBtn.disabled = false;
+      if (xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        jobsData = data.jobs || [];
+        renderJobsTable();
+        checkDeadlines();
+        setStatus(jobFormStatus, 'Reloaded from server.', 'ok');
+      } else {
+        setStatus(jobFormStatus, 'Reload failed: ' + xhr.status, 'err');
+      }
+    };
+    xhr.onerror = function () { jobsRefreshBtn.disabled = false; setStatus(jobFormStatus, 'Network error.', 'err'); };
+    xhr.send();
+  });
+
+}());
+</script>
+
+<!-- ═══ VISUAL CMS EDITOR MODULE ═══════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Element references ─────────────────────────────── */
+  var vePageSelect  = document.getElementById('ve-page-select');
+  var veEditToggle  = document.getElementById('ve-edit-toggle');
+  var veSaveAll     = document.getElementById('ve-save-all');
+  var veStatus      = document.getElementById('ve-status');
+  var veArea        = document.getElementById('ve-area');
+  var veFrameWrap   = document.getElementById('ve-frame-wrap');
+  var vePlaceholder = document.getElementById('ve-frame-placeholder');
+  var veFrame       = document.getElementById('vis-editor-frame');
+  var vePanel       = document.getElementById('ve-panel');
+  var vePanelClose  = document.getElementById('ve-panel-close');
+  var veFieldKey    = document.getElementById('ve-field-key');
+  var veFieldType   = document.getElementById('ve-field-type-badge');
+  var veNoSel       = document.getElementById('ve-no-selection');
+  var veFieldInput  = document.getElementById('ve-field-input');
+  var veApply       = document.getElementById('ve-apply-field');
+  var vePendingCount = document.getElementById('ve-pending-count');
+
+  /* ── State ──────────────────────────────────────────── */
+  var editingEnabled  = false;
+  var pendingEdits    = {}; // { 'personal.name': 'New Value', ... }
+  var selectedEl      = null; // currently selected iframe element
+  var selectedKey     = null; // its data-cms key
+  var selectedAttr    = null; // 'data-cms' | 'data-cms-href' | 'data-cms-src' | 'data-cms-html'
+  var currentPage     = '';
+  var frameLoaded     = false;
+
+  /* CSS to inject into the iframe for highlighting */
+  var INJECT_CSS = [
+    '.ve-highlight-ring {',
+    '  outline: 2px solid #BC2026 !important;',
+    '  outline-offset: 2px !important;',
+    '  cursor: pointer !important;',
+    '  transition: outline-color 0.12s, background 0.12s !important;',
+    '}',
+    '.ve-highlight-ring:hover {',
+    '  outline-color: #2C2C2C !important;',
+    '  background: rgba(188,32,38,0.06) !important;',
+    '}',
+    '.ve-selected-ring {',
+    '  outline: 2px solid #2C2C2C !important;',
+    '  outline-offset: 2px !important;',
+    '  background: rgba(44,44,44,0.05) !important;',
+    '}'
+  ].join('\n');
+
+  /* ── Helpers ────────────────────────────────────────── */
+  function veSetStatus(msg, cls) {
+    veStatus.textContent = msg;
+    veStatus.className   = cls || '';
+  }
+
+  function updatePendingCount() {
+    var n = Object.keys(pendingEdits).length;
+    if (n === 0) {
+      vePendingCount.textContent = '';
+      veSaveAll.disabled = true;
+    } else {
+      vePendingCount.textContent = n + ' unsaved change' + (n > 1 ? 's' : '');
+      veSaveAll.disabled = false;
+    }
+  }
+
+  /* Deep-set a dot-path on an object, e.g. setPath(obj, 'personal.name', 'val') */
+  function setPath(obj, path, val) {
+    var parts = path.split('.');
+    var cur   = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) {
+        cur[parts[i]] = {};
+      }
+      cur = cur[parts[i]];
+    }
+    cur[parts[parts.length - 1]] = val;
+  }
+
+  /* Read a dot-path from nested object */
+  function getPath(obj, path) {
+    return path.split('.').reduce(function (a, k) {
+      return a && a[k] !== undefined ? a[k] : null;
+    }, obj);
+  }
+
+  /* ── Page loading ───────────────────────────────────── */
+  vePageSelect.addEventListener('change', function () {
+    var page = vePageSelect.value;
+    if (!page) return;
+    currentPage   = page;
+    frameLoaded   = false;
+    editingEnabled = false;
+    pendingEdits   = {};
+    selectedEl     = null;
+    selectedKey    = null;
+    selectedAttr   = null;
+
+    veEditToggle.textContent = 'Enable Editing';
+    veEditToggle.classList.remove('active');
+    veSaveAll.disabled  = true;
+    veEditToggle.disabled = false;
+    vePendingCount.textContent = '';
+    veSetStatus('Loading ' + page + '\u2026');
+    vePanel.classList.remove('visible');
+    veNoSel.style.display    = '';
+    veFieldInput.style.display = 'none';
+    veApply.style.display      = 'none';
+
+    /* Show iframe, hide placeholder */
+    vePlaceholder.style.display = 'none';
+    veFrame.style.display       = 'block';
+    veFrame.src                 = page + '?_ve=' + Date.now(); /* cache-bust */
+
+    veFrame.onload = function () {
+      frameLoaded = true;
+      veSetStatus('Page loaded. Click "Enable Editing" to begin.');
+      /* If editing was on before a reload, re-inject */
+      if (editingEnabled) veInjectEditor();
+    };
+  });
+
+  /* ── Toggle editing ─────────────────────────────────── */
+  veEditToggle.addEventListener('click', function () {
+    if (!frameLoaded) return;
+    editingEnabled = !editingEnabled;
+
+    if (editingEnabled) {
+      veEditToggle.textContent = 'Disable Editing';
+      veEditToggle.classList.add('active');
+      vePanel.classList.add('visible');
+      veInjectEditor();
+      veSetStatus('Edit mode ON — click a highlighted element.');
+    } else {
+      veEditToggle.textContent = 'Enable Editing';
+      veEditToggle.classList.remove('active');
+      veRemoveEditor();
+      vePanel.classList.remove('visible');
+      selectedEl  = null;
+      selectedKey = null;
+      veSetStatus('Edit mode OFF.');
+    }
+  });
+
+  /* ── Inject editor into iframe ──────────────────────── */
+  function veInjectEditor() {
+    var doc;
+    try { doc = veFrame.contentDocument || veFrame.contentWindow.document; } catch(e) { return; }
+    if (!doc || !doc.body) return;
+
+    /* Inject CSS */
+    if (!doc.getElementById('ve-injected-css')) {
+      var style = doc.createElement('style');
+      style.id  = 've-injected-css';
+      style.textContent = INJECT_CSS;
+      doc.head.appendChild(style);
+    }
+
+    /* Find all data-cms* elements and add highlight class + click handler */
+    var selectors = [
+      '[data-cms]',
+      '[data-cms-href]',
+      '[data-cms-src]',
+      '[data-cms-html]'
+    ];
+    var all = doc.querySelectorAll(selectors.join(','));
+    all.forEach(function (el) {
+      el.classList.add('ve-highlight-ring');
+      el._veClickHandler = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!editingEnabled) return;
+        veSelectElement(el);
+      };
+      el.addEventListener('click', el._veClickHandler, true);
+    });
+
+    veSetStatus('Editing active — ' + all.length + ' editable element(s) highlighted in red.');
+  }
+
+  /* ── Remove editor from iframe ──────────────────────── */
+  function veRemoveEditor() {
+    var doc;
+    try { doc = veFrame.contentDocument || veFrame.contentWindow.document; } catch(e) { return; }
+    if (!doc || !doc.body) return;
+
+    /* Remove injected CSS */
+    var css = doc.getElementById('ve-injected-css');
+    if (css) css.parentNode.removeChild(css);
+
+    /* Remove classes and listeners */
+    var all = doc.querySelectorAll('.ve-highlight-ring, .ve-selected-ring');
+    all.forEach(function (el) {
+      el.classList.remove('ve-highlight-ring', 've-selected-ring');
+      if (el._veClickHandler) {
+        el.removeEventListener('click', el._veClickHandler, true);
+        delete el._veClickHandler;
+      }
+    });
+  }
+
+  /* ── Select an element ──────────────────────────────── */
+  function veSelectElement(el) {
+    var doc;
+    try { doc = veFrame.contentDocument || veFrame.contentWindow.document; } catch(e) { return; }
+
+    /* Deselect previous */
+    if (selectedEl) {
+      selectedEl.classList.remove('ve-selected-ring');
+      selectedEl.classList.add('ve-highlight-ring');
+    }
+
+    selectedEl = el;
+    el.classList.remove('ve-highlight-ring');
+    el.classList.add('ve-selected-ring');
+
+    /* Determine key and attribute type */
+    var key, attr, fieldType;
+    if (el.hasAttribute('data-cms')) {
+      key       = el.getAttribute('data-cms');
+      attr      = 'data-cms';
+      fieldType = 'text content';
+    } else if (el.hasAttribute('data-cms-href')) {
+      key       = el.getAttribute('data-cms-href');
+      attr      = 'data-cms-href';
+      fieldType = 'href (URL)';
+    } else if (el.hasAttribute('data-cms-src')) {
+      key       = el.getAttribute('data-cms-src');
+      attr      = 'data-cms-src';
+      fieldType = 'src (URL)';
+    } else if (el.hasAttribute('data-cms-html')) {
+      key       = el.getAttribute('data-cms-html');
+      attr      = 'data-cms-html';
+      fieldType = 'inner HTML';
+    } else {
+      return;
+    }
+
+    selectedKey  = key;
+    selectedAttr = attr;
+
+    /* Get current value: pending edit > iframe live value > empty */
+    var currentVal = pendingEdits.hasOwnProperty(key)
+      ? pendingEdits[key]
+      : (attr === 'data-cms-href'
+          ? (el.getAttribute('href') || '')
+          : attr === 'data-cms-src'
+            ? (el.getAttribute('src') || '')
+            : attr === 'data-cms-html'
+              ? el.innerHTML
+              : el.textContent);
+
+    /* Populate sidebar */
+    veFieldKey.textContent       = key;
+    veFieldType.textContent      = 'type: ' + fieldType;
+    veNoSel.style.display        = 'none';
+    veFieldInput.style.display   = '';
+    veApply.style.display        = '';
+    veFieldInput.value           = currentVal;
+    veFieldInput.focus();
+  }
+
+  /* ── Apply field value (live preview) ───────────────── */
+  veApply.addEventListener('click', function () {
+    if (!selectedEl || !selectedKey) return;
+    var newVal = veFieldInput.value;
+
+    /* Patch in the iframe */
+    veApplyToIframe(selectedEl, selectedAttr, newVal);
+
+    /* Track as pending edit */
+    pendingEdits[selectedKey] = newVal;
+    updatePendingCount();
+    veSetStatus('\u2713 Applied to preview. ' + Object.keys(pendingEdits).length + ' unsaved change(s).');
+  });
+
+  /* Apply on Ctrl+Enter too */
+  veFieldInput.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') veApply.click();
+  });
+
+  function veApplyToIframe(el, attr, val) {
+    if (attr === 'data-cms-href') {
+      el.setAttribute('href', val);
+    } else if (attr === 'data-cms-src') {
+      el.setAttribute('src', val);
+    } else if (attr === 'data-cms-html') {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  }
+
+  /* ── Close sidebar panel ────────────────────────────── */
+  vePanelClose.addEventListener('click', function () {
+    if (selectedEl) {
+      selectedEl.classList.remove('ve-selected-ring');
+      selectedEl.classList.add('ve-highlight-ring');
+      selectedEl  = null;
+      selectedKey = null;
+    }
+    veNoSel.style.display      = '';
+    veFieldInput.style.display = 'none';
+    veApply.style.display      = 'none';
+    veFieldKey.textContent     = '\u2014';
+    veFieldType.textContent    = '';
+  });
+
+  /* ── Save All ───────────────────────────────────────── */
+  veSaveAll.addEventListener('click', function () {
+    var n = Object.keys(pendingEdits).length;
+    if (n === 0) return;
+
+    veSetStatus('Fetching current content\u2026');
+    veSaveAll.disabled = true;
+
+    /* Step 1: GET current content from KV */
+    fetch('/api/content')
+      .then(function (r) { return r.ok ? r.json() : Promise.resolve({}); })
+      .catch(function () { return {}; })
+      .then(function (currentContent) {
+        /* Step 2: Deep-merge pendingEdits into content */
+        var merged = JSON.parse(JSON.stringify(currentContent || {}));
+        Object.keys(pendingEdits).forEach(function (key) {
+          setPath(merged, key, pendingEdits[key]);
+        });
+
+        /* Step 3: Get the admin password from the parent module's `pwd` variable
+           We access it by reading from the closure indirectly via a custom event,
+           or simply read it from a shared DOM data attribute set on login. */
+        var token = document.body.getAttribute('data-admin-token') || '';
+
+        if (!token) {
+          veSetStatus('No auth token — please log in again.', 'err');
+          veSaveAll.disabled = false;
+          return;
+        }
+
+        veSetStatus('Saving ' + n + ' change(s)\u2026');
+
+        /* Step 4: POST merged content */
+        fetch('/api/admin/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ content: merged })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res && res.ok) {
+            veSetStatus('\u2714 Saved ' + n + ' change(s) to server.', 'ok');
+            pendingEdits = {};
+            updatePendingCount();
+          } else {
+            veSetStatus('Save failed: ' + (res.error || 'Unknown error'), 'err');
+            veSaveAll.disabled = false;
+          }
+        })
+        .catch(function (err) {
+          veSetStatus('Network error while saving.', 'err');
+          veSaveAll.disabled = false;
+        });
+      });
   });
 
 }());
