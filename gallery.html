@@ -1,203 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery | Mahfujul Kader Touhid</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="chat-widget.css" />
-  <link rel="icon" type="image/png" href="gallery/jack/Gemini_Generated_Image_17jamr17jamr17ja.png" />
-  <style>
-    /* Add any custom gallery overrides here if necessary */
-    .brutalist-block {
-      padding: 40px 0;
-      display: flex;
-      gap: 0;
-    }
-    .brutalist-img-container {
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .brutalist-img-container img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-    .brutalist-img-container:hover img {
-      transform: scale(1.05);
-    }
-    .brutalist-caption {
-      position: absolute;
-      z-index: 2;
-      font-size: 10px;
-      font-family: 'Courier New', Courier, monospace;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      padding: 3px 6px;
-    }
-    .cap-light {
-      color: #2C2C2C;
-      background: rgba(255,255,255,0.85);
-    }
-    .cap-dark {
-      color: #fff;
-      background: rgba(0,0,0,0.75);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Photography — m.k.touhid.</title>
+    <link rel="stylesheet" href="chat-widget.css" />
+    <link rel="icon" type="image/png" href="nav_photo_png/1.png" />
+    <style>
+        .brutalist-img-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brutalist-img-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .brutalist-img-container:hover img {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 
-<body>
-<main class="container" style="overflow-x: hidden;">
+<body
+    style="font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #000; overflow-x: hidden;">
 
-  <div class="mb-4">
-    <span class="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
-    <hr class="hr-light mb-4 mt-2" />
-  </div>
-
-  <nav class="nav-links font-mono text-sm">
-    <a href="index.html">HOME</a>
-    <a href="about.html">ABOUT</a>
-    <a href="education.html">EDUCATION</a>
-    <a href="projects.html">PROJECTS</a>
-    <a href="gallery.html" class="active">GALLERY</a>
-    <a href="contact.html">CONTACT</a>
-    <a href="cv.html" target="_blank">CV &nearr;</a>
-  </nav>
-
-  <hr class="hr-light mt-4 mb-4" />
-
-  <!-- HERO: Massive Typography Block (Brutalist style adapted to Kintsugi colors) -->
-  <div style="padding: 40px 0 20px 0; position: relative;">
-      <!-- Top-right metadata tag -->
-      <div style="position: absolute; top: 40px; right: 0; text-align: right; display: none; @media(min-width: 768px) { display: block; }">
-          <div style="display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 8px;">
-              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
-              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
-              <span style="width: 5px; height: 5px; background: #2C2C2C; border-radius: 50%; display: inline-block;"></span>
-          </div>
-          <div style="font-size: 9px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; letter-spacing: 1.5px; color: #888; line-height: 1.8;">
-              VISUAL MOMENTS<br>
-              KINTSUGI AESTHETICS
-          </div>
-      </div>
-
-      <!-- GIANT TITLE TEXT -->
-      <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(40px, 10vw, 120px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; color: #2C2C2C; text-transform: uppercase;">
-          CREATIVE</h1>
-
-      <div style="display: flex; align-items: center; gap: 15px; margin-top: 5px;">
-          <div style="width: clamp(40px, 8vw, 80px); height: clamp(4px, 1vw, 8px); background: #2C2C2C; flex-shrink: 0;"></div>
-          <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(40px, 10vw, 120px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; color: #BC2026; text-transform: uppercase;">
-              EXPLORATION</h1>
-      </div>
-
-      <h1 style="font-family: Arial, Helvetica, sans-serif; font-size: clamp(35px, 8.5vw, 100px); font-weight: 900; letter-spacing: -3px; line-height: 0.85; margin: 0; margin-top: 5px; color: #2C2C2C; text-transform: uppercase;">
-          EXPERIMENTATION</h1>
-  </div>
-
-
-  <!-- ═══ CMS-MANAGED GALLERY ═══ -->
-  <!-- Dynamic gallery loaded by script -->
-  <div id="gallery-cms-container" style="min-height: 400px; margin-top: 40px;">
-    <!-- Loading state -->
-    <span class="font-mono text-sm text-muted-light">Loading photos&hellip;</span>
-  </div>
-
-  <!-- ═══ STATIC FALLBACK SECTIONS (shown if no CMS photos) ═══ -->
-  <div id="gallery-static-sections" style="display:none; margin-top: 40px;">
-
-    <!-- Brutalist Grid -->
-    <div class="brutalist-block">
-
-        <!-- Left Column -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <div style="display: flex; height: 280px;">
-                <div style="width: 45%; background: #BC2026;"></div>
-                <div class="brutalist-img-container" style="width: 55%; background: #1a1a1a;">
-                    <img src="gallery/photo1.jpg" alt="Portrait" onerror="this.style.display='none'" />
-                    <div class="brutalist-caption cap-dark" style="bottom:10px; left:10px;">01 &middot; Portrait</div>
-                </div>
-            </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #e0ded9;">
-                <img src="gallery/photo2.jpg" alt="Personal Moment" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; right:10px;">02 &middot; Moment</div>
-            </div>
-        </div>
-
-        <!-- Center Column -->
-        <div style="flex: 1; display: flex; flex-direction: column; margin-top: 140px;">
-            <div class="brutalist-img-container" style="height: 240px; background: #dcdad5;">
-                <img src="gallery/photo4.jpg" alt="Campus" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">03 &middot; Campus</div>
-            </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #2C2C2C;">
-                <img src="gallery/photo5.jpg" alt="University" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-dark" style="bottom:10px; right:10px;">04 &middot; University</div>
-            </div>
-        </div>
-
-        <!-- Right Column -->
-        <div style="flex: 1; display: flex; flex-direction: column;">
-            <div style="display: flex; height: 280px;">
-                <div class="brutalist-img-container" style="width: 55%; background: #111; align-items: flex-end; padding: 20px; box-sizing: border-box;">
-                    <img src="gallery/photo7.jpg" alt="Cadet College" onerror="this.style.display='none'" />
-                    <div class="brutalist-caption cap-dark" style="position:relative; margin-bottom: 10px;">05 &middot; College</div>
-                </div>
-                <div style="width: 45%; background: #e8e6e1; display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; color: #777; letter-spacing: 2px; writing-mode: vertical-rl;">GALLERY</span>
-                </div>
-            </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #d0ceca;">
-                <img src="gallery/photo8.jpg" alt="Sports Day" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">06 &middot; Sports Day</div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Second Row (Flex gaps) -->
-    <div style="padding: 20px 0 60px; display: flex; gap: 15px;">
-        <div class="brutalist-img-container" style="flex: 1; height: 200px; background: #BC2026; padding: 15px; align-items: flex-end; box-sizing: border-box;">
-            <img src="gallery/photo3.jpg" alt="Personal" onerror="this.style.display='none'" />
-            <span class="brutalist-caption cap-dark" style="position:relative;">07 &middot; Personal</span>
-        </div>
-        <div class="brutalist-img-container" style="flex: 2; height: 200px; background: #1a1a1a; padding: 15px; align-items: flex-end; box-sizing: border-box;">
-            <img src="gallery/photo6.jpg" alt="Campus Life" onerror="this.style.display='none'" />
-            <span class="brutalist-caption cap-dark" style="position:relative;">08 &middot; Campus Life</span>
-        </div>
-        <div class="brutalist-img-container" style="flex: 1; height: 200px; background: #dcdad5; padding: 15px; align-items: flex-end; box-sizing: border-box;">
-            <img src="gallery/photo9.jpg" alt="Cadet Life" onerror="this.style.display='none'" />
-            <span class="brutalist-caption cap-light" style="position:relative;">09 &middot; Cadet Life</span>
+    <!-- NAV -->
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid #e0e0e0;">
+        <a href="index.html"
+            style="font-weight: 900; font-size: 20px; text-decoration: none; color: #000; letter-spacing: -1px;">m.k.touhid.</a>
+        <div style="display: flex; gap: 30px;">
+            <a href="index.html"
+                style="font-size: 12px; text-decoration: none; color: #333; text-transform: uppercase; letter-spacing: 1px;">Home</a>
+            <a href="about.html"
+                style="font-size: 12px; text-decoration: none; color: #333; text-transform: uppercase; letter-spacing: 1px;">About</a>
+            <a href="projects.html"
+                style="font-size: 12px; text-decoration: none; color: #333; text-transform: uppercase; letter-spacing: 1px;">Projects</a>
+            <a href="gallery.html"
+                style="font-size: 12px; text-decoration: none; color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #ff4d36; padding-bottom: 2px;">Gallery</a>
+            <a href="contact.html"
+                style="font-size: 12px; text-decoration: none; color: #333; text-transform: uppercase; letter-spacing: 1px;">Contact</a>
         </div>
     </div>
 
-  </div><!-- end gallery-static-sections -->
+    <!-- HERO: Massive Typography Block -->
+    <div style="padding: 60px 40px 0 40px; position: relative;">
 
-  <hr class="hr-light mb-4 mt-4" />
+        <!-- Top-right metadata tag -->
+        <div style="position: absolute; top: 60px; right: 50px; text-align: right;">
+            <div style="display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 8px;">
+                <span
+                    style="width: 5px; height: 5px; background: #000; border-radius: 50%; display: inline-block;"></span>
+                <span
+                    style="width: 5px; height: 5px; background: #000; border-radius: 50%; display: inline-block;"></span>
+                <span
+                    style="width: 5px; height: 5px; background: #000; border-radius: 50%; display: inline-block;"></span>
+            </div>
+            <div
+                style="font-size: 9px; font-family: monospace; text-transform: uppercase; letter-spacing: 1.5px; color: #555; line-height: 1.8;">
+                LAB EXPERIENCE<br>
+                FUTURE FORWARD AESTHETICS
+            </div>
+        </div>
 
-  <footer class="font-mono text-sm text-muted-lighter mt-3 mb-5 text-center">
-    &copy; 2026 Mahfujul Kader Touhid &nbsp;&middot;&nbsp;
-    <a href="index.html" class="text-muted-lighter">Home</a> &nbsp;&middot;&nbsp;
-    <a href="about.html" class="text-muted-lighter">About</a> &nbsp;&middot;&nbsp;
-    <a href="education.html" class="text-muted-lighter">Education</a> &nbsp;&middot;&nbsp;
-    <a href="projects.html" class="text-muted-lighter">Projects</a> &nbsp;&middot;&nbsp;
-    <a href="gallery.html" class="text-muted-lighter">Gallery</a> &nbsp;&middot;&nbsp;
-    <a href="contact.html" class="text-muted-lighter">Contact</a>
-  </footer>
+        <!-- GIANT TITLE TEXT -->
+        <h1
+            style="font-family: 'Arial Black', Impact, sans-serif; font-size: clamp(60px, 11.5vw, 150px); font-weight: 900; letter-spacing: -5px; line-height: 0.85; margin: 0; color: #000; text-transform: uppercase;">
+            CREATIVE</h1>
 
-</main>
+        <div style="display: flex; align-items: center; gap: clamp(10px, 2vw, 25px);">
+            <div style="width: clamp(50px, 7vw, 100px); height: clamp(8px, 1.2vw, 16px); background: #000; flex-shrink: 0; margin-top: 5px;"></div>
+            <h1
+                style="font-family: 'Arial Black', Impact, sans-serif; font-size: clamp(60px, 11.5vw, 150px); font-weight: 900; letter-spacing: -5px; line-height: 0.85; margin: 0; color: #ff4d36; text-transform: uppercase;">
+                EXPLORATION</h1>
+        </div>
+
+        <h1
+            style="font-family: 'Arial Black', Impact, sans-serif; font-size: clamp(48px, 9vw, 118px); font-weight: 900; letter-spacing: -4px; line-height: 0.85; margin: 0; color: #000; text-transform: uppercase;">
+            EXPERIMENTATION</h1>
+    </div>
+
+    <!-- ═══ CMS-MANAGED GALLERY ═══ -->
+    <div id="gallery-cms-container" style="min-height: 400px;">
+        <!-- Loading state -->
+        <div style="padding: 60px 40px; font-family: monospace; font-size: 12px; color: #777;">Loading photos&hellip;</div>
+    </div>
+
+    <!-- GALLERY FOOTER -->
+    <div
+        style="border-top: 2px solid #000; display: flex; justify-content: space-between; align-items: center; padding: 25px 40px;">
+        <span id="gallery-count-label"
+            style="font-size: 11px; font-family: monospace; color: #999; text-transform: uppercase; letter-spacing: 2px;">
+            Works — 2026 Collection</span>
+        <a href="index.html"
+            style="font-size: 12px; font-weight: bold; text-decoration: none; color: #000; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #ff4d36; padding-bottom: 3px;">Back
+            to Portfolio ↖</a>
+    </div>
 
 <script>
 (function() {
-  var container     = document.getElementById('gallery-cms-container');
-  var staticSections = document.getElementById('gallery-static-sections');
+  var container = document.getElementById('gallery-cms-container');
+  var countLabel = document.getElementById('gallery-count-label');
 
   // Helper to generate the 3-column brutalist block for exactly 6 photos
   function buildBrutalistBlock(photos, offset) {
@@ -206,48 +117,60 @@
     var getCap = function(idx) { return p[idx] ? p[idx].caption || 'Photo ' + (offset + idx + 1) : ''; };
 
     return `
-    <div class="brutalist-block">
+    <div style="padding: 60px 40px; display: flex; gap: 0;">
         <!-- Left Column -->
         <div style="flex: 1; display: flex; flex-direction: column;">
             <div style="display: flex; height: 280px;">
-                <div style="width: 45%; background: #BC2026;"></div>
+                <div style="width: 45%; background: #ff4d36;"></div>
                 <div class="brutalist-img-container" style="width: 55%; background: #1a1a1a;">
                     <img src="${getSrc(0)}" loading="lazy" onerror="this.style.display='none'" />
-                    <div class="brutalist-caption cap-dark" style="bottom:10px; left:10px;">${getCap(0)}</div>
+                    <div style="position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                        <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 2;">${getCap(0)}</span>
+                    </div>
                 </div>
             </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #e0ded9;">
+            <div class="brutalist-img-container" style="height: 240px; background: #d0d0d0;">
                 <img src="${getSrc(1)}" loading="lazy" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; right:10px;">${getCap(1)}</div>
+                <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                    <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 2;">${getCap(1)}</span>
+                </div>
             </div>
         </div>
 
         <!-- Center Column -->
         <div style="flex: 1; display: flex; flex-direction: column; margin-top: 140px;">
-            <div class="brutalist-img-container" style="height: 240px; background: #dcdad5;">
+            <div class="brutalist-img-container" style="height: 240px; background: #e0e0e0;">
                 <img src="${getSrc(2)}" loading="lazy" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">${getCap(2)}</div>
+                <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                    <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 2;">${getCap(2)}</span>
+                </div>
             </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #2C2C2C;">
+            <div class="brutalist-img-container" style="height: 240px; background: #111;">
                 <img src="${getSrc(3)}" loading="lazy" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-dark" style="bottom:10px; right:10px;">${getCap(3)}</div>
+                <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                    <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 2;">${getCap(3)}</span>
+                </div>
             </div>
         </div>
 
         <!-- Right Column -->
         <div style="flex: 1; display: flex; flex-direction: column;">
             <div style="display: flex; height: 280px;">
-                <div class="brutalist-img-container" style="width: 55%; background: #111; align-items: flex-end; padding: 20px; box-sizing: border-box;">
+                <div class="brutalist-img-container" style="width: 55%; background: #111; padding: 20px; box-sizing: border-box; align-items: flex-end;">
                     <img src="${getSrc(4)}" loading="lazy" onerror="this.style.display='none'" />
-                    <div class="brutalist-caption cap-dark" style="position:relative; margin-bottom: 10px;">${getCap(4)}</div>
+                    <div style="position: relative; z-index: 2;">
+                        <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${getCap(4)}</span>
+                    </div>
                 </div>
-                <div style="width: 45%; background: #e8e6e1; display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 10px; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; color: #777; letter-spacing: 2px; writing-mode: vertical-rl;">GALLERY</span>
+                <div style="width: 45%; background: #c8c8c8; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #777; letter-spacing: 2px; writing-mode: vertical-rl;">GALLERY</span>
                 </div>
             </div>
-            <div class="brutalist-img-container" style="height: 240px; background: #d0ceca;">
+            <div class="brutalist-img-container" style="height: 240px; background: #b8b8b8;">
                 <img src="${getSrc(5)}" loading="lazy" onerror="this.style.display='none'" />
-                <div class="brutalist-caption cap-light" style="bottom:10px; left:10px;">${getCap(5)}</div>
+                <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                    <span style="font-size: 10px; font-family: monospace; text-transform: uppercase; color: #fff; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 2;">${getCap(5)}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -256,21 +179,19 @@
 
   // Helper to generate the flex row for remaining photos
   function buildFlexRow(photos, offset) {
-    var html = '<div style="padding: 20px 0 60px; display: flex; gap: 15px; flex-wrap: wrap;">';
-    var bgColors = ['#BC2026', '#1a1a1a', '#dcdad5', '#111'];
+    var html = '<div style="padding: 0 40px 60px; display: flex; gap: 15px; flex-wrap: wrap;">';
+    var bgColors = ['#ff4d36', '#1a1a1a', '#d5d5d5', '#000'];
     var flexes = ['1', '2', '1', '1'];
     
     photos.forEach(function(p, i) {
       var bg = bgColors[i % 4];
       var flx = flexes[i % 4];
-      var isDark = (bg === '#1a1a1a' || bg === '#111' || bg === '#BC2026');
-      var capClass = isDark ? 'cap-dark' : 'cap-light';
       var cap = p.caption || 'Photo ' + (offset + i + 1);
 
       html += `
-        <div class="brutalist-img-container" style="flex: ${flx}; min-width: 150px; height: 200px; background: ${bg}; padding: 15px; align-items: flex-end; box-sizing: border-box;">
-            <img src="${p.url}" loading="lazy" onerror="this.style.display='none'" />
-            <span class="brutalist-caption ${capClass}" style="position:relative;">${cap}</span>
+        <div class="brutalist-img-container" style="flex: ${flx}; min-width: 150px; height: 200px; background: ${bg}; border-radius: 8px; padding: 15px; box-sizing: border-box; align-items: flex-end;">
+            <img src="${p.url}" loading="lazy" onerror="this.style.display='none'" style="border-radius: 8px;" />
+            <span style="font-size: 10px; font-family: monospace; color: #fff; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); position: relative; z-index: 2;">${cap}</span>
         </div>
       `;
     });
@@ -278,14 +199,14 @@
     return html;
   }
 
-
   fetch('/api/gallery/list')
     .then(function(r) { return r.json(); })
     .then(function(photos) {
-      if (!photos || !photos.length) {
-        /* No CMS photos — show static hardcoded sections */
-        container.innerHTML = '';
-        staticSections.style.display = 'block';
+      if (!photos) photos = [];
+      countLabel.textContent = photos.length + ' Works — 2026 Collection';
+      
+      if (!photos.length) {
+        container.innerHTML = '<div style="padding: 60px 40px; font-family: monospace; font-size: 12px; color: #777;">No photos available in the gallery.</div>';
         return;
       }
 
@@ -301,9 +222,9 @@
 
       container.innerHTML = html;
     })
-    .catch(function() {
-      container.innerHTML = '';
-      staticSections.style.display = 'block';
+    .catch(function(e) {
+      console.error(e);
+      container.innerHTML = '<div style="padding: 60px 40px; font-family: monospace; font-size: 12px; color: #777;">Failed to load photos.</div>';
     });
 })();
 </script>
