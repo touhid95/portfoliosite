@@ -142,10 +142,11 @@
   var isBusy    = false;
   var isOffline = false;
   var history   = [];
+  var username  = localStorage.getItem('pac_username') || null;
   var $panel, $btn, $body, $input, $sendBtn, $notice;
 
   /* ── API CALL ─────────────────────────────────────────── */
-  function callAPI(message, cb) {
+  function callAPI(message, isFetchHistory, cb) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', API, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -155,7 +156,7 @@
         var data = JSON.parse(xhr.responseText);
         if (xhr.status === 200 && data.reply) {
           isOffline = false;
-          cb(null, data.reply);
+          cb(null, data.reply, data.history);
         } else {
           throw new Error('bad');
         }
@@ -168,7 +169,7 @@
       isOffline = true;
       cb(null, fallback(message));
     };
-    xhr.send(JSON.stringify({ message: message }));
+    xhr.send(JSON.stringify({ message: message, username: username, fetchHistory: isFetchHistory }));
   }
 
   /* ── TYPEWRITER ───────────────────────────────────────── */
@@ -234,13 +235,45 @@
     $input.value = '';
     $input.style.height = 'auto';
 
-    history.push({ role: 'user', text: msg });
     renderMsg('user', msg);
+
+    if (!username) {
+      username = msg;
+      localStorage.setItem('pac_username', username);
+      
+      setTimeout(function () {
+        showTyping();
+        callAPI('', true, function (err, reply, serverHistory) {
+          hideTyping();
+          if (serverHistory && serverHistory.length > 0) {
+            $body.innerHTML = '';
+            history = serverHistory;
+            history.forEach(function (m) { renderMsg(m.role, m.text); });
+          } else {
+            var welcome = "Nice to meet you, " + username + "! How can I help you explore this portfolio?";
+            history = [{ role: 'ai', text: welcome }];
+            renderMsg('ai', welcome, true, function() {
+              isBusy = false;
+              $sendBtn.disabled = false;
+              $input.focus();
+            });
+            saveHistory(history);
+            return;
+          }
+          isBusy = false;
+          $sendBtn.disabled = false;
+          $input.focus();
+        });
+      }, DELAY);
+      return;
+    }
+
+    history.push({ role: 'user', text: msg });
     saveHistory(history);
 
     setTimeout(function () {
       showTyping();
-      callAPI(msg, function (err, reply) {
+      callAPI(msg, false, function (err, reply) {
         hideTyping();
         if (isOffline) $notice.style.display = 'block';
         else $notice.style.display = 'none';
@@ -348,16 +381,29 @@
   function init() {
     build();
 
-    history = loadHistory();
-
-    if (history.length === 0) {
-      /* Greeting matches the aitext.txt template */
-      var greeting = "Hi! I'm the AI assistant for this portfolio. Ask me about any project, skill, or idea — I'm here to help you explore the work. What would you like to know?";
-      history.push({ role: 'ai', text: greeting });
+    if (!username) {
+      var greeting = "Hi! Before we start, what is your name? (This lets me remember our conversation if you return!)";
       renderMsg('ai', greeting);
-      saveHistory(history);
     } else {
-      history.forEach(function (m) { renderMsg(m.role, m.text); });
+      showTyping();
+      callAPI('', true, function(err, reply, serverHistory) {
+        hideTyping();
+        if (serverHistory && serverHistory.length > 0) {
+          history = serverHistory;
+          history.forEach(function (m) { renderMsg(m.role, m.text); });
+          saveHistory(history);
+        } else {
+          history = loadHistory();
+          if (history.length === 0) {
+            var greeting = "Welcome back, " + username + "! What would you like to know?";
+            history.push({ role: 'ai', text: greeting });
+            renderMsg('ai', greeting);
+            saveHistory(history);
+          } else {
+            history.forEach(function (m) { renderMsg(m.role, m.text); });
+          }
+        }
+      });
     }
 
     $btn.addEventListener('click', openChat);
