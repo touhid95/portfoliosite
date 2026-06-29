@@ -1,9 +1,9 @@
 /**
  * /api/cv-parse.js
- * Vercel Edge Function — Parse uploaded CV (PDF/DOCX) and extract portfolio fields using AI
+ * Vercel Edge Function — Parse pasted CV text and extract portfolio fields using AI
  * Protected by ADMIN_PASSWORD
  *
- * POST multipart/form-data with field "cv" (file)
+ * POST JSON with { text: "CV contents..." }
  * Returns structured JSON with extracted fields for the admin CMS
  */
 export const config = { runtime: 'edge' };
@@ -13,68 +13,6 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
-
-/* ── Extract raw text from PDF bytes using pdf.js compatible approach ── */
-async function extractTextFromPDF(bytes) {
-  /* PDF text extraction via simple regex-based approach for Edge runtime */
-  const decoder = new TextDecoder('latin1');
-  const text = decoder.decode(bytes);
-
-  /* Extract text between BT...ET (PDF text objects) */
-  const chunks = [];
-  const btEtRegex = /BT([\s\S]*?)ET/g;
-  let match;
-  while ((match = btEtRegex.exec(text)) !== null) {
-    const block = match[1];
-    /* Extract strings from parentheses */
-    const strRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)/g;
-    let s;
-    while ((s = strRegex.exec(block)) !== null) {
-      const raw = s[1]
-        .replace(/\\n/g, '\n')
-        .replace(/\\r/g, '\r')
-        .replace(/\\t/g, '\t')
-        .replace(/\\\\/g, '\\')
-        .replace(/\\([()\\])/g, '$1');
-      if (raw.trim().length > 1) chunks.push(raw.trim());
-    }
-  }
-
-  /* Also try hex strings */
-  const hexRegex = /<([0-9A-Fa-f]+)>/g;
-  while ((match = hexRegex.exec(text)) !== null) {
-    const hex = match[1];
-    if (hex.length > 2 && hex.length % 2 === 0) {
-      let str = '';
-      for (let i = 0; i < hex.length; i += 2) {
-        const code = parseInt(hex.slice(i, i + 2), 16);
-        if (code > 31 && code < 127) str += String.fromCharCode(code);
-      }
-      if (str.trim().length > 2) chunks.push(str.trim());
-    }
-  }
-
-  return chunks.join(' ').replace(/\s+/g, ' ').trim();
-}
-
-/* ── Extract text from DOCX (ZIP-based XML) ── */
-async function extractTextFromDOCX(bytes) {
-  /* DOCX is a ZIP. We look for the word/document.xml inside it */
-  /* Simple approach: scan for XML-like text patterns in the bytes */
-  const decoder = new TextDecoder('utf-8', { fatal: false });
-  const raw = decoder.decode(bytes);
-
-  /* Find word/document.xml content */
-  const xmlMatch = raw.match(/word\/document\.xml([\s\S]*?)(?=word\/)/);
-  if (xmlMatch) {
-    const xml = xmlMatch[1];
-    /* Strip XML tags */
-    return xml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  }
-
-  /* Fallback: extract any readable text */
-  return raw.replace(/[^\x20-\x7E\n]/g, ' ').replace(/\s+/g, ' ').trim();
-}
 
 /* ── Call AI to parse CV text into structured fields ── */
 async function parseWithAI(cvText, cfg) {
@@ -111,7 +49,7 @@ If a field cannot be found in the CV, use an empty string "" for that field. Nev
 
 CV TEXT:
 ---
-${cvText.slice(0, 8000)}
+${cvText.slice(0, 10000)}
 ---
 
 Return only the JSON object:`;
@@ -198,36 +136,12 @@ export default async function handler(request) {
   };
 
   try {
-    const formData = await request.formData();
-    const file     = formData.get('cv');
-
-    if (!file || typeof file === 'string') {
-      return new Response(JSON.stringify({ error: 'No CV file provided' }),
-        { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
-    }
-
-    const filename  = (file.name || '').toLowerCase();
-    const isPDF     = filename.endsWith('.pdf') || file.type === 'application/pdf';
-    const isDOCX    = filename.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-
-    if (!isPDF && !isDOCX) {
-      return new Response(JSON.stringify({ error: 'Only PDF and DOCX files are supported.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
-    }
-
-    const bytes = await file.arrayBuffer();
-
-    /* Extract text from file */
-    let cvText = '';
-    if (isPDF) {
-      cvText = await extractTextFromPDF(new Uint8Array(bytes));
-    } else {
-      cvText = await extractTextFromDOCX(new Uint8Array(bytes));
-    }
+    const body = await request.json();
+    const cvText = (body.text || '').trim();
 
     if (!cvText || cvText.length < 50) {
       return new Response(
-        JSON.stringify({ error: 'Could not extract text from the CV. Make sure it is not a scanned image PDF. Try a Word (.docx) version instead.' }),
+        JSON.stringify({ error: 'Provided text is too short to be a valid CV.' }),
         { status: 422, headers: { 'Content-Type': 'application/json', ...CORS } }
       );
     }
@@ -242,6 +156,8 @@ export default async function handler(request) {
       const jsonMatch = aiReply.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         extracted = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error("No JSON found");
       }
     } catch {
       return new Response(

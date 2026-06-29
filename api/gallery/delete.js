@@ -45,21 +45,9 @@ export default async function handler(request) {
 
   const kvUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
   const kvToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
-  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
   try {
-    /* Delete from Blob if possible */
-    if (blobToken && url) {
-      await fetch('https://blob.vercel-storage.com/delete', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${blobToken}`,
-          'Content-Type': 'application/json',
-          'x-api-version': '7'
-        },
-        body: JSON.stringify({ urls: [url] })
-      });
-    }
+
 
     /* Remove from KV list */
     if (kvUrl && kvToken) {

@@ -22,8 +22,7 @@
  *  KV_REST_API_TOKEN    Vercel KV token (optional)
  * ──────────────────────────────────────────────────────────────────
  */
-import fs from 'fs';
-import path from 'path';
+export const config = { runtime: 'edge' };
 
 /* ── CORS ────────────────────────────────────────────────── */
 const CORS = {
@@ -36,52 +35,48 @@ const CORS = {
 const OWNER_NAME = 'Mahfujul Kader Touhid';
 const OWNER_EMAIL = 'm.k.touhid95@gmail.com';
 
-/* ── Dynamic OKF Knowledge ──────────────────────────────── */
-function readOkfKnowledge() {
+/* ── Dynamic OKF Knowledge via Fetch ─────────────────────── */
+async function fetchOkfKnowledge(request) {
   try {
-    const okfDir = path.join(process.cwd(), 'okf');
-    if (!fs.existsSync(okfDir)) return 'No OKF knowledge found.';
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     
-    const files = fs.readdirSync(okfDir).filter(f => f.endsWith('.md'));
+    const files = ['profile.md', 'experience.md', 'education.md', 'projects.md'];
     let knowledgeBase = '';
-
-    for (const file of files) {
-      const content = fs.readFileSync(path.join(okfDir, file), 'utf-8');
-      
-      // Simple OKF Parser (splits YAML frontmatter and Markdown body)
-      let meta = {};
-      let body = content;
-      
-      if (content.startsWith('---')) {
-        const parts = content.split('---');
-        if (parts.length >= 3) {
-          const yaml = parts[1].trim();
-          body = parts.slice(2).join('---').trim();
-          
-          yaml.split('\n').forEach(line => {
-            const colonIdx = line.indexOf(':');
-            if (colonIdx !== -1) {
-              const key = line.slice(0, colonIdx).trim();
-              const val = line.slice(colonIdx + 1).trim().replace(/^['"]|['"]$/g, '');
-              meta[key] = val;
-            }
-          });
-        }
-      }
-
-      knowledgeBase += `[DOCUMENT ID: ${meta.id || file}] (Type: ${meta.type || 'unknown'})\n`;
-      if (meta.title) knowledgeBase += `TITLE: ${meta.title}\n`;
-      knowledgeBase += `\n${body}\n\n`;
-    }
     
+    for (const file of files) {
+      const res = await fetch(`${baseUrl}/okf/${file}`);
+      if (res.ok) {
+        const content = await res.text();
+        // Extract basic OKF info if present
+        let meta = {};
+        let body = content;
+        if (content.startsWith('---')) {
+          const parts = content.split('---');
+          if (parts.length >= 3) {
+            body = parts.slice(2).join('---').trim();
+            parts[1].trim().split('\n').forEach(line => {
+              const colonIdx = line.indexOf(':');
+              if (colonIdx !== -1) {
+                const key = line.slice(0, colonIdx).trim();
+                const val = line.slice(colonIdx + 1).trim().replace(/^['"]|['"]$/g, '');
+                meta[key] = val;
+              }
+            });
+          }
+        }
+        knowledgeBase += `[DOCUMENT ID: ${meta.id || file}] (Type: ${meta.type || 'unknown'})\n`;
+        if (meta.title) knowledgeBase += `TITLE: ${meta.title}\n`;
+        knowledgeBase += `\n${body}\n\n`;
+      }
+    }
     return knowledgeBase.trim();
   } catch (err) {
-    console.error('Failed to read OKF files:', err);
+    console.error('Failed to fetch OKF files:', err);
     return 'Knowledge base unavailable.';
   }
 }
-
-const BASE_KNOWLEDGE = readOkfKnowledge();
 
 /* ── Runtime config (resolved from env vars) ─────────────── */
 function getConfig() {
@@ -283,15 +278,13 @@ async function saveChatHistory(username, history) {
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token || !username) return;
   try {
-    await fetch(`${url}/set/chat_history_${encodeURIComponent(username)}`, {
+    await fetch(`${url}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(JSON.stringify(history))
-    });
-    await fetch(`${url}/sadd/touhid_interactors`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(username)
+      body: JSON.stringify([
+        ['SET', `chat_history_${encodeURIComponent(username)}`, JSON.stringify(history)],
+        ['SADD', 'touhid_interactors', username]
+      ])
     });
   } catch (err) {
     console.error('Failed to save history', err);
@@ -299,19 +292,24 @@ async function saveChatHistory(username, history) {
 }
 
 /* ── Simple RAG: chunk retrieval by keyword relevance ────── */
-function retrieveRelevantChunks(knowledge, query, maxChars = 3000) {
-  if (!knowledge) return BASE_KNOWLEDGE;
+function retrieveRelevantChunks(baseKnowledge, extraKnowledge, query, maxChars = 3000) {
+  let combinedKnowledge = baseKnowledge;
+  if (extraKnowledge) {
+    combinedKnowledge += '\n\n--- ADDITIONAL KV KNOWLEDGE ---\n\n' + extraKnowledge;
+  }
 
-  const chunks = knowledge
+  const chunks = combinedKnowledge
     .split(/\n{2,}/)
     .map(c => c.trim())
     .filter(c => c.length > 20);
 
-  if (!chunks.length) return BASE_KNOWLEDGE;
+  if (!chunks.length) return baseKnowledge;
 
   const queryTerms = query.toLowerCase()
     .split(/\s+/)
     .filter(t => t.length > 2);
+
+  if (queryTerms.length === 0) return combinedKnowledge.slice(0, maxChars);
 
   const scored = chunks.map(chunk => {
     const lower = chunk.toLowerCase();
@@ -324,8 +322,8 @@ function retrieveRelevantChunks(knowledge, query, maxChars = 3000) {
 
   scored.sort((a, b) => b.score - a.score);
 
-  let context = BASE_KNOWLEDGE + '\n\n--- ADDITIONAL KNOWLEDGE ---\n\n';
-  let chars = context.length;
+  let context = '';
+  let chars = 0;
 
   for (const { chunk } of scored) {
     if (chars + chunk.length > maxChars) break;
@@ -333,7 +331,7 @@ function retrieveRelevantChunks(knowledge, query, maxChars = 3000) {
     chars += chunk.length + 2;
   }
 
-  return context.trim();
+  return context.trim() || combinedKnowledge.slice(0, maxChars);
 }
 
 /* ── NVIDIA NIM call ─────────────────────────────────────── */
@@ -435,7 +433,7 @@ function jsonResponse(body, status = 200) {
 }
 
 /* ── Main handler ────────────────────────────────────────── */
-export default async function handler(request) {
+export default async function handler(request, context) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
   }
@@ -472,12 +470,15 @@ export default async function handler(request) {
     return jsonResponse({ error: 'AI service not configured' }, 503);
   }
 
-  /* Build RAG context + system prompt */
-  const [extraKnowledge, customPrompt] = await Promise.all([
+  /* Fetch all necessary KV data and static files in parallel */
+  const [baseKnowledge, extraKnowledge, customPrompt, history] = await Promise.all([
+    fetchOkfKnowledge(request),
     getKnowledge(),
-    getCustomSystemPrompt()
+    getCustomSystemPrompt(),
+    username ? getChatHistory(username) : Promise.resolve([])
   ]);
-  const relevantContext = retrieveRelevantChunks(extraKnowledge, message);
+  
+  const relevantContext = retrieveRelevantChunks(baseKnowledge, extraKnowledge, message);
 
   /* Use admin-saved system prompt if available, otherwise use built-in */
   let systemPrompt;
@@ -488,11 +489,6 @@ export default async function handler(request) {
       : customPrompt + '\n\n## KNOWLEDGE BASE\n' + relevantContext;
   } else {
     systemPrompt = buildSystemPrompt(relevantContext);
-  }
-
-  let history = [];
-  if (username) {
-    history = await getChatHistory(username);
   }
 
   try {
@@ -535,7 +531,13 @@ export default async function handler(request) {
     if (username) {
       history.push({ role: 'user', text: message });
       history.push({ role: 'ai', text: reply });
-      await saveChatHistory(username, history);
+      
+      const savePromise = saveChatHistory(username, history);
+      if (context && context.waitUntil) {
+        context.waitUntil(savePromise);
+      } else {
+        await savePromise;
+      }
     }
 
     return jsonResponse({ reply });

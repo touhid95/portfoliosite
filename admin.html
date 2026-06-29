@@ -498,13 +498,9 @@
                   <font face="Courier New" size="2" color="#888888">CV</font>
                 </td>
                 <td style="padding-bottom:12px;">
-                  <input type="text" class="admin-input" id="job-cvurl" placeholder="CV URL (auto-filled on upload)" style="max-width:400px;" readonly />
-                  &nbsp;
-                  <div class="job-cv-zone" id="job-cv-zone">
-                    <input type="file" id="job-cv-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-                    <font face="Courier New" size="2" color="#aaaaaa" id="job-cv-label">[ Upload CV ]</font>
-                  </div>
-                  <div class="status-bar" id="job-cv-status" style="margin-top:4px;min-height:auto;padding:4px 8px;">&nbsp;</div>
+                  <input type="text" class="admin-input" id="job-cvurl" placeholder="Paste CV URL (e.g. Google Drive link)" style="max-width:400px;" />
+                  <br />
+                  <font face="Courier New" size="1" color="#888888">Provide a link to the CV for this job.</font>
                 </td>
               </tr>
               <tr>
@@ -878,12 +874,9 @@ You help visitors learn about his work and skills.
             <font face="Courier New" size="2" color="#888888">CAPTION (optional)</font><br />
             <input type="text" class="admin-input" id="gallery-caption" placeholder="e.g. IBA Campus 2024" style="width:400px;" /><br /><br />
 
-            <font face="Courier New" size="2" color="#888888">PHOTO (JPEG, PNG, WebP &mdash; max 5MB)</font><br />
-            <div class="drop-zone" id="gallery-drop-zone" style="position:relative;">
-              <input type="file" id="gallery-file-input" accept="image/jpeg,image/png,image/webp,image/gif" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" />
-              <font face="Courier New" size="2" color="#888888">Drop image here or click to browse</font>
-            </div>
-            <div class="status-bar" id="gallery-upload-status">Select a section, optional caption, then choose a photo to upload.</div>
+            <font face="Courier New" size="2" color="#888888">GOOGLE DRIVE OR IMAGE LINK</font><br />
+            <input type="text" class="admin-input" id="gallery-image-url" placeholder="Paste Google Drive share link or image URL here" style="width:100%; max-width:600px;" /><br /><br />
+            <div class="status-bar" id="gallery-upload-status">Select a section, optional caption, and paste a link to upload.</div>
             <br />
             <button class="admin-btn" id="gallery-upload-btn">Upload Photo &rarr;</button>
             <br /><br />
@@ -900,14 +893,11 @@ You help visitors learn about his work and skills.
           <div class="cms-panel" id="cms-panel-cv" style="display:none;">
             <font face="Courier New" size="2" color="#888888">Upload your CV to automatically fill all content fields using AI. You will review and confirm before anything is saved.</font><br /><br />
 
-            <font face="Courier New" size="2" color="#888888">SELECT CV FILE (PDF or Word .docx)</font><br />
-            <div class="drop-zone" id="cv-drop-zone" style="position:relative;">
-              <input type="file" id="cv-file-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" />
-              <font face="Courier New" size="2" color="#888888">Drop CV here or click to browse (.pdf or .docx)</font>
-            </div>
+            <font face="Courier New" size="2" color="#888888">PASTE YOUR CV TEXT</font><br />
+            <textarea class="admin-textarea" id="cv-text-input" placeholder="Paste the full text of your CV here..." style="width:100%; height:150px;"></textarea>
             <br />
             <button class="admin-btn" id="cv-parse-btn">Extract with AI &rarr;</button>
-            <div class="status-bar" id="cv-parse-status">Upload a CV file and click Extract with AI. The AI will read it and fill all fields below for your review.</div>
+            <div class="status-bar" id="cv-parse-status">Paste your CV text and click Extract with AI. The AI will read it and fill all fields below for your review.</div>
 
             <!-- Confirmation panel — shown after AI extraction -->
             <div id="cv-confirm-panel" style="display:none;margin-top:20px;">
@@ -1178,24 +1168,19 @@ You help visitors learn about his work and skills.
   /* Gallery Manager Elements */
   var gallerySection    = document.getElementById('gallery-section');
   var galleryCaption    = document.getElementById('gallery-caption');
-  var galleryDropZone   = document.getElementById('gallery-drop-zone');
-  var galleryFileInput  = document.getElementById('gallery-file-input');
   var galleryStatus     = document.getElementById('gallery-upload-status');
   var galleryUploadBtn  = document.getElementById('gallery-upload-btn');
   var galleryRefreshBtn = document.getElementById('gallery-refresh-btn');
   var galleryList       = document.getElementById('gallery-existing-list');
-  var gallerySelectedFile = null;
 
   /* CV Upload Elements */
-  var cvDropZone     = document.getElementById('cv-drop-zone');
-  var cvFileInput    = document.getElementById('cv-file-input');
+  var cvTextInput = document.getElementById('cv-text-input');
   var cvParseBtn     = document.getElementById('cv-parse-btn');
   var cvParseStatus  = document.getElementById('cv-parse-status');
   var cvConfirmPanel = document.getElementById('cv-confirm-panel');
   var cvConfirmBtn   = document.getElementById('cv-confirm-btn');
   var cvCancelBtn    = document.getElementById('cv-cancel-btn');
   var cvConfirmStatus = document.getElementById('cv-confirm-status');
-  var cvSelectedFile = null;
 
   /* ── LaTeX CV Generator Elements ──────────────────────── */
   var cvLatexInput     = document.getElementById('cv-latex-input');
@@ -1212,7 +1197,6 @@ You help visitors learn about his work and skills.
   /* ── Jobs Tracker Elements ──────────────────────────── */
   var jobsData = [];
   var jobsEditingId = null;
-  var jobsCvFile = null;
   var jobsNotification = document.getElementById('jobs-notification');
   var jobsNotificationText = document.getElementById('jobs-notification-text');
   var jobCompany = document.getElementById('job-company');
@@ -1220,10 +1204,6 @@ You help visitors learn about his work and skills.
   var jobDeadline = document.getElementById('job-deadline');
   var jobApplyLink = document.getElementById('job-applylink');
   var jobCvUrl = document.getElementById('job-cvurl');
-  var jobCvZone = document.getElementById('job-cv-zone');
-  var jobCvFileInput = document.getElementById('job-cv-file');
-  var jobCvLabel = document.getElementById('job-cv-label');
-  var jobCvStatus = document.getElementById('job-cv-status');
   var jobStatus = document.getElementById('job-status');
   var jobNotifyDays = document.getElementById('job-notifydays');
   var jobNotes = document.getElementById('job-notes');
@@ -1383,16 +1363,6 @@ You help visitors learn about his work and skills.
       '<font face="Courier New" size="2" color="#888888">IMAGE</font><br />',
       '<div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;">',
       '  <input type="text" class="admin-input proj-image" placeholder="Image URL" value="' + (data.image||'').replace(/"/g,'&quot;') + '" style="flex:1;min-width:160px;" />',
-      '  <div class="proj-image-zone" style="border:1px dashed #E0E0E0;padding:8px 14px;text-align:center;cursor:pointer;position:relative;transition:border-color 0.15s,background 0.15s;min-width:130px;">',
-      '    <input type="file" class="proj-image-file" accept="image/jpeg,image/png,image/webp" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" />',
-      '    <div class="proj-image-placeholder"' + (data.image ? ' style="display:none;"' : '') + '>',
-      '      <font face="Courier New" size="2" color="#aaaaaa">[ Browse / Drop ]</font>',
-      '    </div>',
-      '    <div class="proj-image-preview" style="display:' + (data.image ? 'block' : 'none') + ';">',
-      '      <img src="' + ((data.image||'').replace(/"/g,'&quot;')) + '" style="max-height:60px;max-width:100%;object-fit:contain;border:1px solid #E0E0E0;display:block;margin:0 auto;" />',
-      '      <button type="button" class="proj-image-remove-btn" style="margin-top:4px;background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:10px;cursor:pointer;padding:2px 8px;">Remove</button>',
-      '    </div>',
-      '  </div>',
       '</div>',
       '<div class="proj-image-status" style="font-family:Courier New,monospace;font-size:10px;color:#aaaaaa;padding:2px 0;">&nbsp;</div>'
     ].join('');
@@ -1424,108 +1394,6 @@ You help visitors learn about his work and skills.
   }
 
   addProjectBtn.addEventListener('click', function() { addProjectRow(); });
-
-  /* ── Project image upload ─────────────────────────────── */
-  projectsList.addEventListener('click', function(e) {
-    var zone = e.target.closest('.proj-image-zone');
-    if (zone) {
-      var fileInput = zone.querySelector('.proj-image-file');
-      if (fileInput) fileInput.click();
-      return;
-    }
-    var removeBtn = e.target.closest('.proj-image-remove-btn');
-    if (removeBtn) {
-      var rowDiv = removeBtn.closest('[style*="border:1px"]');
-      if (!rowDiv) return;
-      var imageInput = rowDiv.querySelector('.proj-image');
-      var zone = rowDiv.querySelector('.proj-image-zone');
-      var placeholder = zone ? zone.querySelector('.proj-image-placeholder') : null;
-      var preview = zone ? zone.querySelector('.proj-image-preview') : null;
-      if (imageInput) imageInput.value = '';
-      if (placeholder) placeholder.style.display = '';
-      if (preview) preview.style.display = 'none';
-      var statusEl = rowDiv.querySelector('.proj-image-status');
-      if (statusEl) statusEl.innerHTML = '&nbsp;';
-    }
-  });
-
-  projectsList.addEventListener('dragover', function(e) {
-    var zone = e.target.closest('.proj-image-zone');
-    if (!zone) return;
-    e.preventDefault();
-    zone.style.borderColor = '#2C2C2C';
-    zone.style.background = 'rgba(44,44,44,0.03)';
-  });
-
-  projectsList.addEventListener('dragleave', function(e) {
-    var zone = e.target.closest('.proj-image-zone');
-    if (!zone) return;
-    zone.style.borderColor = '#E0E0E0';
-    zone.style.background = 'transparent';
-  });
-
-  projectsList.addEventListener('drop', function(e) {
-    var zone = e.target.closest('.proj-image-zone');
-    if (!zone) return;
-    e.preventDefault();
-    zone.style.borderColor = '#E0E0E0';
-    zone.style.background = 'transparent';
-    if (e.dataTransfer.files.length) {
-      uploadProjectImage(zone, e.dataTransfer.files[0]);
-    }
-  });
-
-  projectsList.addEventListener('change', function(e) {
-    var fileInput = e.target;
-    if (!fileInput.classList.contains('proj-image-file')) return;
-    var zone = fileInput.closest('.proj-image-zone');
-    if (!zone || !fileInput.files.length) return;
-    uploadProjectImage(zone, fileInput.files[0]);
-  });
-
-  function uploadProjectImage(zone, file) {
-    var rowDiv = zone.closest('[style*="border:1px"]');
-    var imageInput = rowDiv ? rowDiv.querySelector('.proj-image') : null;
-    var statusEl = rowDiv ? rowDiv.querySelector('.proj-image-status') : null;
-
-    if (statusEl) statusEl.textContent = 'Uploading\u2026';
-
-    var formData = new FormData();
-    formData.append('image', file);
-    formData.append('section', 'projects');
-    formData.append('caption', 'Project image');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/gallery/upload', true);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        var url = data.url || '';
-        if (imageInput) imageInput.value = url;
-        showProjectPreview(zone, url);
-        if (statusEl) statusEl.textContent = 'Uploaded \u2714';
-      } else {
-        var errMsg = 'Upload failed';
-        try { var d = JSON.parse(xhr.responseText); errMsg = d.error || errMsg; } catch(ex) {}
-        if (statusEl) statusEl.textContent = errMsg;
-      }
-    };
-    xhr.onerror = function() {
-      if (statusEl) statusEl.textContent = 'Network error';
-    };
-    xhr.send(formData);
-    file.value = '';
-  }
-
-  function showProjectPreview(zone, url) {
-    var placeholder = zone.querySelector('.proj-image-placeholder');
-    var preview = zone.querySelector('.proj-image-preview');
-    var img = preview ? preview.querySelector('img') : null;
-    if (placeholder) placeholder.style.display = 'none';
-    if (preview) preview.style.display = 'block';
-    if (img) img.src = url;
-  }
 
   /* ── Collect all CMS content from form fields ─────── */
   function collectContent() {
@@ -1820,79 +1688,52 @@ You help visitors learn about his work and skills.
 
 
   /* ── Gallery Manager Handlers ─────────────────────────── */
-  galleryDropZone.addEventListener('click', function () { galleryFileInput.click(); });
-  galleryDropZone.addEventListener('dragover', function (e) {
-    e.preventDefault();
-    galleryDropZone.classList.add('drag-over');
-  });
-  galleryDropZone.addEventListener('dragleave', function () {
-    galleryDropZone.classList.remove('drag-over');
-  });
-  galleryDropZone.addEventListener('drop', function (e) {
-    e.preventDefault();
-    galleryDropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-      gallerySelectedFile = e.dataTransfer.files[0];
-      setStatus(galleryStatus, 'Selected: ' + gallerySelectedFile.name, 'ok');
-    }
-  });
-  galleryFileInput.addEventListener('change', function () {
-    if (galleryFileInput.files.length) {
-      gallerySelectedFile = galleryFileInput.files[0];
-      setStatus(galleryStatus, 'Selected: ' + gallerySelectedFile.name, 'ok');
-    }
-  });
-
   galleryUploadBtn.addEventListener('click', function () {
-    if (!gallerySelectedFile) {
-      setStatus(galleryStatus, 'Please select a photo to upload.', 'err');
+    var section = document.getElementById('gallery-section').value.trim();
+    var caption = document.getElementById('gallery-caption').value.trim();
+    var urlInput = document.getElementById('gallery-image-url').value.trim();
+
+    if (!urlInput) {
+      setStatus(galleryStatus, 'Please paste an image or Google Drive link.', 'err');
       return;
     }
-    var sectionVal = gallerySection.value.trim() || 'personal';
-    var captionVal = galleryCaption.value.trim();
 
-    setStatus(galleryStatus, 'Uploading image...', '');
+    setStatus(galleryStatus, 'Saving photo link...', '');
     galleryUploadBtn.disabled = true;
 
     if (isLocalMock) {
       setTimeout(function () {
         galleryUploadBtn.disabled = false;
         setStatus(galleryStatus, 'Upload complete \u2714 (Local Mock Mode).', 'ok');
-        gallerySelectedFile = null;
-        galleryFileInput.value = '';
-        galleryCaption.value = '';
+        document.getElementById('gallery-image-url').value = '';
+        document.getElementById('gallery-caption').value = '';
         refreshGallery();
-      }, 500);
+      }, 1000);
       return;
     }
 
-    var formData = new FormData();
-    formData.append('image', gallerySelectedFile);
-    formData.append('section', sectionVal);
-    formData.append('caption', captionVal);
-
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/gallery/upload', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
       galleryUploadBtn.disabled = false;
       if (xhr.status === 200) {
-        setStatus(galleryStatus, 'Photo uploaded successfully \u2714', 'ok');
-        gallerySelectedFile = null;
-        galleryFileInput.value = '';
-        galleryCaption.value = '';
+        setStatus(galleryStatus, 'Photo link saved successfully \u2714', 'ok');
+        document.getElementById('gallery-image-url').value = '';
+        document.getElementById('gallery-caption').value = '';
         refreshGallery();
       } else {
         var errResponse = {};
-        try { errResponse = JSON.parse(xhr.responseText); } catch {}
-        setStatus(galleryStatus, 'Upload failed: ' + (errResponse.error || xhr.status), 'err');
+        try { errResponse = JSON.parse(xhr.responseText); } catch(e){}
+        setStatus(galleryStatus, 'Save failed: ' + (errResponse.error || xhr.status), 'err');
       }
     };
     xhr.onerror = function () {
       galleryUploadBtn.disabled = false;
-      setStatus(galleryStatus, 'Network error during upload.', 'err');
+      setStatus(galleryStatus, 'Network error during save.', 'err');
     };
-    xhr.send(formData);
+    xhr.send(JSON.stringify({ url: urlInput, section: section, caption: caption }));
   });
 
   function refreshGallery() {
@@ -1990,32 +1831,10 @@ You help visitors learn about his work and skills.
 
 
   /* ── CV Upload & AI Auto-fill Handlers ───────────────── */
-  cvDropZone.addEventListener('click', function () { cvFileInput.click(); });
-  cvDropZone.addEventListener('dragover', function (e) {
-    e.preventDefault();
-    cvDropZone.classList.add('drag-over');
-  });
-  cvDropZone.addEventListener('dragleave', function () {
-    cvDropZone.classList.remove('drag-over');
-  });
-  cvDropZone.addEventListener('drop', function (e) {
-    e.preventDefault();
-    cvDropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-      cvSelectedFile = e.dataTransfer.files[0];
-      setStatus(cvParseStatus, 'Selected CV: ' + cvSelectedFile.name, 'ok');
-    }
-  });
-  cvFileInput.addEventListener('change', function () {
-    if (cvFileInput.files.length) {
-      cvSelectedFile = cvFileInput.files[0];
-      setStatus(cvParseStatus, 'Selected CV: ' + cvSelectedFile.name, 'ok');
-    }
-  });
-
   cvParseBtn.addEventListener('click', function () {
-    if (!cvSelectedFile) {
-      setStatus(cvParseStatus, 'Please select a CV file to extract.', 'err');
+    var cvText = cvTextInput.value.trim();
+    if (!cvText) {
+      setStatus(cvParseStatus, 'Please paste your CV text to extract.', 'err');
       return;
     }
 
@@ -2055,11 +1874,9 @@ You help visitors learn about his work and skills.
       return;
     }
 
-    var formData = new FormData();
-    formData.append('cv', cvSelectedFile);
-
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/cv-parse', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
       cvParseBtn.disabled = false;
@@ -2080,9 +1897,9 @@ You help visitors learn about his work and skills.
     };
     xhr.onerror = function () {
       cvParseBtn.disabled = false;
-      setStatus(cvParseStatus, 'Network error during CV parsing.', 'err');
+      setStatus(cvParseStatus, 'Network error during extraction.', 'err');
     };
-    xhr.send(formData);
+    xhr.send(JSON.stringify({ text: cvText }));
   });
 
   function populateCvReviewFields(fields) {
@@ -2313,12 +2130,6 @@ You help visitors learn about his work and skills.
 
   /* ── Jobs Tracker ──────────────────────────────────────── */
 
-  /* ── CV Upload for Jobs ──────────────────────────────── */
-  jobCvZone.addEventListener('click', function () { jobCvFileInput.click(); });
-  jobCvZone.addEventListener('dragover', function (e) {
-    e.preventDefault();
-    jobCvZone.classList.add('drag-over');
-  });
   jobCvZone.addEventListener('dragleave', function () {
     jobCvZone.classList.remove('drag-over');
   });
