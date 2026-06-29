@@ -64,39 +64,40 @@
 
 </main>
 
+<style>
+  .simple-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+  .gallery-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border: 1px solid #E0E0E0;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .gallery-item img:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .gallery-caption {
+    margin-top: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+</style>
+
 <script>
 (function() {
   var container = document.getElementById('gallery-cms-container');
-
-  // Helper to generate the Fibonacci grid for exactly 3 photos
-  function buildFibBlock(photos, offset) {
-    var p = photos; // Array of 3 items
-    var getSrc = function(idx) { return p[idx] ? p[idx].url : ''; };
-    var getCap = function(idx) { return p[idx] ? p[idx].caption || 'Photo ' + (offset + idx + 1) : ''; };
-
-    return `
-    <div class="fib-grid mb-5">
-      <div class="fib-cell fib-a">
-        <img src="${getSrc(0)}" loading="lazy" onerror="this.style.display='none'" />
-        <div class="fib-caption">
-          <span class="fib-cap-name">${getCap(0)}</span>
-        </div>
-      </div>
-      <div class="fib-cell fib-b">
-        <img src="${getSrc(1)}" loading="lazy" onerror="this.style.display='none'" />
-        <div class="fib-caption">
-          <span class="fib-cap-name">${getCap(1)}</span>
-        </div>
-      </div>
-      <div class="fib-cell fib-c">
-        <img src="${getSrc(2)}" loading="lazy" onerror="this.style.display='none'" />
-        <div class="fib-caption">
-          <span class="fib-cap-name">${getCap(2)}</span>
-        </div>
-      </div>
-    </div>
-    `;
-  }
 
   fetch('/api/gallery/list')
     .then(function(r) { return r.json(); })
@@ -106,23 +107,15 @@
         return;
       }
 
-      var html = '';
-      for (var i = 0; i < photos.length; i += 3) {
-        var chunk = photos.slice(i, i + 3);
-        if (chunk.length === 3) {
-          html += buildFibBlock(chunk, i);
-        } else {
-           // If we have 1 or 2 remaining, just render them adapting the grid
-           html += '<div class="fib-grid mb-5">';
-           if(chunk[0]) {
-               html += '<div class="fib-cell fib-a"><img src="'+chunk[0].url+'" loading="lazy" onerror="this.style.display=\\\'none\\\'" /><div class="fib-caption"><span class="fib-cap-name">'+(chunk[0].caption||'Photo')+'</span></div></div>';
-           }
-           if(chunk[1]) {
-               html += '<div class="fib-cell fib-b"><img src="'+chunk[1].url+'" loading="lazy" onerror="this.style.display=\\\'none\\\'" /><div class="fib-caption"><span class="fib-cap-name">'+(chunk[1].caption||'Photo')+'</span></div></div>';
-           }
-           html += '</div>';
-        }
-      }
+      var html = '<div class="simple-gallery-grid">';
+      photos.forEach(function(p) {
+        var captionText = p.caption ? p.caption : (p.section || 'Gallery Photo');
+        html += '<div class="gallery-item">';
+        html += '  <img src="' + p.url + '" loading="lazy" onerror="this.style.display=\'none\'" />';
+        html += '  <div class="gallery-caption">' + captionText + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
 
       container.innerHTML = html;
     })
