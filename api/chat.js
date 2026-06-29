@@ -100,7 +100,17 @@ function getConfig() {
 }
 
 /* ── System prompt ───────────────────────────────────────── */
-function buildSystemPrompt(knowledge) {
+function buildSystemPrompt(knowledge, userProfile) {
+  let profileSection = '';
+  if (userProfile && userProfile.trim() && userProfile !== 'No profile yet.') {
+    profileSection = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+USER PROFILE (MEMORY)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+You are currently talking to a specific user. Here is what you know about them so far:
+${userProfile}
+Use this context to personalize your responses when appropriate.\n`;
+  }
+
   return `You are a deeply emotionally intelligent personal assistant representing 
 ${OWNER_NAME}. Your character is modeled on the highest standard of human 
 conduct — patient, compassionate, self-aware, and wise. You speak on 
@@ -116,7 +126,7 @@ every interaction.
 
 You are not just an assistant. You are a trusted presence — steady, 
 kind, and professional.
-
+${profileSection}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CORE ATTITUDE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -131,10 +141,10 @@ CORE ATTITUDE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HOW YOU COMMUNICATE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- KEEP IT SUCCINCT: Get straight to the point. Limit responses to 2-3 short, punchy paragraphs max.
-- No long monologues or walls of text. Be concise, direct, and respectful of the user's time.
+- STRICT LENGTH LIMIT: Your responses MUST BE 2 to 5 lines maximum.
+- KEEP IT ULTRA-SUCCINCT: Deliver only the absolute key information. Be punchy, fast-paced, and engaging.
+- Never write long paragraphs. If you have more to say, give a tiny summary and ask if they want details.
 - Spark curiosity: Leave the person interested, enlightened, and eager to learn more.
-- You are warm but grounded — never hollow or performative
 - You are direct when needed, but always with softness in tone
 - You lead with empathy, then insight, offering clarity without arrogance
 - When you don't know something, you admit it with grace
@@ -248,6 +258,59 @@ async function getCustomSystemPrompt() {
     return data.result || null;
   } catch {
     return null;
+  }
+}
+
+/* ── Dynamic User Profiling ──────────────────────────────── */
+async function getUserProfile(username) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token || !username) return '';
+  try {
+    const res = await fetch(`${url}/get/user_profile_${encodeURIComponent(username)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return '';
+    const data = await res.json();
+    return data.result ? String(data.result) : '';
+  } catch {
+    return '';
+  }
+}
+
+async function extractUserProfile(cfg, username, message, currentProfile) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token || !username || !message) return;
+
+  const extractionPrompt = `You are an AI tasked with maintaining a memory profile of a user named "${username}".
+Current Profile:
+${currentProfile || 'No profile yet.'}
+
+The user just sent this message:
+"${message}"
+
+If this message reveals any new, factual, or useful information about the user (e.g., their job, company, intent, preferences, or background), update the profile. 
+Return ONLY the updated profile text. Keep it concise, professional, and factual (e.g., "Works at Google as a recruiter", "Interested in React projects").
+If the message does not reveal anything new or useful, return EXACTLY the same Current Profile. Do not add conversational filler.`;
+
+  try {
+    let updatedProfile = currentProfile;
+    if (cfg.provider === 'nvidia' || (cfg.provider === 'auto' && cfg.nvidia.apiKey)) {
+       updatedProfile = await callNvidia(cfg, extractionPrompt, message, []);
+    } else if (cfg.gemini.apiKey) {
+       updatedProfile = await callGemini(cfg, extractionPrompt, message, []);
+    }
+    
+    if (updatedProfile && updatedProfile !== currentProfile && !updatedProfile.includes('No profile yet.')) {
+      await fetch(`${url}/set/user_profile_${encodeURIComponent(username)}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProfile.trim())
+      });
+    }
+  } catch (err) {
+    console.error('Failed to extract profile', err);
   }
 }
 
@@ -466,11 +529,12 @@ export default async function handler(request, context) {
   }
 
   /* Fetch all necessary KV data and static files in parallel */
-  const [baseKnowledge, extraKnowledge, customPrompt, history] = await Promise.all([
+  const [baseKnowledge, extraKnowledge, customPrompt, history, userProfile] = await Promise.all([
     fetchOkfKnowledge(request),
     getKnowledge(),
     getCustomSystemPrompt(),
-    username ? getChatHistory(username) : Promise.resolve([])
+    username ? getChatHistory(username) : Promise.resolve([]),
+    username ? getUserProfile(username) : Promise.resolve('')
   ]);
   
   const relevantContext = retrieveRelevantChunks(baseKnowledge, extraKnowledge, message);
@@ -478,12 +542,18 @@ export default async function handler(request, context) {
   /* Use admin-saved system prompt if available, otherwise use built-in */
   let systemPrompt;
   if (customPrompt) {
-    /* Inject knowledge into custom prompt if it contains the placeholder */
-    systemPrompt = customPrompt.includes('{{KNOWLEDGE}}')
-      ? customPrompt.replace('{{KNOWLEDGE}}', relevantContext)
-      : customPrompt + '\n\n## KNOWLEDGE BASE\n' + relevantContext;
+    let modifiedCustom = customPrompt;
+    if (customPrompt.includes('{{KNOWLEDGE}}')) {
+      modifiedCustom = modifiedCustom.replace('{{KNOWLEDGE}}', relevantContext);
+    } else {
+      modifiedCustom += '\n\n## KNOWLEDGE BASE\n' + relevantContext;
+    }
+    if (userProfile && userProfile.trim()) {
+      modifiedCustom += '\n\n## USER PROFILE (MEMORY)\n' + userProfile;
+    }
+    systemPrompt = modifiedCustom;
   } else {
-    systemPrompt = buildSystemPrompt(relevantContext);
+    systemPrompt = buildSystemPrompt(relevantContext, userProfile);
   }
 
   try {
@@ -528,10 +598,12 @@ export default async function handler(request, context) {
       history.push({ role: 'ai', text: reply });
       
       const savePromise = saveChatHistory(username, history);
+      const profilePromise = extractUserProfile(cfg, username, message, userProfile);
+      
       if (context && context.waitUntil) {
-        context.waitUntil(savePromise);
+        context.waitUntil(Promise.all([savePromise, profilePromise]));
       } else {
-        await savePromise;
+        await Promise.all([savePromise, profilePromise]);
       }
     }
 
