@@ -1,10 +1,10 @@
 /**
- * /api/gallery/upload.js
- * Vercel Edge Function — Save Image URL / Google Drive link to gallery
+ * /api/gallery/save-all.js
+ * Vercel Edge Function — Bulk save gallery to KV
  * Protected by ADMIN_PASSWORD
  *
- * POST JSON with { url, caption, section }
- * Returns: { ok, url, caption, id, uploadedAt }
+ * POST JSON with { gallery: [{ id, url, caption, section, uploadedAt }, ...] }
+ * Returns: { ok: true }
  */
 export const config = { runtime: 'edge' };
 
@@ -45,33 +45,27 @@ export default async function handler(request) {
 
   try {
     const body = await request.json();
-    let { url, caption, section } = body;
+    let gallery = body.gallery || [];
     
-    url = (url || '').trim();
-    caption = (caption || '').trim();
-    section = (section || 'personal').trim();
-
-    if (!url) {
-      return new Response(JSON.stringify({ error: 'No URL provided' }),
+    if (!Array.isArray(gallery)) {
+      return new Response(JSON.stringify({ error: 'Gallery must be an array' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
     }
 
-    /* Convert standard Google Drive share links into direct embed links */
-    const gDriveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)\/view/);
-    if (gDriveMatch) {
-      url = `https://drive.google.com/uc?export=view&id=${gDriveMatch[1]}`;
-    }
-
-    /* Build image record */
-    const imageId = `img_${Date.now()}`;
-    const record  = { id: imageId, url, caption, section, uploadedAt: new Date().toISOString() };
-
-    /* Save to KV: append to gallery list */
-    const listRes  = await fetch(`${kvUrl}/get/touhid_gallery`, { headers: { Authorization: `Bearer ${kvToken}` } });
-    const listData = listRes.ok ? await listRes.json() : {};
-    let gallery    = [];
-    try { gallery = listData.result ? JSON.parse(listData.result) : []; } catch {}
-    gallery.push(record);
+    // Process URLs to convert Google Drive share links to embeds just in case
+    gallery = gallery.map(item => {
+      let url = (item.url || '').trim();
+      const gDriveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)\/view/);
+      if (gDriveMatch) {
+        url = `https://drive.google.com/uc?export=view&id=${gDriveMatch[1]}`;
+      }
+      return {
+        ...item,
+        url,
+        id: item.id || `img_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        uploadedAt: item.uploadedAt || new Date().toISOString()
+      };
+    }).filter(item => item.url);
 
     await fetch(`${kvUrl}/set/touhid_gallery`, {
       method: 'POST',
@@ -79,11 +73,11 @@ export default async function handler(request) {
       body: JSON.stringify(JSON.stringify(gallery))
     });
 
-    return new Response(JSON.stringify({ ok: true, ...record }),
+    return new Response(JSON.stringify({ ok: true, count: gallery.length }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } });
 
   } catch (err) {
-    console.error('Gallery save error:', err);
+    console.error('Gallery bulk save error:', err);
     return new Response(JSON.stringify({ error: err.message || 'Save failed' }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
   }

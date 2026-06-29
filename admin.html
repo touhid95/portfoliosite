@@ -866,26 +866,29 @@ You help visitors learn about his work and skills.
 
           <!-- GALLERY TAB -->
           <div class="cms-panel" id="cms-panel-gallery" style="display:none;">
-            <font face="Courier New" size="2" color="#888888">Upload photos to your gallery. They will appear live on the Gallery page.</font><br /><br />
-
-            <font face="Courier New" size="2" color="#888888">SECTION (e.g. Personal, Campus, Cadet College)</font><br />
-            <input type="text" class="admin-input" id="gallery-section" placeholder="e.g. personal" value="personal" style="width:260px;" /><br /><br />
-
-            <font face="Courier New" size="2" color="#888888">CAPTION (optional)</font><br />
-            <input type="text" class="admin-input" id="gallery-caption" placeholder="e.g. IBA Campus 2024" style="width:400px;" /><br /><br />
-
-            <font face="Courier New" size="2" color="#888888">GOOGLE DRIVE OR IMAGE LINK</font><br />
-            <input type="text" class="admin-input" id="gallery-image-url" placeholder="Paste Google Drive share link or image URL here" style="width:100%; max-width:600px;" /><br /><br />
-            <div class="status-bar" id="gallery-upload-status">Select a section, optional caption, and paste a link to upload.</div>
+            <font face="Courier New" size="2" color="#888888">Manage your gallery. Edit links or text directly, add new rows, and click Save Changes.</font><br /><br />
+            <div class="status-bar" id="gallery-upload-status">Ready.</div>
             <br />
-            <button class="admin-btn" id="gallery-upload-btn">Upload Photo &rarr;</button>
+            <button class="admin-btn" id="gallery-save-btn">Save Changes</button>
+            <button class="admin-btn-secondary" id="gallery-add-row-btn" style="margin-left:8px;">+ Add Row</button>
+            <button class="admin-btn-secondary" id="gallery-refresh-btn" style="margin-left:8px;">Discard & Refresh</button>
             <br /><br />
 
-            <hr color="#E0E0E0" size="1" /><br />
-            <font face="Courier New" size="2" color="#aaaaaa">EXISTING PHOTOS</font><br /><br />
-            <button class="admin-btn-secondary" id="gallery-refresh-btn" style="margin-bottom:12px;">Refresh List</button>
-            <div id="gallery-existing-list">
-              <font face="Courier New" size="2" color="#aaaaaa">Click Refresh List to load existing photos.</font>
+            <div id="gallery-spreadsheet-container">
+              <table width="100%" border="0" cellpadding="8" cellspacing="0" id="gallery-table">
+                <thead>
+                  <tr style="border-bottom:1px solid #E0E0E0; text-align:left;">
+                    <th width="80"><font face="Courier New" size="2" color="#888888">PREVIEW</font></th>
+                    <th width="150"><font face="Courier New" size="2" color="#888888">SECTION</font></th>
+                    <th><font face="Courier New" size="2" color="#888888">CAPTION</font></th>
+                    <th><font face="Courier New" size="2" color="#888888">IMAGE URL</font></th>
+                    <th width="60"></th>
+                  </tr>
+                </thead>
+                <tbody id="gallery-tbody">
+                  <!-- Rows injected here -->
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -1166,12 +1169,11 @@ You help visitors learn about his work and skills.
   ].join('\n');
 
   /* Gallery Manager Elements */
-  var gallerySection    = document.getElementById('gallery-section');
-  var galleryCaption    = document.getElementById('gallery-caption');
   var galleryStatus     = document.getElementById('gallery-upload-status');
-  var galleryUploadBtn  = document.getElementById('gallery-upload-btn');
+  var gallerySaveBtn    = document.getElementById('gallery-save-btn');
+  var galleryAddRowBtn  = document.getElementById('gallery-add-row-btn');
   var galleryRefreshBtn = document.getElementById('gallery-refresh-btn');
-  var galleryList       = document.getElementById('gallery-existing-list');
+  var galleryTbody      = document.getElementById('gallery-tbody');
 
   /* CV Upload Elements */
   var cvTextInput = document.getElementById('cv-text-input');
@@ -1687,41 +1689,85 @@ You help visitors learn about his work and skills.
   });
 
 
-  /* ── Gallery Manager Handlers ─────────────────────────── */
-  galleryUploadBtn.addEventListener('click', function () {
-    var section = document.getElementById('gallery-section').value.trim();
-    var caption = document.getElementById('gallery-caption').value.trim();
-    var urlInput = document.getElementById('gallery-image-url').value.trim();
-
-    if (!urlInput) {
-      setStatus(galleryStatus, 'Please paste an image or Google Drive link.', 'err');
-      return;
+  /* ── Gallery Spreadsheet Handlers ─────────────────────────── */
+  
+  function getPreviewUrl(rawUrl) {
+    var url = (rawUrl || '').trim();
+    var m = url.match(/drive\.google\.com\/file\/d\/([^/]+)\/view/);
+    if (m) {
+      return 'https://drive.google.com/uc?export=view&id=' + m[1];
     }
+    return url;
+  }
 
-    setStatus(galleryStatus, 'Saving photo link...', '');
-    galleryUploadBtn.disabled = true;
+  function createGalleryRow(data) {
+    var tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid #E0E0E0';
+    tr.dataset.id = data.id || ('new_' + Date.now() + Math.floor(Math.random()*1000));
+    tr.dataset.uploadedAt = data.uploadedAt || new Date().toISOString();
 
-    if (isLocalMock) {
-      setTimeout(function () {
-        galleryUploadBtn.disabled = false;
-        setStatus(galleryStatus, 'Upload complete \u2714 (Local Mock Mode).', 'ok');
-        document.getElementById('gallery-image-url').value = '';
-        document.getElementById('gallery-caption').value = '';
-        refreshGallery();
-      }, 1000);
-      return;
-    }
+    var safeSection = (data.section || '').replace(/"/g, '&quot;');
+    var safeCaption = (data.caption || '').replace(/"/g, '&quot;');
+    var safeUrl = (data.url || '').replace(/"/g, '&quot;');
+    var previewUrl = getPreviewUrl(data.url);
+
+    var html = '';
+    html += '<td><img src="' + previewUrl + '" class="gal-preview" style="width:60px;height:45px;object-fit:cover;border:1px solid #E0E0E0;background:#eee;" onerror="this.src=\'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=\'" /></td>';
+    html += '<td><input type="text" class="admin-input gal-sec" value="' + safeSection + '" placeholder="e.g. personal" style="width:100%;font-size:11px;" /></td>';
+    html += '<td><input type="text" class="admin-input gal-cap" value="' + safeCaption + '" placeholder="Caption" style="width:100%;font-size:11px;" /></td>';
+    html += '<td><input type="text" class="admin-input gal-url" value="' + safeUrl + '" placeholder="Image URL or Drive link" style="width:100%;font-size:11px;" /></td>';
+    html += '<td align="right"><button class="admin-btn-secondary del-row-btn" style="color:#BC2026;border-color:#E0E0E0;font-size:10px;padding:4px 8px;" title="Remove row">\u2715</button></td>';
+    
+    tr.innerHTML = html;
+
+    var urlInput = tr.querySelector('.gal-url');
+    var imgPreview = tr.querySelector('.gal-preview');
+    urlInput.addEventListener('input', function() {
+      imgPreview.src = getPreviewUrl(urlInput.value);
+    });
+
+    var delBtn = tr.querySelector('.del-row-btn');
+    delBtn.addEventListener('click', function() {
+      if (confirm('Remove this row? (Will not be permanent until you Save Changes)')) {
+        tr.remove();
+      }
+    });
+
+    return tr;
+  }
+
+  galleryAddRowBtn.addEventListener('click', function() {
+    var tr = createGalleryRow({ section: 'personal', caption: '', url: '' });
+    galleryTbody.insertBefore(tr, galleryTbody.firstChild);
+  });
+
+  gallerySaveBtn.addEventListener('click', function () {
+    setStatus(galleryStatus, 'Saving entire gallery...', '');
+    gallerySaveBtn.disabled = true;
+
+    var galleryData = [];
+    var rows = galleryTbody.querySelectorAll('tr');
+    rows.forEach(function(tr) {
+      var url = tr.querySelector('.gal-url').value.trim();
+      if (url) {
+        galleryData.push({
+          id: tr.dataset.id,
+          uploadedAt: tr.dataset.uploadedAt,
+          section: tr.querySelector('.gal-sec').value.trim(),
+          caption: tr.querySelector('.gal-cap').value.trim(),
+          url: url
+        });
+      }
+    });
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/gallery/upload', true);
+    xhr.open('POST', '/api/gallery/save-all', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
-      galleryUploadBtn.disabled = false;
+      gallerySaveBtn.disabled = false;
       if (xhr.status === 200) {
-        setStatus(galleryStatus, 'Photo link saved successfully \u2714', 'ok');
-        document.getElementById('gallery-image-url').value = '';
-        document.getElementById('gallery-caption').value = '';
+        setStatus(galleryStatus, 'Gallery saved successfully \u2714', 'ok');
         refreshGallery();
       } else {
         var errResponse = {};
@@ -1730,19 +1776,19 @@ You help visitors learn about his work and skills.
       }
     };
     xhr.onerror = function () {
-      galleryUploadBtn.disabled = false;
+      gallerySaveBtn.disabled = false;
       setStatus(galleryStatus, 'Network error during save.', 'err');
     };
-    xhr.send(JSON.stringify({ url: urlInput, section: section, caption: caption }));
+    xhr.send(JSON.stringify({ gallery: galleryData }));
   });
 
   function refreshGallery() {
     setStatus(galleryStatus, 'Loading photos...', '');
     galleryRefreshBtn.disabled = true;
+    galleryTbody.innerHTML = '';
 
     if (isLocalMock) {
       galleryRefreshBtn.disabled = false;
-      galleryList.innerHTML = '<font face="Courier New" size="2" color="#aaaaaa">Local mock mode: gallery refresh simulated.</font>';
       setStatus(galleryStatus, 'Loaded photos list (Simulated).', 'ok');
       return;
     }
@@ -1753,7 +1799,9 @@ You help visitors learn about his work and skills.
       galleryRefreshBtn.disabled = false;
       if (xhr.status === 200) {
         var photos = JSON.parse(xhr.responseText);
-        renderGalleryList(photos);
+        photos.forEach(function(p) {
+          galleryTbody.appendChild(createGalleryRow(p));
+        });
         setStatus(galleryStatus, 'Loaded ' + photos.length + ' photo(s).', 'ok');
       } else {
         setStatus(galleryStatus, 'Failed to load gallery list: ' + xhr.status, 'err');
@@ -1767,67 +1815,6 @@ You help visitors learn about his work and skills.
   }
 
   galleryRefreshBtn.addEventListener('click', refreshGallery);
-
-  function renderGalleryList(photos) {
-    if (!photos || !photos.length) {
-      galleryList.innerHTML = '<font face="Courier New" size="2" color="#aaaaaa">No photos uploaded yet.</font>';
-      return;
-    }
-
-    var html = '<table width="100%" border="0" cellpadding="8" cellspacing="0">';
-    photos.forEach(function (p) {
-      var dateStr = p.uploadedAt ? new Date(p.uploadedAt).toLocaleDateString() : '';
-      var safeUrl = p.url.replace(/"/g, '&quot;');
-      var safeCaption = (p.caption || '').replace(/"/g, '&quot;');
-      var safeSection = (p.section || '').replace(/"/g, '&quot;');
-
-      html += '<tr style="border-bottom:1px solid #E0E0E0;">';
-      html += '<td width="100"><img src="' + safeUrl + '" style="width:80px;height:60px;object-fit:cover;border:1px solid #E0E0E0;" /></td>';
-      html += '<td>';
-      html += '<font face="Courier New" size="2"><b>Section:</b> ' + safeSection + '</font><br />';
-      html += '<font face="Courier New" size="2"><b>Caption:</b> ' + (safeCaption || '<em>(none)</em>') + '</font><br />';
-      html += '<font face="Courier New" size="1" color="#aaaaaa">Uploaded: ' + dateStr + '</font>';
-      html += '</td>';
-      html += '<td width="80" align="right" valign="middle">';
-      html += '<button class="admin-btn-secondary delete-photo-btn" style="color:#BC2026;border-color:#E0E0E0;font-size:10px;padding:4px 8px;" data-id="' + p.id + '" data-url="' + safeUrl + '">Delete</button>';
-      html += '</td>';
-      html += '</tr>';
-    });
-    html += '</table>';
-
-    galleryList.innerHTML = html;
-
-    // Attach event listeners to delete buttons
-    galleryList.querySelectorAll('.delete-photo-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-id');
-        var url = btn.getAttribute('data-url');
-        deleteGalleryPhoto(id, url);
-      });
-    });
-  }
-
-  function deleteGalleryPhoto(id, url) {
-    if (!confirm('Are you sure you want to delete this photo?')) return;
-    setStatus(galleryStatus, 'Deleting photo...', '');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/gallery/delete', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        setStatus(galleryStatus, 'Photo deleted successfully \u2714', 'ok');
-        refreshGallery();
-      } else {
-        setStatus(galleryStatus, 'Failed to delete photo: ' + xhr.status, 'err');
-      }
-    };
-    xhr.onerror = function () {
-      setStatus(galleryStatus, 'Network error deleting photo.', 'err');
-    };
-    xhr.send(JSON.stringify({ id: id, url: url }));
-  }
 
 
   /* ── CV Upload & AI Auto-fill Handlers ───────────────── */
