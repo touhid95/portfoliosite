@@ -771,11 +771,12 @@ You help visitors learn about his work and skills.
 
           <!-- Tab nav -->
           <div id="cms-tabs" style="display:flex;gap:0;border-bottom:1px solid #E0E0E0;margin-bottom:20px;flex-wrap:wrap;">
-            <button class="cms-tab active" data-tab="personal" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid #2C2C2C;padding:8px 16px;cursor:pointer;color:#2C2C2C;">PERSONAL</button>
+            <button class="cms-tab" data-tab="personal" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid #2C2C2C;padding:8px 16px;cursor:pointer;color:#2C2C2C;">PERSONAL</button>
             <button class="cms-tab" data-tab="home" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">HOME</button>
             <button class="cms-tab" data-tab="about" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">ABOUT</button>
             <button class="cms-tab" data-tab="education" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">EDUCATION</button>
             <button class="cms-tab" data-tab="projects" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">PROJECTS</button>
+            <button class="cms-tab" data-tab="research" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">RESEARCH</button>
             <button class="cms-tab" data-tab="contact" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">CONTACT</button>
             <button class="cms-tab" data-tab="gallery" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#888888;">GALLERY</button>
             <button class="cms-tab" data-tab="cv" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;cursor:pointer;color:#BC2026;">CV &rarr; AI</button>
@@ -850,6 +851,16 @@ You help visitors learn about his work and skills.
             <br /><br />
             <div id="cms-projects-list"></div>
             <button class="admin-btn-secondary" id="add-project-btn" style="margin-top:8px;">+ Add Project</button>
+            <br /><br />
+          </div>
+
+          <!-- RESEARCH TAB -->
+          <div class="cms-panel" id="cms-panel-research" style="display:none;">
+            <font face="Courier New" size="2" color="#888888">RESEARCH ARTICLES LIST</font><br />
+            <font face="Courier New" size="2" color="#aaaaaa">Add, edit, or remove research articles. Each article appears as a numbered entry on the Research page.</font>
+            <br /><br />
+            <div id="cms-research-list"></div>
+            <button class="admin-btn-secondary" id="add-research-btn" style="margin-top:8px;">+ Add Article</button>
             <br /><br />
           </div>
 
@@ -1021,6 +1032,7 @@ You help visitors learn about his work and skills.
               <option value="about.html">About (about.html)</option>
               <option value="education.html">Education (education.html)</option>
               <option value="projects.html">Projects (projects.html)</option>
+              <option value="research.html">Research (research.html)</option>
               <option value="contact.html">Contact (contact.html)</option>
             </select>
             <button id="ve-edit-toggle" disabled>Enable Editing</button>
@@ -1114,6 +1126,8 @@ You help visitors learn about his work and skills.
   var contentStatus  = document.getElementById('content-status');
   var addProjectBtn  = document.getElementById('add-project-btn');
   var projectsList   = document.getElementById('cms-projects-list');
+  var addResearchBtn = document.getElementById('add-research-btn');
+  var researchList   = document.getElementById('cms-research-list');
 
   /* CMS content cache */
   var cmsContent = {};
@@ -1340,6 +1354,10 @@ You help visitors learn about his work and skills.
     projectsList.innerHTML = '';
     var projs = Array.isArray(c.projects) ? c.projects : Object.values(c.projects || {});
     projs.forEach(function(p) { addProjectRow(p); });
+    /* Populate research */
+    researchList.innerHTML = '';
+    var arts = Array.isArray(c.research) ? c.research : Object.values(c.research || {});
+    arts.forEach(function(a) { addResearchRow(a); });
   }
 
   /* ── Projects management ─────────────────────────────── */
@@ -1536,6 +1554,212 @@ You help visitors learn about his work and skills.
 
   addProjectBtn.addEventListener('click', function() { addProjectRow(); });
 
+  /* ── Research management ────────────────────────────── */
+  var RES_STATUS_OPTIONS = ['draft','submitted','published','review'];
+
+  function addResearchRow(data) {
+    data = data || {};
+    var idx = researchList.children.length;
+    var num = String(idx + 1).padStart(2, '0');
+    var div = document.createElement('div');
+    div.style.cssText = 'border:1px solid #E0E0E0;padding:16px 16px 8px;margin-bottom:14px;position:relative;background:#FCFAF2;';
+
+    var statusOpts = RES_STATUS_OPTIONS.map(function(s) {
+      return '<option value="' + s + '"' + (data.status === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+
+    div.innerHTML = [
+      /* Header row */
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">',
+      '  <font face="Courier New" size="2" color="#BC2026" class="res-num-label">// ARTICLE ' + num + '</font>',
+      '  <input type="text" class="admin-input res-title" placeholder="Article title" value="' +
+        (data.title||'').replace(/"/g,'&quot;') + '" style="flex:1;min-width:180px;font-weight:bold;" />',
+      '  <button class="admin-btn-secondary res-toggle" onclick="(function(btn){' +
+          'var body=btn.closest(\'div[data-res]\');' +
+          'var inner=body.querySelector(\'.res-inner\');' +
+          'var open=inner.style.display!==\'none\';' +
+          'inner.style.display=open?\'none\':\'block\';' +
+          'btn.textContent=open?\'+ Expand\':\'− Collapse\';' +
+      '})(this)" style="white-space:nowrap;padding:6px 12px;font-size:11px;">− Collapse</button>',
+      '  <button onclick="this.closest(\'div[data-res]\').remove();reNumberResearch()" ' +
+          'style="background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:11px;cursor:pointer;padding:6px 10px;">Remove</button>',
+      '</div>',
+
+      '<div class="res-inner">',
+
+      /* Subtitle */
+      '<font face="Courier New" size="2" color="#888888">SUBTITLE / TAGLINE</font><br />',
+      '<input type="text" class="admin-input res-subtitle" placeholder="e.g. A quantitative study of..." value="' +
+        (data.subtitle||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+
+      /* OKF Meta row */
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 80px;gap:10px;margin-bottom:14px;">',
+      '  <div><font face="Courier New" size="2" color="#888888">TYPE</font><br />',
+      '  <input type="text" class="admin-input res-type" placeholder="research-article" value="' +
+        (data.type||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">DOMAIN</font><br />',
+      '  <input type="text" class="admin-input res-domain" placeholder="data science" value="' +
+        (data.domain||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">STATUS</font><br />',
+      '  <select class="admin-input res-status" style="cursor:pointer;">' + statusOpts + '</select></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">YEAR</font><br />',
+      '  <input type="text" class="admin-input res-year" placeholder="2026" value="' +
+        (data.year||'').replace(/"/g,'&quot;') + '" /></div>',
+      '</div>',
+
+      /* Authors / Journal */
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">',
+      '  <div><font face="Courier New" size="2" color="#888888">AUTHORS</font><br />',
+      '  <input type="text" class="admin-input res-authors" placeholder="e.g. Touhid, M.K.; Co-author, A." value="' +
+        (data.authors||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">JOURNAL / CONFERENCE</font><br />',
+      '  <input type="text" class="admin-input res-journal" placeholder="e.g. Journal of Data Science" value="' +
+        (data.journal||'').replace(/"/g,'&quot;') + '" /></div>',
+      '</div>',
+
+      /* Abstract */
+      '<font face="Courier New" size="2" color="#888888">ABSTRACT</font><br />',
+      '<textarea class="admin-textarea res-abstract" rows="4" placeholder="Article abstract...">' +
+        (data.abstract||'') + '</textarea><br /><br />',
+
+      /* Key Findings */
+      '<font face="Courier New" size="2" color="#888888">KEY FINDING 1</font><br />',
+      '<textarea class="admin-textarea res-finding1" rows="2" placeholder="First key finding...">' +
+        (data.finding1||'') + '</textarea><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">KEY FINDING 2</font><br />',
+      '<textarea class="admin-textarea res-finding2" rows="2" placeholder="Second key finding...">' +
+        (data.finding2||'') + '</textarea><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">KEY FINDING 3</font><br />',
+      '<textarea class="admin-textarea res-finding3" rows="2" placeholder="Third key finding...">' +
+        (data.finding3||'') + '</textarea><br /><br />',
+
+      /* Tags */
+      '<font face="Courier New" size="2" color="#888888">TAGS <span style="color:#aaa;">(comma-separated)</span></font><br />',
+      '<input type="text" class="admin-input res-tags" placeholder="Machine Learning, Finance, Python" value="' +
+        (data.tags||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+
+      /* Links */
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">',
+      '  <div><font face="Courier New" size="2" color="#888888">DOI / PAPER URL</font><br />',
+      '  <input type="text" class="admin-input res-doi" placeholder="https://doi.org/..." value="' +
+        (data.doi||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">PDF / DRIVE LINK</font><br />',
+      '  <input type="text" class="admin-input res-link" placeholder="https://drive.google.com/..." value="' +
+        (data.link||'').replace(/"/g,'&quot;') + '" /></div>',
+      '</div>',
+
+      /* Image 1 */
+      '<div style="border:1px solid #E0E0E0;padding:10px 12px;margin-bottom:10px;background:#f9f8f2;">',
+      '<font face="Courier New" size="2" color="#BC2026">FIGURE 1 — Cloudinary URL</font><br />',
+      '<font face="Courier New" size="2" color="#aaaaaa">Primary figure, chart, or diagram</font><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">URL</font><br />',
+      '<input type="text" class="admin-input res-image1" placeholder="https://res.cloudinary.com/..." value="' +
+        (data.image1||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">LABEL</font><br />',
+      '<input type="text" class="admin-input res-img1label" placeholder="e.g. FIGURE 1 &mdash; RESULTS" value="' +
+        (data.img1label||'').replace(/"/g,'&quot;') + '" />',
+      '</div>',
+
+      /* Image 2 */
+      '<div style="border:1px solid #E0E0E0;padding:10px 12px;margin-bottom:14px;background:#f9f8f2;">',
+      '<font face="Courier New" size="2" color="#BC2026">FIGURE 2 — Cloudinary URL</font><br />',
+      '<font face="Courier New" size="2" color="#aaaaaa">Secondary figure, chart, or methodology diagram</font><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">URL</font><br />',
+      '<input type="text" class="admin-input res-image2" placeholder="https://res.cloudinary.com/..." value="' +
+        (data.image2||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">LABEL</font><br />',
+      '<input type="text" class="admin-input res-img2label" placeholder="e.g. FIGURE 2 &mdash; METHODOLOGY" value="' +
+        (data.img2label||'').replace(/"/g,'&quot;') + '" />',
+      '</div>',
+
+      '</div>' /* end .res-inner */
+    ].join('');
+
+    div.setAttribute('data-res', num);
+    researchList.appendChild(div);
+  }
+
+  function reNumberResearch() {
+    var divs = researchList.querySelectorAll(':scope > div[data-res]');
+    divs.forEach(function(d, i) {
+      var num = String(i + 1).padStart(2, '00');
+      d.setAttribute('data-res', num);
+      var label = d.querySelector('.res-num-label');
+      if (label) label.textContent = '// ARTICLE ' + num;
+    });
+  }
+
+  function collectResearch() {
+    var divs = researchList.querySelectorAll(':scope > div[data-res]');
+    var arts = [];
+    divs.forEach(function(d) {
+      arts.push({
+        title:    (d.querySelector('.res-title')?.value||'').trim(),
+        subtitle: (d.querySelector('.res-subtitle')?.value||'').trim(),
+        type:     (d.querySelector('.res-type')?.value||'').trim(),
+        domain:   (d.querySelector('.res-domain')?.value||'').trim(),
+        status:   (d.querySelector('.res-status')?.value||'draft').trim(),
+        year:     (d.querySelector('.res-year')?.value||'').trim(),
+        authors:  (d.querySelector('.res-authors')?.value||'').trim(),
+        journal:  (d.querySelector('.res-journal')?.value||'').trim(),
+        abstract: (d.querySelector('.res-abstract')?.value||'').trim(),
+        finding1: (d.querySelector('.res-finding1')?.value||'').trim(),
+        finding2: (d.querySelector('.res-finding2')?.value||'').trim(),
+        finding3: (d.querySelector('.res-finding3')?.value||'').trim(),
+        tags:     (d.querySelector('.res-tags')?.value||'').trim(),
+        doi:      (d.querySelector('.res-doi')?.value||'').trim(),
+        link:     (d.querySelector('.res-link')?.value||'').trim(),
+        image1:   (d.querySelector('.res-image1')?.value||'').trim(),
+        img1label:(d.querySelector('.res-img1label')?.value||'').trim(),
+        image2:   (d.querySelector('.res-image2')?.value||'').trim(),
+        img2label:(d.querySelector('.res-img2label')?.value||'').trim()
+      });
+    });
+    return arts;
+  }
+
+  function syncResearchToKnowledge(articles) {
+    if (!editor) return;
+    var marker    = '<!-- OKF:RESEARCH:START -->';
+    var markerEnd = '<!-- OKF:RESEARCH:END -->';
+    var block     = [marker];
+    block.push('\n## Research Articles\n');
+    articles.forEach(function(a, i) {
+      var num = String(i + 1).padStart(2, '0');
+      block.push('### Article ' + num + ': ' + (a.title || '(untitled)'));
+      if (a.subtitle) block.push('**Subtitle:** ' + a.subtitle);
+      if (a.authors)  block.push('**Authors:** '  + a.authors);
+      if (a.journal)  block.push('**Journal:** '  + a.journal);
+      if (a.type)     block.push('**Type:** '     + a.type);
+      if (a.domain)   block.push('**Domain:** '   + a.domain);
+      if (a.status)   block.push('**Status:** '   + a.status);
+      if (a.year)     block.push('**Year:** '     + a.year);
+      if (a.abstract) block.push('\n' + a.abstract);
+      if (a.finding1 || a.finding2 || a.finding3) {
+        block.push('\n**Key Findings:**');
+        if (a.finding1) block.push('- ' + a.finding1);
+        if (a.finding2) block.push('- ' + a.finding2);
+        if (a.finding3) block.push('- ' + a.finding3);
+      }
+      if (a.tags) block.push('\n**Tags:** ' + a.tags);
+      if (a.doi)  block.push('**DOI:** '   + a.doi);
+      block.push('');
+    });
+    block.push(markerEnd);
+    var newBlock = block.join('\n');
+    var current  = editor.value;
+    var s = current.indexOf(marker);
+    var e = current.indexOf(markerEnd);
+    if (s !== -1 && e !== -1) {
+      editor.value = current.substring(0, s) + newBlock + current.substring(e + markerEnd.length);
+    } else {
+      editor.value = (current ? current + '\n\n' : '') + newBlock;
+    }
+    updateCharCount();
+  }
+
+  addResearchBtn.addEventListener('click', function() { addResearchRow(); });
+
   /* ── Collect all CMS content from form fields ─────── */
   function collectContent() {
     function gv(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
@@ -1573,7 +1797,8 @@ You help visitors learn about his work and skills.
       education: {
         currentStatus: gv('cms-education-currentStatus')
       },
-      projects: collectProjects()
+      projects: collectProjects(),
+      research: collectResearch()
     };
   }
 
@@ -1584,6 +1809,9 @@ You help visitors learn about his work and skills.
     if (content.projects && content.projects.length) {
       syncProjectsToKnowledge(content.projects);
     }
+    if (content.research && content.research.length) {
+      syncResearchToKnowledge(content.research);
+    }
     setStatus(contentStatus, 'Saving\u2026', '');
     saveContentBtn.disabled = true;
     var xhr = new XMLHttpRequest();
@@ -1593,7 +1821,7 @@ You help visitors learn about his work and skills.
     xhr.onload = function() {
       saveContentBtn.disabled = false;
       if (xhr.status === 200) {
-        setStatus(contentStatus, 'Content saved \u2714 — Projects synced to AI knowledge base. Changes live within seconds.', 'ok');
+        setStatus(contentStatus, 'Content saved \u2714 — Projects & Research synced to AI knowledge base. Changes live within seconds.', 'ok');
         /* Update okf/projects.md via OKF sync endpoint if available */
       } else {
         setStatus(contentStatus, 'Save failed: ' + xhr.status, 'err');
