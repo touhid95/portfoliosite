@@ -17,22 +17,25 @@
     <hr class="hr-light mb-4 mt-2" />
   </div>
 
-  <nav class="nav-links font-mono text-sm">
-    <a href="index.html">HOME</a>
-    <a href="about.html">ABOUT</a>
-    <a href="education.html" class="active">EDUCATION</a>
-    <a href="projects.html">PROJECTS</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="contact.html">CONTACT</a>
-    <a href="cv.html" target="_blank">CV &nearr;</a>
+  <nav class="nav-wrapper font-mono text-sm">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776; MENU</button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">HOME</a>
+      <a href="about.html">ABOUT</a>
+      <a href="education.html" class="active">EDUCATION</a>
+      <a href="projects.html">PROJECTS</a>
+      <a href="gallery.html">GALLERY</a>
+      <a href="contact.html">CONTACT</a>
+      <a href="cv.html" target="_blank">CV &nearr;</a>
+    </div>
   </nav>
 
   <div class="mb-5 mt-5">
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+    <div class="sep-line mb-4 mt-2"></div>
     <div class="mb-4 mt-4">
       <h1 class="font-serif text-xxl m-0 font-bold" style="margin:0;">EDUCATION</h1>
     </div>
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+    <div class="sep-line"></div>
   </div>
 
   <hr class="hr-light mb-3" />
@@ -167,5 +170,16 @@
 
 <script src="cms.js"></script>
 <script src="chat-widget.js"></script>
+<script>
+  (function(){
+    var btn = document.getElementById('nav-toggle');
+    var menu = document.getElementById('nav-links');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
 </body>
 </html>

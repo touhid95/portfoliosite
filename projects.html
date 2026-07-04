@@ -4,22 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects | Mahfujul Kader Touhid</title>
+  <meta name="description" content="Selected data science and business analytics projects by Mahfujul Kader Touhid — portfolio case studies, technical work, and research." />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="chat-widget.css" />
   <link rel="icon" type="image/svg+xml" href="nav_photo_png/3.svg" />
   <style>
-    .tech-tag {
-      display: inline-block;
+    /* Project section scroll-anchor spacing */
+    .project-doc { scroll-margin-top: 20px; }
+
+    /* OKF document card title block */
+    .okf-title-block {
+      border-left: 3px solid #BC2026;
+      padding-left: 14px;
+      margin-bottom: 14px;
+    }
+    .okf-title-block .proj-num {
+      display: block;
       font-family: 'Courier New', Courier, monospace;
       font-size: 11px;
-      letter-spacing: 0.05em;
-      border: 1px solid #E0E0E0;
-      padding: 3px 8px;
-      color: #888888;
-      margin-right: 6px;
-      margin-bottom: 6px;
-      background: #FCFAF2;
+      color: #BC2026;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
     }
+
+    /* Contribution list */
+    .contrib-list {
+      margin: 6px 0 0 18px;
+      padding: 0;
+      color: #555;
+      line-height: 1.7;
+    }
+    .contrib-list li { margin-bottom: 2px; }
+
+    /* Project links */
+    .proj-links {
+      margin-top: 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+    }
+    .proj-links a {
+      color: #4a6480;
+      text-decoration: underline;
+      margin-right: 14px;
+    }
+    .proj-links a:hover { color: #BC2026; }
   </style>
 </head>
 
@@ -31,162 +59,321 @@
     <hr class="hr-light mb-4 mt-2" />
   </div>
 
-  <nav class="nav-links font-mono text-sm">
-    <a href="index.html">HOME</a>
-    <a href="about.html">ABOUT</a>
-    <a href="education.html">EDUCATION</a>
-    <a href="projects.html" class="active">PROJECTS</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="contact.html">CONTACT</a>
-    <a href="cv.html" target="_blank">CV &nearr;</a>
+  <nav class="nav-wrapper font-mono text-sm">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776; MENU</button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">HOME</a>
+      <a href="about.html">ABOUT</a>
+      <a href="education.html">EDUCATION</a>
+      <a href="projects.html" class="active">PROJECTS</a>
+      <a href="gallery.html">GALLERY</a>
+      <a href="contact.html">CONTACT</a>
+      <a href="cv.html" target="_blank">CV &nearr;</a>
+    </div>
   </nav>
 
   <div class="mb-5 mt-5">
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+    <div class="sep-line mb-4 mt-2"></div>
     <div class="mb-4 mt-4">
       <h1 class="font-serif text-xxl m-0 font-bold" style="margin:0;">PROJECTS</h1>
     </div>
-    <span class="font-mono text-sm text-muted-light">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+    <div class="sep-line"></div>
   </div>
 
-  <hr class="hr-red mb-3" />
+  <hr class="hr-light mb-3" />
 
-  <div class="font-mono text-sm text-muted mb-5">
+  <div class="font-mono text-sm text-muted mb-3">
     SELECTED WORK &amp; CASE STUDIES
   </div>
+  <div class="font-mono text-sm text-muted-lighter mb-5">
+    <a href="https://github.com/touhid95/portfolio" target="_blank" class="text-blue">&nearr; GitHub Portfolio</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://drive.google.com/drive/folders/1YMb8mrbaCoMiCzjBfWzGI-TPjOJgBgod" target="_blank" class="text-blue">&nearr; Google Drive</a>
+  </div>
 
-  <hr class="hr-red mb-4 mt-5" />
+  <hr class="hr-red mb-5" />
 
-  <!-- Projects loaded dynamically by cms.js; hardcoded fallback below -->
-  <div id="cms-projects-container">
+  <!-- ============================================================
+       PROJECT 01 — Financial Market Predictive Analytics
+       ============================================================ -->
+  <section class="row mt-4 project-doc" id="project-01">
+    <div class="col-label">
+      <div class="font-mono text-sm text-muted-light" style="line-height:1.8;">
+        PROJECT<br />01
+      </div>
+    </div>
+    <div class="col-content">
 
-    <!-- PROJECT 1 -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">PROJECT 01</div>
-      <div class="col-content">
-        <div class="font-serif text-lg font-bold mb-1"><span data-cms="projects.0.title">Financial Market Predictive Analytics</span></div>
-        <div class="font-mono text-sm text-muted mb-3"><span data-cms="projects.0.subtitle">Portfolio Forecasting &amp; Asset Optimization</span></div>
-        <div class="font-serif text-md mb-3">
-          <span data-cms="projects.0.description">
-            A stock trend forecasting and risk simulation model based on Modern Portfolio Theory (MPT) principles.
-            This analysis fetches public financial data, runs Monte Carlo allocations, and exports core risk-return metrics.
-          </span>
+      <!-- OKF meta header -->
+      <div class="okf-meta">
+        <span class="okf-meta-item"><strong>id:</strong> <span>project-01</span></span>
+        <span class="okf-meta-item"><strong>type:</strong> <span>case-study</span></span>
+        <span class="okf-meta-item"><strong>domain:</strong> <span>finance / analytics</span></span>
+        <span class="okf-meta-item"><strong>status:</strong> <span class="okf-status-complete">complete</span></span>
+        <span class="okf-meta-item"><strong>year:</strong> <span>2024</span></span>
+      </div>
+
+      <!-- Title block -->
+      <div class="okf-title-block">
+        <span class="proj-num">// DOCUMENT 01</span>
+        <div class="font-serif text-lg font-bold mb-1">
+          <span data-cms="projects.0.title">Financial Market Predictive Analytics</span>
         </div>
-        <div class="font-serif text-md mb-3">
-          <b>Key Contributions:</b>
-          <ul style="margin: 5px 0 0 20px; padding: 0; color: #555;">
-            <li><span data-cms="projects.0.contrib1">Automated streaming of ticker histories with python `yfinance` api, performing daily data cleanses.</span></li>
-            <li><span data-cms="projects.0.contrib2">Executed 5,000 portfolio simulation iterations, finding the optimal weights for the Sharpe Ratio.</span></li>
-            <li><span data-cms="projects.0.contrib3">Crafted interactive dashboards displaying rolling standard deviations, beta values, and asset distributions.</span></li>
-          </ul>
-        </div>
-        <div style="margin-top: 5px;">
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Pandas</span>
-          <span class="tech-tag">NumPy</span>
-          <span class="tech-tag">Power BI</span>
-          <span class="tech-tag">yfinance</span>
+        <div class="font-mono text-sm text-muted">
+          <span data-cms="projects.0.subtitle">Portfolio Forecasting &amp; Asset Optimization</span>
         </div>
       </div>
-    </section>
 
-    <hr class="hr-light mb-4 mt-4" />
+      <!-- Description -->
+      <div class="font-serif text-md mb-3">
+        <span data-cms="projects.0.description">
+          A stock trend forecasting and risk simulation model based on Modern Portfolio Theory (MPT) principles.
+          This analysis fetches public financial data, runs Monte Carlo allocations, and exports core risk-return metrics.
+        </span>
+      </div>
 
-    <!-- PROJECT 2 -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">PROJECT 02</div>
-      <div class="col-content">
-        <div class="font-serif text-lg font-bold mb-1"><span data-cms="projects.1.title">Retail Sales Database Optimization</span></div>
-        <div class="font-mono text-sm text-muted mb-3"><span data-cms="projects.1.subtitle">Database Normalisation &amp; Analytical Queries</span></div>
-        <div class="font-serif text-md mb-3">
-          <span data-cms="projects.1.description">
-            An enterprise schema refactoring project designed to minimize storage redundancy and accelerate query times.
-            Raw transaction files were modeled into Third Normal Form (3NF) tables.
-          </span>
+      <!-- Key Contributions -->
+      <div class="font-serif text-md mb-3">
+        <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>
+        <ul class="contrib-list">
+          <li><span data-cms="projects.0.contrib1">Automated streaming of ticker histories with Python <code>yfinance</code> API, performing daily data cleanses.</span></li>
+          <li><span data-cms="projects.0.contrib2">Executed 5,000 portfolio simulation iterations, finding the optimal weights for the Sharpe Ratio.</span></li>
+          <li><span data-cms="projects.0.contrib3">Crafted interactive dashboards displaying rolling standard deviations, beta values, and asset distributions.</span></li>
+        </ul>
+      </div>
+
+      <!-- Photo section — 2 images -->
+      <div class="project-photos">
+        <div class="project-photo-slot ph" data-label="Output Chart&#10;Monte Carlo Simulation">
+          <img data-cms-src="projects.0.image1" src="" alt="Monte Carlo portfolio simulation chart" onerror="this.style.display='none'" />
+          <span class="project-photo-label">OUTPUT &mdash; SIMULATION CHART</span>
         </div>
-        <div class="font-serif text-md mb-3">
-          <b>Key Contributions:</b>
-          <ul style="margin: 5px 0 0 20px; padding: 0; color: #555;">
-            <li><span data-cms="projects.1.contrib1">Structured a 3NF database layout supporting 200,000 purchase logs.</span></li>
-            <li><span data-cms="projects.1.contrib2">Wrote query pipelines using SQL Common Table Expressions (CTEs), Subqueries, and Window Functions.</span></li>
-            <li><span data-cms="projects.1.contrib3">Designed retail performance boards mapped onto geographic areas with Tableau heatmaps.</span></li>
-          </ul>
-        </div>
-        <div style="margin-top: 5px;">
-          <span class="tech-tag">SQL Server</span>
-          <span class="tech-tag">3NF Design</span>
-          <span class="tech-tag">Window Functions</span>
-          <span class="tech-tag">CTEs</span>
-          <span class="tech-tag">Tableau</span>
+        <div class="project-photo-slot ph" data-label="Dashboard&#10;Power BI Report">
+          <img data-cms-src="projects.0.image2" src="" alt="Power BI risk-return dashboard" onerror="this.style.display='none'" />
+          <span class="project-photo-label">DASHBOARD &mdash; RISK / RETURN</span>
         </div>
       </div>
-    </section>
 
-    <hr class="hr-light mb-4 mt-4" />
+      <!-- Tech tags -->
+      <div style="margin-top:12px;">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">Pandas</span>
+        <span class="tech-tag">NumPy</span>
+        <span class="tech-tag">Power BI</span>
+        <span class="tech-tag">yfinance</span>
+        <span class="tech-tag">Monte Carlo</span>
+      </div>
 
-    <!-- PROJECT 3 -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">PROJECT 03</div>
-      <div class="col-content">
-        <div class="font-serif text-lg font-bold mb-1"><span data-cms="projects.2.title">Customer Segmentation &amp; RFM Analysis</span></div>
-        <div class="font-mono text-sm text-muted mb-3"><span data-cms="projects.2.subtitle">Unsupervised Machine Learning &amp; Segment Analysis</span></div>
-        <div class="font-serif text-md mb-3">
-          <span data-cms="projects.2.description">
-            An analytical approach to segmenting retail store buyers using historical activity (Recency, Frequency, Monetary).
-            By grouping buyers, businesses can tailor their retention campaigns.
-          </span>
+    </div>
+  </section>
+
+  <hr class="hr-light mb-4 mt-2" />
+
+  <!-- ============================================================
+       PROJECT 02 — Retail Sales Database Optimization
+       ============================================================ -->
+  <section class="row mt-4 project-doc" id="project-02">
+    <div class="col-label">
+      <div class="font-mono text-sm text-muted-light" style="line-height:1.8;">
+        PROJECT<br />02
+      </div>
+    </div>
+    <div class="col-content">
+
+      <div class="okf-meta">
+        <span class="okf-meta-item"><strong>id:</strong> <span>project-02</span></span>
+        <span class="okf-meta-item"><strong>type:</strong> <span>database-design</span></span>
+        <span class="okf-meta-item"><strong>domain:</strong> <span>retail / SQL</span></span>
+        <span class="okf-meta-item"><strong>status:</strong> <span class="okf-status-complete">complete</span></span>
+        <span class="okf-meta-item"><strong>year:</strong> <span>2024</span></span>
+      </div>
+
+      <div class="okf-title-block">
+        <span class="proj-num">// DOCUMENT 02</span>
+        <div class="font-serif text-lg font-bold mb-1">
+          <span data-cms="projects.1.title">Retail Sales Database Optimization</span>
         </div>
-        <div class="font-serif text-md mb-3">
-          <b>Key Contributions:</b>
-          <ul style="margin: 5px 0 0 20px; padding: 0; color: #555;">
-            <li><span data-cms="projects.2.contrib1">Engineered cohort RFM scores from high-volume transactional audit files.</span></li>
-            <li><span data-cms="projects.2.contrib2">Applied KMeans clustering algorithms, evaluating clusters via the Elbow method and Silhouette analysis.</span></li>
-            <li><span data-cms="projects.2.contrib3">Profiled buyer segments, producing customized activation advice for the marketing division.</span></li>
-          </ul>
-        </div>
-        <img data-cms-src="projects.2.image" src="" class="project-img" onerror="this.style.display='none'" />
-        <div style="margin-top: 5px;">
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Scikit-Learn</span>
-          <span class="tech-tag">Pandas</span>
-          <span class="tech-tag">KMeans Clustering</span>
-          <span class="tech-tag">RFM Modeling</span>
+        <div class="font-mono text-sm text-muted">
+          <span data-cms="projects.1.subtitle">Database Normalisation &amp; Analytical Queries</span>
         </div>
       </div>
-    </section>
 
-    <hr class="hr-light mb-4 mt-4" />
+      <div class="font-serif text-md mb-3">
+        <span data-cms="projects.1.description">
+          An enterprise schema refactoring project designed to minimize storage redundancy and accelerate query times.
+          Raw transaction files were modeled into Third Normal Form (3NF) tables.
+        </span>
+      </div>
 
-    <!-- PROJECT 4 -->
-    <section class="row mt-4">
-      <div class="col-label font-mono text-sm text-muted-light">PROJECT 04</div>
-      <div class="col-content">
-        <div class="font-serif text-lg font-bold mb-1"><span data-cms="projects.3.title">Cadet College Sports Analytics</span></div>
-        <div class="font-mono text-sm text-muted mb-3"><span data-cms="projects.3.subtitle">Historical Sports Records Modeling &amp; Forecasting</span></div>
-        <div class="font-serif text-md mb-3">
-          <span data-cms="projects.3.description">
-            An athletic performance tracking dashboard consolidating Mirzapur Cadet College's historic scores.
-            This analysis visualizes progress over multiple seasons and forecasts tournament outcomes.
-          </span>
+      <div class="font-serif text-md mb-3">
+        <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>
+        <ul class="contrib-list">
+          <li><span data-cms="projects.1.contrib1">Structured a 3NF database layout supporting 200,000 purchase logs.</span></li>
+          <li><span data-cms="projects.1.contrib2">Wrote query pipelines using SQL Common Table Expressions (CTEs), Subqueries, and Window Functions.</span></li>
+          <li><span data-cms="projects.1.contrib3">Designed retail performance boards mapped onto geographic areas with Tableau heatmaps.</span></li>
+        </ul>
+      </div>
+
+      <div class="project-photos">
+        <div class="project-photo-slot ph" data-label="Schema Diagram&#10;3NF ERD">
+          <img data-cms-src="projects.1.image1" src="" alt="3NF entity-relationship diagram" onerror="this.style.display='none'" />
+          <span class="project-photo-label">SCHEMA &mdash; 3NF ERD</span>
         </div>
-        <div class="font-serif text-md mb-3">
-          <b>Key Contributions:</b>
-          <ul style="margin: 5px 0 0 20px; padding: 0; color: #555;">
-            <li><span data-cms="projects.3.contrib1">Consolidated, digitized, and normalized sports metrics spanning a 10-year period.</span></li>
-            <li><span data-cms="projects.3.contrib2">Constructed predictive trends to project house standings under changing constraints.</span></li>
-            <li><span data-cms="projects.3.contrib3">Configured an automated tracker using Excel VBA scripts to dynamically calculate house margins.</span></li>
-          </ul>
-        </div>
-        <div style="margin-top: 5px;">
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Excel VBA</span>
-          <span class="tech-tag">Matplotlib</span>
-          <span class="tech-tag">Data Cleaning</span>
+        <div class="project-photo-slot ph" data-label="Tableau&#10;Heatmap">
+          <img data-cms-src="projects.1.image2" src="" alt="Tableau geographic heatmap" onerror="this.style.display='none'" />
+          <span class="project-photo-label">VISUAL &mdash; TABLEAU HEATMAP</span>
         </div>
       </div>
-    </section>
 
-  </div><!-- end cms-projects-container -->
+      <div style="margin-top:12px;">
+        <span class="tech-tag">SQL Server</span>
+        <span class="tech-tag">3NF Design</span>
+        <span class="tech-tag">Window Functions</span>
+        <span class="tech-tag">CTEs</span>
+        <span class="tech-tag">Tableau</span>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="hr-light mb-4 mt-2" />
+
+  <!-- ============================================================
+       PROJECT 03 — Customer Segmentation & RFM Analysis
+       ============================================================ -->
+  <section class="row mt-4 project-doc" id="project-03">
+    <div class="col-label">
+      <div class="font-mono text-sm text-muted-light" style="line-height:1.8;">
+        PROJECT<br />03
+      </div>
+    </div>
+    <div class="col-content">
+
+      <div class="okf-meta">
+        <span class="okf-meta-item"><strong>id:</strong> <span>project-03</span></span>
+        <span class="okf-meta-item"><strong>type:</strong> <span>ml-analysis</span></span>
+        <span class="okf-meta-item"><strong>domain:</strong> <span>marketing / data science</span></span>
+        <span class="okf-meta-item"><strong>status:</strong> <span class="okf-status-complete">complete</span></span>
+        <span class="okf-meta-item"><strong>year:</strong> <span>2023</span></span>
+      </div>
+
+      <div class="okf-title-block">
+        <span class="proj-num">// DOCUMENT 03</span>
+        <div class="font-serif text-lg font-bold mb-1">
+          <span data-cms="projects.2.title">Customer Segmentation &amp; RFM Analysis</span>
+        </div>
+        <div class="font-mono text-sm text-muted">
+          <span data-cms="projects.2.subtitle">Unsupervised Machine Learning &amp; Segment Analysis</span>
+        </div>
+      </div>
+
+      <div class="font-serif text-md mb-3">
+        <span data-cms="projects.2.description">
+          An analytical approach to segmenting retail store buyers using historical activity (Recency, Frequency, Monetary).
+          By grouping buyers, businesses can tailor their retention campaigns.
+        </span>
+      </div>
+
+      <div class="font-serif text-md mb-3">
+        <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>
+        <ul class="contrib-list">
+          <li><span data-cms="projects.2.contrib1">Engineered cohort RFM scores from high-volume transactional audit files.</span></li>
+          <li><span data-cms="projects.2.contrib2">Applied KMeans clustering algorithms, evaluating clusters via the Elbow method and Silhouette analysis.</span></li>
+          <li><span data-cms="projects.2.contrib3">Profiled buyer segments, producing customized activation advice for the marketing division.</span></li>
+        </ul>
+      </div>
+
+      <div class="project-photos">
+        <div class="project-photo-slot ph" data-label="Cluster Plot&#10;KMeans / Elbow">
+          <img data-cms-src="projects.2.image1" src="" alt="KMeans cluster visualization" onerror="this.style.display='none'" />
+          <span class="project-photo-label">ANALYSIS &mdash; CLUSTER PLOT</span>
+        </div>
+        <div class="project-photo-slot ph" data-label="RFM Segment&#10;Heat Matrix">
+          <img data-cms-src="projects.2.image2" src="" alt="RFM segment heat matrix" onerror="this.style.display='none'" />
+          <span class="project-photo-label">OUTPUT &mdash; RFM MATRIX</span>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">Scikit-Learn</span>
+        <span class="tech-tag">Pandas</span>
+        <span class="tech-tag">KMeans Clustering</span>
+        <span class="tech-tag">RFM Modeling</span>
+        <span class="tech-tag">Seaborn</span>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="hr-light mb-4 mt-2" />
+
+  <!-- ============================================================
+       PROJECT 04 — Cadet College Sports Analytics
+       ============================================================ -->
+  <section class="row mt-4 project-doc" id="project-04">
+    <div class="col-label">
+      <div class="font-mono text-sm text-muted-light" style="line-height:1.8;">
+        PROJECT<br />04
+      </div>
+    </div>
+    <div class="col-content">
+
+      <div class="okf-meta">
+        <span class="okf-meta-item"><strong>id:</strong> <span>project-04</span></span>
+        <span class="okf-meta-item"><strong>type:</strong> <span>sports-analytics</span></span>
+        <span class="okf-meta-item"><strong>domain:</strong> <span>education / sports</span></span>
+        <span class="okf-meta-item"><strong>status:</strong> <span class="okf-status-complete">complete</span></span>
+        <span class="okf-meta-item"><strong>year:</strong> <span>2023</span></span>
+      </div>
+
+      <div class="okf-title-block">
+        <span class="proj-num">// DOCUMENT 04</span>
+        <div class="font-serif text-lg font-bold mb-1">
+          <span data-cms="projects.3.title">Cadet College Sports Analytics</span>
+        </div>
+        <div class="font-mono text-sm text-muted">
+          <span data-cms="projects.3.subtitle">Historical Sports Records Modeling &amp; Forecasting</span>
+        </div>
+      </div>
+
+      <div class="font-serif text-md mb-3">
+        <span data-cms="projects.3.description">
+          An athletic performance tracking dashboard consolidating Mirzapur Cadet College's historic scores.
+          This analysis visualizes progress over multiple seasons and forecasts tournament outcomes.
+        </span>
+      </div>
+
+      <div class="font-serif text-md mb-3">
+        <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>
+        <ul class="contrib-list">
+          <li><span data-cms="projects.3.contrib1">Consolidated, digitized, and normalized sports metrics spanning a 10-year period.</span></li>
+          <li><span data-cms="projects.3.contrib2">Constructed predictive trends to project house standings under changing constraints.</span></li>
+          <li><span data-cms="projects.3.contrib3">Configured an automated tracker using Excel VBA scripts to dynamically calculate house margins.</span></li>
+        </ul>
+      </div>
+
+      <div class="project-photos">
+        <div class="project-photo-slot ph" data-label="Dashboard&#10;Season Tracker">
+          <img data-cms-src="projects.3.image1" src="" alt="Sports season performance dashboard" onerror="this.style.display='none'" />
+          <span class="project-photo-label">DASHBOARD &mdash; SEASON TRACKER</span>
+        </div>
+        <div class="project-photo-slot ph" data-label="VBA Tracker&#10;Excel Automation">
+          <img data-cms-src="projects.3.image2" src="" alt="Excel VBA automated tracker" onerror="this.style.display='none'" />
+          <span class="project-photo-label">TOOL &mdash; EXCEL VBA TRACKER</span>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">Excel VBA</span>
+        <span class="tech-tag">Matplotlib</span>
+        <span class="tech-tag">Data Cleaning</span>
+        <span class="tech-tag">Time Series</span>
+      </div>
+
+    </div>
+  </section>
 
   <hr class="hr-light mb-4 mt-4" />
 
@@ -205,5 +392,16 @@
 
 <script src="cms.js"></script>
 <script src="chat-widget.js"></script>
+<script>
+  (function(){
+    var btn = document.getElementById('nav-toggle');
+    var menu = document.getElementById('nav-links');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
 </body>
 </html>

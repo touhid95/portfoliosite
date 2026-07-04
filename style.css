@@ -1,13 +1,16 @@
 /* ============================================================
    PORTFOLIO — MAHFUJUL KADER TOUHID
-   style.css — Additive only. Zero visual overrides to the
-   existing Kintsugi design. Adds: mobile layout, hover
-   micro-transitions, Fibonacci gallery grid, custom scrollbar.
+   style.css — Global styles + full mobile optimization.
+   Palette: cream #FCFAF2 · dark #2C2C2C · red #BC2026
    ============================================================ */
 
 /* ============================================================
-   GLOBAL LAYOUT & TYPOGRAPHY (Modern Semantic HTML5)
+   GLOBAL RESET & BASE
    ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #FCFAF2;
   color: #2C2C2C;
@@ -16,6 +19,7 @@ body {
   padding: 0;
   line-height: 1.5;
   animation: page-in 0.3s ease;
+  overflow-x: hidden;
 }
 
 a {
@@ -23,50 +27,58 @@ a {
   text-decoration: none;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
-a:hover {
-  color: #BC2026;
-}
+a:hover { color: #BC2026; }
 
+/* ============================================================
+   LAYOUT CONTAINER
+   ============================================================ */
 .container {
   max-width: 720px;
   margin: 0 auto;
-  padding: 40px 15px;
+  padding: 40px 20px;
 }
 
 .text-center { text-align: center; }
 
-/* Typography utilities replacing <font> tags */
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
 .font-mono { font-family: 'Courier New', Courier, monospace; }
 .font-serif { font-family: 'Georgia', serif; }
-.text-muted { color: #888888; }
-.text-muted-light { color: #aaaaaa; }
-.text-muted-lighter { color: #bbbbbb; }
+.text-muted        { color: #888888; }
+.text-muted-light  { color: #aaaaaa; }
+.text-muted-lighter{ color: #bbbbbb; }
 .text-muted-border { color: #E0E0E0; }
-.text-red { color: #BC2026; }
+.text-red  { color: #BC2026; }
 .text-blue { color: #4a6480; }
 
-.text-xs { font-size: 11px; }
-.text-sm { font-size: 13px; } /* equivalent to font size 2 */
-.text-md { font-size: 16px; } /* equivalent to font size 3 */
-.text-lg { font-size: 18px; } /* equivalent to font size 4 */
-.text-xxl { font-size: 48px; } /* equivalent to font size 7 */
+.text-xs  { font-size: 11px; }
+.text-sm  { font-size: 13px; }
+.text-md  { font-size: 16px; }
+.text-lg  { font-size: 18px; }
+.text-xxl { font-size: 48px; }
 
-.font-bold { font-weight: bold; }
-.underline { text-decoration: underline; }
+.font-bold  { font-weight: bold; }
+.underline  { text-decoration: underline; }
+.m-0        { margin: 0; }
 
-/* Layout utilities replacing tables */
-.row {
-  display: flex;
-  margin-bottom: 24px;
-}
-.col-label {
-  width: 180px;
-  flex-shrink: 0;
-}
-.col-content {
-  flex-grow: 1;
-}
+/* ============================================================
+   SPACING UTILITIES
+   ============================================================ */
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 32px; }
+.mt-5 { margin-top: 48px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.mb-4 { margin-bottom: 32px; }
+.mb-5 { margin-bottom: 48px; }
+.block { display: block; }
 
+/* ============================================================
+   DIVIDERS
+   ============================================================ */
 .hr-light {
   border: 0;
   border-top: 1px solid #E0E0E0;
@@ -78,42 +90,278 @@ a:hover {
   margin: 24px 0;
 }
 
-.nav-links {
+/* ============================================================
+   DECORATIVE SEPARATOR LINE
+   Replace fixed em-dash string with a CSS line — no overflow
+   ============================================================ */
+.sep-line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    #aaaaaa 0px, #aaaaaa 8px,
+    transparent 8px, transparent 12px
+  );
+  opacity: 0.45;
+  margin: 0;
+}
+
+/* ============================================================
+   NAVIGATION — Desktop default
+   ============================================================ */
+.nav-wrapper {
+  position: relative;
   margin: 16px 0;
 }
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  align-items: center;
+}
 .nav-links a {
-  margin: 0 10px;
+  display: inline-block;
+  padding: 6px 10px;
   color: #888888;
+  white-space: nowrap;
+  border-radius: 2px;
+  transition: color 0.15s ease;
+  min-height: 44px;           /* WCAG touch target */
+  line-height: 32px;
 }
 .nav-links a.active {
   color: #2C2C2C;
   font-weight: bold;
   text-decoration: underline;
 }
+.nav-links a:hover { color: #BC2026; }
 
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
-.mb-4 { margin-bottom: 32px; }
-.mb-5 { margin-bottom: 48px; }
+/* Hamburger toggle — hidden on desktop */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid #E0E0E0;
+  cursor: pointer;
+  padding: 8px 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.05em;
+  transition: border-color 0.15s, color 0.15s;
+}
+.nav-toggle:hover { border-color: #BC2026; color: #BC2026; }
 
-
-/* ---------- Custom Scrollbar (matches cream/gray palette) ---------- */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #FCFAF2; }
-::-webkit-scrollbar-thumb { background: #E0E0E0; }
-::-webkit-scrollbar-thumb:hover { background: #bbbbbb; }
-
-/* ---------- Selection colour ---------- */
-::selection { background: #BC2026; color: #FCFAF2; }
-
-/* ---------- Page entry fade-in ---------- */
-@keyframes page-in {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ============================================================
+   TWO-COLUMN ROW LAYOUT
+   ============================================================ */
+.row {
+  display: flex;
+  margin-bottom: 24px;
+}
+.col-label {
+  width: 180px;
+  flex-shrink: 0;
+  padding-right: 16px;
+}
+.col-content {
+  flex-grow: 1;
+  min-width: 0;           /* prevents flex child overflow */
 }
 
-/* ---------- Input focus polish (contact form) ---------- */
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   PROJECT IMAGES
+   ============================================================ */
+.project-img {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 4px;
+  display: block;
+  margin: 14px 0 10px;
+  border: 1px solid #E0E0E0;
+  background: #f5f3e9;
+}
+
+/* Two-photo grid per project */
+.project-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0 10px;
+}
+.project-photo-slot {
+  position: relative;
+  background: #f5f3e9;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 160px;
+}
+.project-photo-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.project-photo-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  background: rgba(252, 250, 242, 0.9);
+  border-top: 1px solid #E0E0E0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: #aaaaaa;
+  letter-spacing: 0.04em;
+}
+/* Placeholder when no image */
+.project-photo-slot.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-photo-slot.ph::before {
+  content: attr(data-label);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: #cccccc;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding: 8px;
+}
+
+/* ============================================================
+   OKF DOCUMENT CARD HEADER
+   ============================================================ */
+.okf-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 8px 12px;
+  border: 1px solid #E0E0E0;
+  border-left: 3px solid #BC2026;
+  background: #f9f8f2;
+  margin-bottom: 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #aaaaaa;
+  letter-spacing: 0.04em;
+}
+.okf-meta-item strong {
+  color: #888;
+  font-weight: normal;
+}
+.okf-meta-item span {
+  color: #2C2C2C;
+}
+.okf-status-complete { color: #4a7c59 !important; }
+.okf-status-ongoing  { color: #4a6480 !important; }
+
+/* Tech tags */
+.tech-tag {
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border: 1px solid #E0E0E0;
+  padding: 3px 8px;
+  color: #888888;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  background: #FCFAF2;
+  border-radius: 2px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.tech-tag:hover { border-color: #BC2026; color: #BC2026; }
+
+/* ============================================================
+   FIBONACCI GALLERY GRID
+   ============================================================ */
+.fib-grid {
+  display: grid;
+  grid-template-columns: 204px 1fr;
+  grid-template-rows: 204px 126px;
+  gap: 6px;
+  width: 100%;
+}
+.fib-a { grid-column: 1; grid-row: 1 / 3; }
+.fib-b { grid-column: 2; grid-row: 1; }
+.fib-c { grid-column: 2; grid-row: 2; }
+
+.fib-cell {
+  position: relative;
+  overflow: hidden;
+  background: #f5f3e9;
+}
+.fib-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.fib-a::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: #BC2026;
+  z-index: 2;
+}
+.fib-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 6px 10px 8px;
+  background: rgba(252, 250, 242, 0.93);
+  border-top: 1px solid #E0E0E0;
+  z-index: 3;
+}
+.fib-cap-name {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #2C2C2C;
+  line-height: 1.4;
+}
+.fib-cap-sub {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: #aaaaaa;
+  line-height: 1.3;
+}
+.fib-cell.ph-red  { background: #BC2026; }
+.fib-cell.ph-dark { background: #2C2C2C; }
+.fib-cell.ph-mid  { background: #888888; }
+.fib-cell.ph-red  .fib-cap-name,
+.fib-cell.ph-dark .fib-cap-name,
+.fib-cell.ph-mid  .fib-cap-name { color: #FCFAF2; }
+.fib-cell.ph-red  .fib-cap-sub,
+.fib-cell.ph-dark .fib-cap-sub,
+.fib-cell.ph-mid  .fib-cap-sub  { color: rgba(252,250,242,0.6); }
+.fib-cell.ph-red  .fib-caption,
+.fib-cell.ph-dark .fib-caption,
+.fib-cell.ph-mid  .fib-caption  {
+  background: rgba(0,0,0,0.25);
+  border-top-color: rgba(255,255,255,0.15);
+}
+
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
 input[type="text"],
 input[type="email"],
 textarea {
@@ -134,143 +382,69 @@ input[type="submit"]:hover {
   color: #FCFAF2;
 }
 
-/* ---------- Project image with rounded corners ---------- */
-.project-img {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 12px;
-  display: block;
-  margin: 14px 0 10px;
-  border: 1px solid #E0E0E0;
-  background: #f5f3e9;
+/* ============================================================
+   SCROLLBAR & SELECTION
+   ============================================================ */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: #FCFAF2; }
+::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #bbbbbb; }
+::selection { background: #BC2026; color: #FCFAF2; }
+
+/* ============================================================
+   PAGE ENTRY ANIMATION
+   ============================================================ */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================================
-   FIBONACCI GALLERY GRID
-   Container width in right-td: ~540px (720 - 180px label col)
-   Column split: 204px (6×F9=34) | 6px gap | 330px (6×F10=55)
-   Row split:    204px           | 6px gap | 126px (6×F8=21)
-   photo-A (tall):   204 × 336px — ratio ≈ 1/φ  (golden portrait)
-   photo-B (wide):   330 × 204px — ratio ≈ φ    (golden landscape)
-   photo-C (banner): 330 × 126px — ratio ≈ φ²   (golden banner)
+   TABLET — max-width: 780px
    ============================================================ */
-
-.fib-grid {
-  display: grid;
-  grid-template-columns: 204px 1fr;
-  grid-template-rows: 204px 126px;
-  gap: 6px;
-  width: 100%;
-}
-
-/* Photo A — tall left column, spans both rows */
-.fib-a {
-  grid-column: 1;
-  grid-row: 1 / 3;
-}
-
-/* Photo B — landscape top-right */
-.fib-b {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-/* Photo C — wide banner bottom-right */
-.fib-c {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-/* Every cell shares these base styles */
-.fib-cell {
-  position: relative;
-  overflow: hidden;
-  background: #f5f3e9;  /* slight warmth when no image */
-}
-
-/* Actual photo */
-.fib-cell img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-/* Accent shard — thin left strip echoing the kintsugi crack */
-.fib-a::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 3px; height: 100%;
-  background: #BC2026;
-  z-index: 2;
-}
-
-/* Caption overlay (bottom of each cell) */
-.fib-caption {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 6px 10px 8px;
-  background: rgba(252, 250, 242, 0.93);
-  border-top: 1px solid #E0E0E0;
-  z-index: 3;
-}
-
-.fib-cap-name {
-  display: block;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 11px;
-  color: #2C2C2C;
-  line-height: 1.4;
-}
-
-.fib-cap-sub {
-  display: block;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 10px;
-  color: #aaaaaa;
-  line-height: 1.3;
-}
-
-/* Placeholder look when image fails / missing */
-.fib-cell.ph-red   { background: #BC2026; }
-.fib-cell.ph-dark  { background: #2C2C2C; }
-.fib-cell.ph-mid   { background: #888888; }
-.fib-cell.ph-red  .fib-cap-name,
-.fib-cell.ph-dark .fib-cap-name,
-.fib-cell.ph-mid  .fib-cap-name { color: #FCFAF2; }
-.fib-cell.ph-red  .fib-cap-sub,
-.fib-cell.ph-dark .fib-cap-sub,
-.fib-cell.ph-mid  .fib-cap-sub  { color: rgba(252,250,242,0.6); }
-.fib-cell.ph-red  .fib-caption,
-.fib-cell.ph-dark .fib-caption,
-.fib-cell.ph-mid  .fib-caption  {
-  background: rgba(0,0,0,0.25);
-  border-top-color: rgba(255,255,255,0.15);
-}
-
-/* ============================================================
-   MOBILE RESPONSIVE
-   ============================================================ */
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-bottom: 12px;
-}
-
 @media (max-width: 780px) {
-  /* Main container shrinks gracefully */
+  .container {
+    padding: 28px 18px;
+  }
+
+  /* Heading scale-down */
+  .text-xxl { font-size: 36px; }
+
+  /* Stack section rows */
+  .row {
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  .col-label {
+    width: 100%;
+    padding-right: 0;
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+  }
+
+  /* Data tables — horizontal scroll */
+  .table-container { overflow-x: auto; }
+
+  /* Fibonacci gallery — two across */
+  .fib-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .fib-a { grid-column: 1; grid-row: 1; min-height: 160px; }
+  .fib-b { grid-column: 2; grid-row: 1; min-height: 160px; }
+  .fib-c { grid-column: 1 / 3; grid-row: 2; min-height: 100px; }
+
+  /* Project photos — keep side by side but tighter */
+  .project-photos { gap: 8px; }
+  .project-photo-slot { min-height: 130px; }
+
+  /* Legacy table layout (about.html fallback) */
   table[width="720"],
   center > table { width: 95% !important; }
-
   center {
     display: block;
     padding: 0 2.5%;
   }
-
-  /* Stack two-col section rows vertically (exclude data tables) using child selectors */
   table[width="100%"]:not(.data-table) > tr,
   table[width="100%"]:not(.data-table) > tbody > tr {
     display: flex;
@@ -285,16 +459,10 @@ input[type="submit"]:hover {
     width: 100% !important;
     padding-bottom: 6px !important;
   }
-
-  /* Reset nested data tables to standard behavior */
-  .data-table,
-  .data-table tr,
-  .data-table td,
-  .data-table th {
+  .data-table, .data-table tr, .data-table td, .data-table th {
     display: revert !important;
   }
-  .data-table td,
-  .data-table th {
+  .data-table td, .data-table th {
     width: revert !important;
     padding: 10px 8px !important;
     line-height: 1.4;
@@ -303,21 +471,49 @@ input[type="submit"]:hover {
     white-space: nowrap;
     padding-right: 20px !important;
   }
-  .data-table:not(.key-value-table) {
-    min-width: 550px;
-  }
+  .data-table:not(.key-value-table) { min-width: 520px; }
 
-  /* Fibonacci gallery — single column on mobile */
-  .fib-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-  .fib-a { grid-column: 1; grid-row: 1; min-height: 160px; }
-  .fib-b { grid-column: 2; grid-row: 1; min-height: 160px; }
-  .fib-c { grid-column: 1 / 3; grid-row: 2; min-height: 100px; }
+  /* OKF meta wraps tighter */
+  .okf-meta { gap: 4px 12px; }
 }
 
-@media (max-width: 480px) {
+/* ============================================================
+   MOBILE — max-width: 600px  (nav collapses to hamburger)
+   ============================================================ */
+@media (max-width: 600px) {
+  .container { padding: 20px 16px; }
+  .text-xxl  { font-size: 28px; }
+
+  /* Show hamburger button */
+  .nav-toggle { display: inline-block; }
+
+  /* Nav collapses */
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    border-top: 1px solid #E0E0E0;
+    margin-top: 8px;
+    padding-top: 4px;
+  }
+  .nav-links.is-open { display: flex; }
+  .nav-links a {
+    width: 100%;
+    padding: 10px 4px;
+    border-bottom: 1px solid #f0ede4;
+    min-height: 48px;
+    line-height: 28px;
+  }
+  .nav-links a:last-child { border-bottom: none; }
+
+  /* Project photos — stack vertically on very small screens */
+  .project-photos {
+    grid-template-columns: 1fr;
+  }
+  .project-photo-slot { min-height: 180px; }
+
+  /* Fibonacci — single column */
   .fib-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
@@ -328,10 +524,22 @@ input[type="submit"]:hover {
     min-height: 180px;
   }
 
+  /* OKF meta stacks */
+  .okf-meta { flex-direction: column; gap: 4px; }
+
+  /* Hide decorative em-dash lines */
+  .sep-line { display: none; }
+
+  /* Footer wraps */
+  footer { line-height: 2; }
+
+  /* Legacy about.html */
   font[size="7"] { font-size: 2em !important; }
 }
 
-/* ---------- Print: hide chat widget ---------- */
+/* ============================================================
+   PRINT: hide chat widget
+   ============================================================ */
 @media print {
   #ask-touhid-btn,
   #ask-touhid-panel { display: none !important; }
