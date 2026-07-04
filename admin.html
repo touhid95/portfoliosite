@@ -763,6 +763,10 @@ You help visitors learn about his work and skills.
     </table>
 
 
+  </div><!-- /view-ai -->
+  
+  <div id="view-cms" class="admin-view" style="display:none;">
+
     <!-- ── CONTENT CMS ─────────────────────────────────── -->
     <br /><br />
     <hr color="#E0E0E0" size="1" />
@@ -1012,10 +1016,11 @@ You help visitors learn about his work and skills.
       </tr>
     </table>
 
-  </div><!-- end admin-content -->
+  </div><!-- /view-cms -->
 
+  <div id="view-visual" class="admin-view" style="display:none;">
   <!-- ── VISUAL EDITOR ────────────────────────────────── -->
-  <div id="ve-section" style="display:none;">
+  <div id="ve-section">
     <br /><br />
     <hr color="#E0E0E0" size="1" />
     <br /><br />
@@ -1078,6 +1083,8 @@ You help visitors learn about his work and skills.
       </tr>
     </table>
   </div><!-- end ve-section -->
+  </div><!-- /view-visual -->
+  </div><!-- end admin-content -->
 
 
 
@@ -1266,7 +1273,7 @@ You help visitors learn about his work and skills.
 
     /* Validate by attempting a GET */
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/admin/get', true);
+    xhr.open('GET', '/api/admin/get?t=' + Date.now(), true);
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
       loginBtn.disabled = false;
@@ -1953,7 +1960,7 @@ You help visitors learn about his work and skills.
     reloadBtn.disabled = true;
     setStatus(saveStatus, 'Reloading\u2026', '');
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/admin/get', true);
+    xhr.open('GET', '/api/admin/get?t=' + Date.now(), true);
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
       reloadBtn.disabled = false;
@@ -2807,7 +2814,7 @@ You help visitors learn about his work and skills.
     }
     jobsRefreshBtn.disabled = true;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/admin/get', true);
+    xhr.open('GET', '/api/admin/get?t=' + Date.now(), true);
     xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
     xhr.onload = function () {
       jobsRefreshBtn.disabled = false;
@@ -2823,6 +2830,26 @@ You help visitors learn about his work and skills.
     };
     xhr.onerror = function () { jobsRefreshBtn.disabled = false; setStatus(jobFormStatus, 'Network error.', 'err'); };
     xhr.send();
+  });
+
+  /* ── Tab Navigation ──────────────────────────────────── */
+  var navBtns = document.querySelectorAll('.top-nav-btn');
+  var views = document.querySelectorAll('.admin-view');
+  navBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var targetId = 'view-' + this.getAttribute('data-view');
+      views.forEach(function(v) { v.style.display = 'none'; });
+      navBtns.forEach(function(b) {
+        b.classList.remove('active');
+        b.style.background = 'none';
+        b.style.color = '#888888';
+      });
+      var target = document.getElementById(targetId);
+      if (target) target.style.display = 'block';
+      this.classList.add('active');
+      this.style.background = '#BC2026';
+      this.style.color = '#FCFAF2';
+    });
   });
 
 }());

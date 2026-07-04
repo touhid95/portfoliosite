@@ -8,7 +8,9 @@ export const config = { runtime: 'edge' };
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Pragma': 'no-cache'
 };
 
 export default async function handler(request) {
@@ -50,11 +52,14 @@ export default async function handler(request) {
   }
 
   try {
+    const kvHeaders = { Authorization: `Bearer ${kvToken}` };
+    const fetchOpts = { headers: kvHeaders, cache: 'no-store' };
+
     const [kvKnowledge, kvPrompt, kvContent, kvJobs] = await Promise.all([
-      fetch(`${kvUrl}/get/touhid_knowledge`,     { headers: { Authorization: `Bearer ${kvToken}` } }),
-      fetch(`${kvUrl}/get/touhid_system_prompt`, { headers: { Authorization: `Bearer ${kvToken}` } }),
-      fetch(`${kvUrl}/get/touhid_content`,       { headers: { Authorization: `Bearer ${kvToken}` } }),
-      fetch(`${kvUrl}/get/touhid_jobs`,          { headers: { Authorization: `Bearer ${kvToken}` } })
+      fetch(`${kvUrl}/get/touhid_knowledge`,     fetchOpts),
+      fetch(`${kvUrl}/get/touhid_system_prompt`, fetchOpts),
+      fetch(`${kvUrl}/get/touhid_content`,       fetchOpts),
+      fetch(`${kvUrl}/get/touhid_jobs`,          fetchOpts)
     ]);
 
     const kData = kvKnowledge.ok ? await kvKnowledge.json() : {};

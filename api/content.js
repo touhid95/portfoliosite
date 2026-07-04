@@ -8,7 +8,9 @@ export const config = { runtime: 'edge' };
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Pragma': 'no-cache'
 };
 
 export default async function handler(request) {
@@ -32,7 +34,8 @@ export default async function handler(request) {
 
   try {
     const res = await fetch(`${kvUrl}/get/touhid_content`, {
-      headers: { Authorization: `Bearer ${kvToken}` }
+      headers: { Authorization: `Bearer ${kvToken}` },
+      cache: 'no-store'
     });
 
     if (!res.ok) {
