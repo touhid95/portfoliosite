@@ -1338,61 +1338,200 @@ You help visitors learn about his work and skills.
     setField('cms-education-currentStatus', v(c,'education.currentStatus'));
     /* Populate projects */
     projectsList.innerHTML = '';
-    var projs = c.projects || [];
+    var projs = Array.isArray(c.projects) ? c.projects : Object.values(c.projects || {});
     projs.forEach(function(p) { addProjectRow(p); });
   }
 
   /* ── Projects management ─────────────────────────────── */
+  var STATUS_OPTIONS = ['complete','ongoing','draft'];
+
   function addProjectRow(data) {
     data = data || {};
-    var idx = projectsList.children.length;
-    var div = document.createElement('div');
-    div.style.cssText = 'border:1px solid #E0E0E0;padding:16px;margin-bottom:12px;position:relative;';
+    var idx  = projectsList.children.length;
+    var num  = String(idx + 1).padStart(2, '0');
+    var div  = document.createElement('div');
+    div.style.cssText = 'border:1px solid #E0E0E0;padding:16px 16px 8px;margin-bottom:14px;position:relative;background:#FCFAF2;';
+
+    var statusOpts = STATUS_OPTIONS.map(function(s) {
+      return '<option value="' + s + '"' + (data.status === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+
+    /* --- accordion toggle for OKF meta + body fields --- */
     div.innerHTML = [
-      '<font face="Courier New" size="2" color="#aaaaaa">PROJECT ' + String(idx+1).padStart(2,'0') + '</font>',
-      '<button onclick="this.parentNode.remove();reNumberProjects()" style="position:absolute;top:12px;right:12px;background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:11px;cursor:pointer;padding:4px 10px;">Remove</button>',
-      '<br /><br />',
-      '<font face="Courier New" size="2" color="#888888">TITLE</font><br />',
-      '<input type="text" class="admin-input proj-title" placeholder="Project title" value="' + (data.title||'').replace(/"/g,'&quot;') + '" /><br /><br />',
-      '<font face="Courier New" size="2" color="#888888">SUBTITLE</font><br />',
-      '<input type="text" class="admin-input proj-subtitle" placeholder="Short description / category" value="' + (data.subtitle||'').replace(/"/g,'&quot;') + '" /><br /><br />',
-      '<font face="Courier New" size="2" color="#888888">DESCRIPTION</font><br />',
-      '<textarea class="admin-textarea proj-description" rows="4" placeholder="Full project description...">' + (data.description||'') + '</textarea><br /><br />',
-      '<font face="Courier New" size="2" color="#888888">TECH TAGS (comma-separated)</font><br />',
-      '<input type="text" class="admin-input proj-tech" placeholder="e.g. Python, Pandas, Power BI" value="' + (data.tech||'').replace(/"/g,'&quot;') + '" /><br /><br />',
-      '<font face="Courier New" size="2" color="#888888">LINK (optional)</font><br />',
-      '<input type="text" class="admin-input proj-link" placeholder="https://..." value="' + (data.link||'').replace(/"/g,'&quot;') + '" /><br /><br />',
-      '<font face="Courier New" size="2" color="#888888">IMAGE</font><br />',
-      '<div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;">',
-      '  <input type="text" class="admin-input proj-image" placeholder="Image URL" value="' + (data.image||'').replace(/"/g,'&quot;') + '" style="flex:1;min-width:160px;" />',
+      /* Header row — always visible */
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">',
+      '  <font face="Courier New" size="2" color="#BC2026" class="proj-num-label">// PROJECT ' + num + '</font>',
+      '  <input type="text" class="admin-input proj-title" placeholder="Title" value="' +
+        (data.title||'').replace(/"/g,'&quot;') + '" style="flex:1;min-width:180px;font-weight:bold;" />',
+      '  <button class="admin-btn-secondary proj-toggle" onclick="(function(btn){' +
+          'var body=btn.closest(\'div[data-proj]\');' +
+          'var inner=body.querySelector(\'.proj-inner\');' +
+          'var open=inner.style.display!==\'none\';' +
+          'inner.style.display=open?\'none\':\'block\';' +
+          'btn.textContent=open?\'+ Expand\':\'− Collapse\';' +
+      '})(this)" style="white-space:nowrap;padding:6px 12px;font-size:11px;">− Collapse</button>',
+      '  <button onclick="this.closest(\'div[data-proj]\').remove();reNumberProjects()" ' +
+          'style="background:none;border:1px solid #E0E0E0;color:#BC2026;font-family:Courier New,monospace;font-size:11px;cursor:pointer;padding:6px 10px;">Remove</button>',
       '</div>',
-      '<div class="proj-image-status" style="font-family:Courier New,monospace;font-size:10px;color:#aaaaaa;padding:2px 0;">&nbsp;</div>'
+
+      /* Collapsible body */
+      '<div class="proj-inner">',
+
+      /* Subtitle */
+      '<font face="Courier New" size="2" color="#888888">SUBTITLE</font><br />',
+      '<input type="text" class="admin-input proj-subtitle" placeholder="e.g. Portfolio Forecasting &amp; Asset Optimization" value="' +
+        (data.subtitle||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+
+      /* OKF Meta row */
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 80px;gap:10px;margin-bottom:14px;">',
+      '  <div><font face="Courier New" size="2" color="#888888">TYPE</font><br />',
+      '  <input type="text" class="admin-input proj-type" placeholder="e.g. case-study" value="' +
+        (data.type||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">DOMAIN</font><br />',
+      '  <input type="text" class="admin-input proj-domain" placeholder="e.g. finance / analytics" value="' +
+        (data.domain||'').replace(/"/g,'&quot;') + '" /></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">STATUS</font><br />',
+      '  <select class="admin-input proj-status" style="cursor:pointer;">' + statusOpts + '</select></div>',
+      '  <div><font face="Courier New" size="2" color="#888888">YEAR</font><br />',
+      '  <input type="text" class="admin-input proj-year" placeholder="2024" value="' +
+        (data.year||'').replace(/"/g,'&quot;') + '" /></div>',
+      '</div>',
+
+      /* Description */
+      '<font face="Courier New" size="2" color="#888888">DESCRIPTION</font><br />',
+      '<textarea class="admin-textarea proj-description" rows="3" placeholder="Full project description...">' +
+        (data.description||'') + '</textarea><br /><br />',
+
+      /* Contributions */
+      '<font face="Courier New" size="2" color="#888888">KEY CONTRIBUTION 1</font><br />',
+      '<textarea class="admin-textarea proj-contrib1" rows="2" placeholder="First key bullet point...">' +
+        (data.contrib1||'') + '</textarea><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">KEY CONTRIBUTION 2</font><br />',
+      '<textarea class="admin-textarea proj-contrib2" rows="2" placeholder="Second key bullet point...">' +
+        (data.contrib2||'') + '</textarea><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">KEY CONTRIBUTION 3</font><br />',
+      '<textarea class="admin-textarea proj-contrib3" rows="2" placeholder="Third key bullet point...">' +
+        (data.contrib3||'') + '</textarea><br /><br />',
+
+      /* Tech tags */
+      '<font face="Courier New" size="2" color="#888888">TECH TAGS <span style="color:#aaa;">(comma-separated)</span></font><br />',
+      '<input type="text" class="admin-input proj-tech" placeholder="Python, Pandas, Power BI" value="' +
+        (data.tech||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+
+      /* Project link */
+      '<font face="Courier New" size="2" color="#888888">PROJECT LINK <span style="color:#aaa;">(optional)</span></font><br />',
+      '<input type="text" class="admin-input proj-link" placeholder="https://github.com/..." value="' +
+        (data.link||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+
+      /* Image 1 */
+      '<div style="border:1px solid #E0E0E0;padding:10px 12px;margin-bottom:10px;background:#f9f8f2;">',
+      '<font face="Courier New" size="2" color="#BC2026">IMAGE 1 — Cloudinary URL</font><br />',
+      '<font face="Courier New" size="2" color="#aaaaaa">Primary output chart / dashboard screenshot</font><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">URL</font><br />',
+      '<input type="text" class="admin-input proj-image1" placeholder="https://res.cloudinary.com/your-cloud/..." value="' +
+        (data.image1||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">LABEL</font><br />',
+      '<input type="text" class="admin-input proj-img1label" placeholder="e.g. OUTPUT &mdash; SIMULATION CHART" value="' +
+        (data.img1label||'').replace(/"/g,'&quot;') + '" />',
+      '</div>',
+
+      /* Image 2 */
+      '<div style="border:1px solid #E0E0E0;padding:10px 12px;margin-bottom:14px;background:#f9f8f2;">',
+      '<font face="Courier New" size="2" color="#BC2026">IMAGE 2 — Cloudinary URL</font><br />',
+      '<font face="Courier New" size="2" color="#aaaaaa">Secondary detail image / secondary chart</font><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">URL</font><br />',
+      '<input type="text" class="admin-input proj-image2" placeholder="https://res.cloudinary.com/your-cloud/..." value="' +
+        (data.image2||'').replace(/"/g,'&quot;') + '" /><br /><br />',
+      '<font face="Courier New" size="2" color="#888888">LABEL</font><br />',
+      '<input type="text" class="admin-input proj-img2label" placeholder="e.g. DASHBOARD &mdash; RISK / RETURN" value="' +
+        (data.img2label||'').replace(/"/g,'&quot;') + '" />',
+      '</div>',
+
+      '</div>' /* end .proj-inner */
     ].join('');
+
+    div.setAttribute('data-proj', num);
     projectsList.appendChild(div);
   }
 
   function reNumberProjects() {
-    var divs = projectsList.querySelectorAll(':scope > div');
+    var divs = projectsList.querySelectorAll(':scope > div[data-proj]');
     divs.forEach(function(d, i) {
-      var label = d.querySelector('font');
-      if (label) label.textContent = 'PROJECT ' + String(i+1).padStart(2,'0');
+      var num   = String(i + 1).padStart(2, '0');
+      d.setAttribute('data-proj', num);
+      var label = d.querySelector('.proj-num-label');
+      if (label) label.textContent = '// PROJECT ' + num;
     });
   }
 
   function collectProjects() {
-    var divs = projectsList.querySelectorAll(':scope > div');
+    var divs = projectsList.querySelectorAll(':scope > div[data-proj]');
     var projs = [];
     divs.forEach(function(d) {
       projs.push({
         title:       (d.querySelector('.proj-title')?.value||'').trim(),
         subtitle:    (d.querySelector('.proj-subtitle')?.value||'').trim(),
+        type:        (d.querySelector('.proj-type')?.value||'').trim(),
+        domain:      (d.querySelector('.proj-domain')?.value||'').trim(),
+        status:      (d.querySelector('.proj-status')?.value||'complete').trim(),
+        year:        (d.querySelector('.proj-year')?.value||'').trim(),
         description: (d.querySelector('.proj-description')?.value||'').trim(),
+        contrib1:    (d.querySelector('.proj-contrib1')?.value||'').trim(),
+        contrib2:    (d.querySelector('.proj-contrib2')?.value||'').trim(),
+        contrib3:    (d.querySelector('.proj-contrib3')?.value||'').trim(),
         tech:        (d.querySelector('.proj-tech')?.value||'').trim(),
         link:        (d.querySelector('.proj-link')?.value||'').trim(),
-        image:       (d.querySelector('.proj-image')?.value||'').trim()
+        image1:      (d.querySelector('.proj-image1')?.value||'').trim(),
+        img1label:   (d.querySelector('.proj-img1label')?.value||'').trim(),
+        image2:      (d.querySelector('.proj-image2')?.value||'').trim(),
+        img2label:   (d.querySelector('.proj-img2label')?.value||'').trim()
       });
     });
     return projs;
+  }
+
+  /* ── OKF → Knowledge base auto-sync ─────────────────────
+   * Serialises all project cards into an OKF-style markdown
+   * block and appends / replaces the PROJECTS section in the
+   * knowledge editor so the AI assistant stays in sync.      */
+  function syncProjectsToKnowledge(projects) {
+    if (!editor) return;
+    var marker   = '<!-- OKF:PROJECTS:START -->';
+    var markerEnd= '<!-- OKF:PROJECTS:END -->';
+    var block    = [marker];
+
+    block.push('\n## Projects\n');
+    projects.forEach(function(p, i) {
+      var num = String(i + 1).padStart(2, '0');
+      block.push('### Project ' + num + ': ' + (p.title || '(untitled)'));
+      if (p.subtitle)     block.push('**Subtitle:** ' + p.subtitle);
+      if (p.type)         block.push('**Type:** ' + p.type);
+      if (p.domain)       block.push('**Domain:** ' + p.domain);
+      if (p.status)       block.push('**Status:** ' + p.status);
+      if (p.year)         block.push('**Year:** ' + p.year);
+      if (p.description)  block.push('\n' + p.description);
+      if (p.contrib1 || p.contrib2 || p.contrib3) {
+        block.push('\n**Key Contributions:**');
+        if (p.contrib1) block.push('- ' + p.contrib1);
+        if (p.contrib2) block.push('- ' + p.contrib2);
+        if (p.contrib3) block.push('- ' + p.contrib3);
+      }
+      if (p.tech)  block.push('\n**Technologies:** ' + p.tech);
+      if (p.link)  block.push('**Link:** ' + p.link);
+      block.push('');
+    });
+    block.push(markerEnd);
+
+    var newBlock = block.join('\n');
+    var current  = editor.value;
+    var s = current.indexOf(marker);
+    var e = current.indexOf(markerEnd);
+    if (s !== -1 && e !== -1) {
+      editor.value = current.substring(0, s) + newBlock + current.substring(e + markerEnd.length);
+    } else {
+      editor.value = (current ? current + '\n\n' : '') + newBlock;
+    }
+    updateCharCount();
   }
 
   addProjectBtn.addEventListener('click', function() { addProjectRow(); });
@@ -1441,6 +1580,10 @@ You help visitors learn about his work and skills.
   /* ── Save Content ────────────────────────────────────── */
   saveContentBtn.addEventListener('click', function() {
     var content = collectContent();
+    /* Auto-sync projects to AI knowledge base */
+    if (content.projects && content.projects.length) {
+      syncProjectsToKnowledge(content.projects);
+    }
     setStatus(contentStatus, 'Saving\u2026', '');
     saveContentBtn.disabled = true;
     var xhr = new XMLHttpRequest();
@@ -1450,7 +1593,8 @@ You help visitors learn about his work and skills.
     xhr.onload = function() {
       saveContentBtn.disabled = false;
       if (xhr.status === 200) {
-        setStatus(contentStatus, 'Content saved \u2714 — changes are live on your site within seconds.', 'ok');
+        setStatus(contentStatus, 'Content saved \u2714 — Projects synced to AI knowledge base. Changes live within seconds.', 'ok');
+        /* Update okf/projects.md via OKF sync endpoint if available */
       } else {
         setStatus(contentStatus, 'Save failed: ' + xhr.status, 'err');
       }

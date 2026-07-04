@@ -6,7 +6,7 @@
  * Usage on any element:
  *   <span data-cms="personal.name">Fallback Text</span>
  *   <a data-cms-href="personal.email" href="mailto:fallback@email.com">Email</a>
- *   <a data-cms-href="personal.linkedin" href="https://fallback.url">LinkedIn</a>
+ *   <img data-cms-src="projects.0.image1" src="" />
  */
 
 (function() {
@@ -64,69 +64,130 @@
       var val  = resolve(content, path);
       if (val !== null && val !== '') {
         el.setAttribute('src', val);
+        el.style.display = '';
       }
     });
 
-    // Projects dynamic rendering
-    var projContainer = document.getElementById('cms-projects-container');
-    if (projContainer && content.projects && (Array.isArray(content.projects) || typeof content.projects === 'object') && Object.keys(content.projects).length > 0) {
-      projContainer.innerHTML = '';
-      Object.values(content.projects).forEach(function(proj, i) {
-        var num = String(i + 1).padStart(2, '0');
-        var tags = (proj.tech || '').split(',').map(function(t) {
-          return '<span class="tech-tag">' + t.trim() + '</span>';
-        }).join('\n');
+    // Projects: inject body into each #project-XX section
+    renderProjects(content);
+  }
 
-        var defC1 = "", defC2 = "", defC3 = "";
-        if (i === 0) {
-          defC1 = "Automated streaming of ticker histories with python `yfinance` api, performing daily data cleanses.";
-          defC2 = "Executed 5,000 portfolio simulation iterations, finding the optimal weights for the Sharpe Ratio.";
-          defC3 = "Crafted interactive dashboards displaying rolling standard deviations, beta values, and asset distributions.";
-        } else if (i === 1) {
-          defC1 = "Structured a 3NF database layout supporting 200,000 purchase logs.";
-          defC2 = "Wrote query pipelines using SQL Common Table Expressions (CTEs), Subqueries, and Window Functions.";
-          defC3 = "Designed retail performance boards mapped onto geographic areas with Tableau heatmaps.";
-        } else if (i === 2) {
-          defC1 = "Engineered cohort RFM scores from high-volume transactional audit files.";
-          defC2 = "Applied KMeans clustering algorithms, evaluating clusters via the Elbow method and Silhouette analysis.";
-          defC3 = "Profiled buyer segments, producing customized activation advice for the marketing division.";
-        } else if (i === 3) {
-          defC1 = "Consolidated, digitized, and normalized sports metrics spanning a 10-year period.";
-          defC2 = "Constructed predictive trends to project house standings under changing constraints.";
-          defC3 = "Configured an automated tracker using Excel VBA scripts to dynamically calculate house margins.";
+  /**
+   * Render project body content into the static shell sections.
+   * Each section has id="project-01" ... "project-04" and
+   * a <div class="proj-body"> slot for CMS-injected content.
+   */
+  function renderProjects(content) {
+    var projs = content.projects;
+    if (!projs || !projs.length) return;
+
+    projs.forEach(function(proj, i) {
+      var num  = String(i + 1).padStart(2, '0');
+      var slot = document.querySelector('#project-' + num + ' .proj-body');
+      if (!slot) return;
+
+      // Update the static OKF meta header fields
+      var section = document.getElementById('project-' + num);
+      if (section) {
+        // OKF meta items
+        var metaType   = section.querySelector('.okf-type');
+        var metaDomain = section.querySelector('.okf-domain');
+        var metaStatus = section.querySelector('.okf-status');
+        var metaYear   = section.querySelector('.okf-year');
+        if (metaType   && proj.type)   metaType.textContent   = proj.type;
+        if (metaDomain && proj.domain) metaDomain.textContent = proj.domain;
+        if (metaStatus && proj.status) {
+          metaStatus.textContent  = proj.status;
+          metaStatus.className    = 'okf-status-' + proj.status;
         }
-        var c1 = proj.contrib1 || defC1;
-        var c2 = proj.contrib2 || defC2;
-        var c3 = proj.contrib3 || defC3;
+        if (metaYear   && proj.year)   metaYear.textContent   = proj.year;
+        // Title / subtitle (static already, also update)
+        var titleEl    = section.querySelector('.proj-title-text');
+        var subtitleEl = section.querySelector('.proj-subtitle-text');
+        if (titleEl    && proj.title)    titleEl.textContent    = proj.title;
+        if (subtitleEl && proj.subtitle) subtitleEl.textContent = proj.subtitle;
+      }
 
-        var html = [
-          '<section class="row mt-4">',
-          '  <div class="col-label font-mono text-sm text-muted-light">PROJECT ' + num + '</div>',
-          '  <div class="col-content">',
-          '    <div class="font-serif text-lg font-bold mb-1"><span data-cms="projects.' + i + '.title">' + (proj.title || '') + '</span></div>',
-          '    <div class="font-mono text-sm text-muted mb-3"><span data-cms="projects.' + i + '.subtitle">' + (proj.subtitle || '') + '</span></div>',
-          '    <div class="font-serif text-md mb-3">',
-          '      <span data-cms="projects.' + i + '.description">' + (proj.description || '') + '</span>',
-          '    </div>',
-          '    <div class="font-serif text-md mb-3">',
-          '      <b>Key Contributions:</b>',
-          '      <ul style="margin: 5px 0 0 20px; padding: 0; color: #555;">',
-          '        <li><span data-cms="projects.' + i + '.contrib1">' + c1 + '</span></li>',
-          '        <li><span data-cms="projects.' + i + '.contrib2">' + c2 + '</span></li>',
-          '        <li><span data-cms="projects.' + i + '.contrib3">' + c3 + '</span></li>',
-          '      </ul>',
-          '    </div>',
-      proj.link ? '    <div class="font-serif text-md mb-3"><a data-cms-href="projects.' + i + '.link" href="' + proj.link + '" target="_blank" class="text-blue">View Project &nearr;</a></div>' : '',
-      proj.image ? '    <img data-cms-src="projects.' + i + '.image" src="' + proj.image + '" class="project-img" onerror="this.style.display=\'none\'" />' : '',
-      '    <div style="margin-top: 5px;">' + tags + '</div>',
-          '  </div>',
-          '</section>',
-          '<hr class="hr-light mb-4 mt-4" />'
-        ].join('\n');
+      // Build tech tags
+      var tags = '';
+      if (proj.tech) {
+        tags = proj.tech.split(',').map(function(t) {
+          return '<span class="tech-tag">' + escHtml(t.trim()) + '</span>';
+        }).join(' ');
+      }
 
-        projContainer.insertAdjacentHTML('beforeend', html);
-      });
-    }
+      // Contributions
+      var c1 = proj.contrib1 || '';
+      var c2 = proj.contrib2 || '';
+      var c3 = proj.contrib3 || '';
+      var contribHtml = '';
+      if (c1 || c2 || c3) {
+        contribHtml = [
+          '<div class="font-serif text-md mb-3">',
+          '  <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>',
+          '  <ul class="contrib-list">',
+          c1 ? '<li>' + escHtml(c1) + '</li>' : '',
+          c2 ? '<li>' + escHtml(c2) + '</li>' : '',
+          c3 ? '<li>' + escHtml(c3) + '</li>' : '',
+          '  </ul>',
+          '</div>'
+        ].join('');
+      }
+
+      // Two photo slots
+      var img1url   = proj.image1   || '';
+      var img1label = proj.img1label || ('OUTPUT &mdash; PHOTO 1');
+      var img2url   = proj.image2   || '';
+      var img2label = proj.img2label || ('DETAIL &mdash; PHOTO 2');
+
+      var photoHtml = [
+        '<div class="project-photos">',
+        '  <div class="project-photo-slot' + (img1url ? '' : ' ph') + '" data-label="Photo 1">',
+        img1url
+          ? '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />'
+          : '',
+        '    <span class="project-photo-label">' + img1label + '</span>',
+        '  </div>',
+        '  <div class="project-photo-slot' + (img2url ? '' : ' ph') + '" data-label="Photo 2">',
+        img2url
+          ? '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />'
+          : '',
+        '    <span class="project-photo-label">' + img2label + '</span>',
+        '  </div>',
+        '</div>'
+      ].join('');
+
+      // Project link
+      var linkHtml = proj.link
+        ? '<div class="proj-links"><a href="' + escAttr(proj.link) + '" target="_blank">&nearr; View Project</a></div>'
+        : '';
+
+      // Description
+      var descHtml = proj.description
+        ? '<div class="font-serif text-md mb-3">' + escHtml(proj.description) + '</div>'
+        : '';
+
+      // Assemble body
+      slot.innerHTML = [
+        descHtml,
+        contribHtml,
+        photoHtml,
+        '<div style="margin-top:12px;">' + tags + '</div>',
+        linkHtml
+      ].join('');
+    });
+  }
+
+  /* Escape helpers */
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  function escAttr(s) {
+    return String(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   /**
@@ -135,11 +196,11 @@
   function loadContent() {
     fetch('/api/content')
       .then(function(res) { return res.json(); })
-      .then(function(data) { 
+      .then(function(data) {
         applyContent(data);
         document.dispatchEvent(new Event('cms-loaded'));
       })
-      .catch(function() { 
+      .catch(function() {
         document.dispatchEvent(new Event('cms-loaded'));
       });
   }
