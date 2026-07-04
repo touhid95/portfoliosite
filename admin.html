@@ -435,6 +435,14 @@
 
   <!-- ── ADMIN CONTENT (shown after auth) ───────────────── -->
   <div id="admin-content">
+  <!-- ── TOP NAVIGATION ───────────────────────────────────── -->
+  <div id="admin-top-nav" style="display:flex;gap:10px;border-bottom:2px solid #BC2026;margin-bottom:30px;padding-bottom:0;">
+    <button class="top-nav-btn active" data-view="ai" style="background:#BC2026;color:#FCFAF2;border:none;padding:12px 20px;font-family:'Courier New',monospace;font-weight:bold;cursor:pointer;letter-spacing:1px;">AI KNOWLEDGE EDITOR</button>
+    <button class="top-nav-btn" data-view="cms" style="background:none;color:#888888;border:none;padding:12px 20px;font-family:'Courier New',monospace;font-weight:bold;cursor:pointer;letter-spacing:1px;">CMS SYSTEM</button>
+    <button class="top-nav-btn" data-view="visual" style="background:none;color:#888888;border:none;padding:12px 20px;font-family:'Courier New',monospace;font-weight:bold;cursor:pointer;letter-spacing:1px;">VISUAL EDITOR</button>
+  </div>
+
+  <div id="view-ai" class="admin-view">
 
     <!-- ── JOBS TRACKER ────────────────────────────────── -->
     <div id="jobs-notification" class="job-notification-banner" style="display:none;">
@@ -3201,3 +3209,5 @@ You help visitors learn about his work and skills.
 </script>
 </body>
 </html>
+
+

@@ -144,7 +144,7 @@
 
   function renderProjects(content) {
     var projs = content.projects || [];
-    var isProjectsPage = document.querySelector('section[id^="project-"]');
+    var isProjectsPage = document.getElementById('projects-list-container');
     if (!isProjectsPage) return; // Only run on pages that have projects
 
     projs.forEach(function(proj, i) {
@@ -242,7 +242,7 @@
 
   function renderResearch(content) {
     var articles = content.research || [];
-    var isResearchPage = document.querySelector('section[id^="research-"]');
+    var isResearchPage = document.getElementById('research-list-container');
     if (!isResearchPage) return; // Only run on pages that have research
 
     articles.forEach(function(art, i) {
