@@ -76,38 +76,202 @@
   }
 
   /**
-   * Render research article body content into the static shell sections.
-   * Each section has id="research-01" ... and a <div class="research-body"> slot.
+   * Helper to get or create a project/research shell dynamically
    */
+  function getOrCreateShell(type, num, containerSelector, hrClass) {
+    var id = type + '-' + num;
+    var section = document.getElementById(id);
+    if (section) return section;
+
+    // Not found in static HTML, create dynamically
+    var container = document.querySelector(containerSelector) || document.querySelector('main.container');
+    if (!container) return null;
+
+    // Find the last HR or section to insert after, or just before the footer
+    var footer = container.querySelector('footer');
+    if (!footer) return null;
+
+    section = document.createElement('section');
+    section.className = 'row mt-4';
+    section.id = id;
+
+    var isProj = (type === 'project');
+    var labelText = isProj ? 'PROJECT' : 'ARTICLE';
+    var titleText = isProj ? '// DOCUMENT ' + num : '// ARTICLE ' + num;
+    var typeClass = isProj ? 'okf-type' : 'res-type';
+    var domainClass = isProj ? 'okf-domain' : 'res-domain';
+    var statusClass = isProj ? 'okf-status' : 'res-status';
+    var yearClass = isProj ? 'okf-year' : 'res-year';
+    var titleClass = isProj ? 'proj-title-text' : 'res-title-text';
+    var subClass = isProj ? 'proj-subtitle-text' : 'res-subtitle-text';
+    var bodyClass = isProj ? 'proj-body' : 'research-body';
+
+    section.innerHTML = [
+      '<div class="col-label">',
+      '  <div class="font-mono text-sm text-muted-light" style="line-height:1.8;">',
+      '    ' + labelText + '<br />' + num,
+      '  </div>',
+      '</div>',
+      '<div class="col-content">',
+      '  <div class="okf-meta">',
+      '    <span class="okf-meta-item"><strong>id:</strong> <span>' + id + '</span></span>',
+      '    <span class="okf-meta-item"><strong>type:</strong> <span class="' + typeClass + '"></span></span>',
+      '    <span class="okf-meta-item"><strong>domain:</strong> <span class="' + domainClass + '"></span></span>',
+      '    <span class="okf-meta-item"><strong>status:</strong> <span class="' + statusClass + '"></span></span>',
+      '    <span class="okf-meta-item"><strong>year:</strong> <span class="' + yearClass + '"></span></span>',
+      '  </div>',
+      '  <div class="okf-title-block">',
+      '    <span class="proj-num">' + titleText + '</span>',
+      '    <div class="font-serif text-lg font-bold mb-1">',
+      '      <span class="' + titleClass + '"></span>',
+      '    </div>',
+      '    <div class="font-mono text-sm text-muted">',
+      '      <span class="' + subClass + '"></span>',
+      '    </div>',
+      '  </div>',
+      '  <div class="' + bodyClass + '"></div>',
+      '</div>'
+    ].join('\n');
+
+    container.insertBefore(section, footer);
+
+    var hr = document.createElement('hr');
+    hr.className = hrClass || 'hr-light mb-4 mt-2';
+    container.insertBefore(hr, footer);
+
+    return section;
+  }
+
+  function renderProjects(content) {
+    var projs = content.projects || [];
+    var isProjectsPage = document.querySelector('section[id^="project-"]');
+    if (!isProjectsPage) return; // Only run on pages that have projects
+
+    projs.forEach(function(proj, i) {
+      var num  = String(i + 1).padStart(2, '0');
+      var section = getOrCreateShell('project', num, 'main.container', 'hr-light mb-4 mt-2');
+      if (!section) return;
+
+      section.style.display = ''; // Ensure visible
+      
+      // Update meta header fields
+      var metaType   = section.querySelector('.okf-type');
+      var metaDomain = section.querySelector('.okf-domain');
+      var metaStatus = section.querySelector('.okf-status');
+      var metaYear   = section.querySelector('.okf-year');
+      if (metaType   && proj.type)   metaType.textContent   = proj.type;
+      if (metaDomain && proj.domain) metaDomain.textContent = proj.domain;
+      if (metaStatus && proj.status) {
+        metaStatus.textContent  = proj.status;
+        metaStatus.className    = 'okf-status okf-status-' + proj.status;
+      }
+      if (metaYear   && proj.year)   metaYear.textContent   = proj.year;
+
+      var titleEl    = section.querySelector('.proj-title-text');
+      var subtitleEl = section.querySelector('.proj-subtitle-text');
+      if (titleEl)    titleEl.textContent    = proj.title || '';
+      if (subtitleEl) subtitleEl.textContent = proj.subtitle || '';
+
+      var slot = section.querySelector('.proj-body');
+      if (!slot) return;
+
+      var tags = '';
+      if (proj.tech) {
+        tags = proj.tech.split(',').map(function(t) {
+          return '<span class="tech-tag">' + escHtml(t.trim()) + '</span>';
+        }).join(' ');
+      }
+
+      var c1 = proj.contrib1 || '', c2 = proj.contrib2 || '', c3 = proj.contrib3 || '';
+      var contribHtml = '';
+      if (c1 || c2 || c3) {
+        contribHtml = [
+          '<div class="font-serif text-md mb-3">',
+          '  <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>',
+          '  <ul class="contrib-list">',
+          c1 ? '<li>' + escHtml(c1) + '</li>' : '',
+          c2 ? '<li>' + escHtml(c2) + '</li>' : '',
+          c3 ? '<li>' + escHtml(c3) + '</li>' : '',
+          '  </ul>',
+          '</div>'
+        ].join('');
+      }
+
+      var img1url   = proj.image1   || '';
+      var img1label = proj.img1label || ('OUTPUT &mdash; PHOTO 1');
+      var img2url   = proj.image2   || '';
+      var img2label = proj.img2label || ('DETAIL &mdash; PHOTO 2');
+
+      var photoHtml = [
+        '<div class="project-photos">',
+        '  <div class="project-photo-slot' + (img1url ? '' : ' ph') + '" data-label="Photo 1">',
+        img1url ? '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
+        '    <span class="project-photo-label">' + img1label + '</span>',
+        '  </div>',
+        '  <div class="project-photo-slot' + (img2url ? '' : ' ph') + '" data-label="Photo 2">',
+        img2url ? '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
+        '    <span class="project-photo-label">' + img2label + '</span>',
+        '  </div>',
+        '</div>'
+      ].join('');
+
+      var linkHtml = proj.link
+        ? '<div class="proj-links"><a href="' + escAttr(proj.link) + '" target="_blank">&nearr; View Project</a></div>'
+        : '';
+
+      var descHtml = proj.description
+        ? '<div class="font-serif text-md mb-3">' + escHtml(proj.description) + '</div>'
+        : '';
+
+      slot.innerHTML = descHtml + contribHtml + photoHtml + '<div style="margin-top:12px;">' + tags + '</div>' + linkHtml;
+    });
+
+    // Hide any extra static shells that are no longer in the CMS
+    var allShells = document.querySelectorAll('section[id^="project-"]');
+    allShells.forEach(function(shell, i) {
+      if (i >= projs.length) {
+        shell.style.display = 'none';
+        var nextHr = shell.nextElementSibling;
+        if (nextHr && nextHr.tagName === 'HR') nextHr.style.display = 'none';
+      } else {
+        var nextHr = shell.nextElementSibling;
+        if (nextHr && nextHr.tagName === 'HR') nextHr.style.display = '';
+      }
+    });
+  }
+
   function renderResearch(content) {
-    var articles = content.research;
-    if (!articles || !articles.length) return;
+    var articles = content.research || [];
+    var isResearchPage = document.querySelector('section[id^="research-"]');
+    if (!isResearchPage) return; // Only run on pages that have research
 
     articles.forEach(function(art, i) {
       var num  = String(i + 1).padStart(2, '0');
-      var slot = document.querySelector('#research-' + num + ' .research-body');
+      var section = getOrCreateShell('research', num, 'main.container', 'hr-light mb-4 mt-2');
+      if (!section) return;
+
+      section.style.display = '';
+
+      var metaType   = section.querySelector('.res-type');
+      var metaDomain = section.querySelector('.res-domain');
+      var metaStatus = section.querySelector('.res-status');
+      var metaYear   = section.querySelector('.res-year');
+      if (metaType   && art.type)   metaType.textContent   = art.type;
+      if (metaDomain && art.domain) metaDomain.textContent = art.domain;
+      if (metaStatus && art.status) {
+        metaStatus.textContent = art.status;
+        metaStatus.className   = 'res-status okf-status okf-status-' + art.status;
+      }
+      if (metaYear   && art.year)   metaYear.textContent   = art.year;
+      
+      var titleEl    = section.querySelector('.res-title-text');
+      var subtitleEl = section.querySelector('.res-subtitle-text');
+      if (titleEl)    titleEl.textContent    = art.title || '';
+      if (subtitleEl) subtitleEl.textContent = art.subtitle || '';
+
+      var slot = section.querySelector('.research-body');
       if (!slot) return;
 
-      var section = document.getElementById('research-' + num);
-      if (section) {
-        var metaType   = section.querySelector('.res-type');
-        var metaDomain = section.querySelector('.res-domain');
-        var metaStatus = section.querySelector('.res-status');
-        var metaYear   = section.querySelector('.res-year');
-        if (metaType   && art.type)   metaType.textContent   = art.type;
-        if (metaDomain && art.domain) metaDomain.textContent = art.domain;
-        if (metaStatus && art.status) {
-          metaStatus.textContent = art.status;
-          metaStatus.className   = 'res-status okf-status-' + art.status;
-        }
-        if (metaYear   && art.year)   metaYear.textContent   = art.year;
-        var titleEl    = section.querySelector('.res-title-text');
-        var subtitleEl = section.querySelector('.res-subtitle-text');
-        if (titleEl    && art.title)    titleEl.textContent    = art.title;
-        if (subtitleEl && art.subtitle) subtitleEl.textContent = art.subtitle;
-      }
-
-      // Byline — journal / authors / conference
       var bylineHtml = '';
       if (art.journal || art.authors) {
         bylineHtml = '<div class="research-byline">';
@@ -116,15 +280,11 @@
         bylineHtml += '</div>';
       }
 
-      // Abstract
       var abstractHtml = art.abstract
         ? '<div class="font-serif text-md mb-3">' + escHtml(art.abstract) + '</div>'
         : '';
 
-      // Key findings
-      var f1 = art.finding1 || '';
-      var f2 = art.finding2 || '';
-      var f3 = art.finding3 || '';
+      var f1 = art.finding1 || '', f2 = art.finding2 || '', f3 = art.finding3 || '';
       var findingsHtml = '';
       if (f1 || f2 || f3) {
         findingsHtml = [
@@ -139,7 +299,6 @@
         ].join('');
       }
 
-      // Two photo slots (figures / charts)
       var img1url   = art.image1    || '';
       var img1label = art.img1label || 'FIGURE 1';
       var img2url   = art.image2    || '';
@@ -157,7 +316,6 @@
         '</div>'
       ].join('');
 
-      // Tags
       var tags = '';
       if (art.tags) {
         tags = art.tags.split(',').map(function(t) {
@@ -165,7 +323,6 @@
         }).join(' ');
       }
 
-      // Links (DOI, PDF, etc.)
       var linkHtml = '';
       if (art.doi || art.link) {
         linkHtml = '<div class="article-links">';
@@ -174,120 +331,20 @@
         linkHtml += '</div>';
       }
 
-      slot.innerHTML = [
-        bylineHtml,
-        abstractHtml,
-        findingsHtml,
-        photoHtml,
-        '<div style="margin-top:12px;">' + tags + '</div>',
-        linkHtml
-      ].join('');
+      slot.innerHTML = bylineHtml + abstractHtml + findingsHtml + photoHtml + '<div style="margin-top:12px;">' + tags + '</div>' + linkHtml;
     });
-  }
 
-  /**
-   * Render project body content into the static shell sections.
-   * Each section has id="project-01" ... "project-04" and
-   * a <div class="proj-body"> slot for CMS-injected content.
-   */
-  function renderProjects(content) {
-    var projs = content.projects;
-    if (!projs || !projs.length) return;
-
-    projs.forEach(function(proj, i) {
-      var num  = String(i + 1).padStart(2, '0');
-      var slot = document.querySelector('#project-' + num + ' .proj-body');
-      if (!slot) return;
-
-      // Update the static OKF meta header fields
-      var section = document.getElementById('project-' + num);
-      if (section) {
-        // OKF meta items
-        var metaType   = section.querySelector('.okf-type');
-        var metaDomain = section.querySelector('.okf-domain');
-        var metaStatus = section.querySelector('.okf-status');
-        var metaYear   = section.querySelector('.okf-year');
-        if (metaType   && proj.type)   metaType.textContent   = proj.type;
-        if (metaDomain && proj.domain) metaDomain.textContent = proj.domain;
-        if (metaStatus && proj.status) {
-          metaStatus.textContent  = proj.status;
-          metaStatus.className    = 'okf-status-' + proj.status;
-        }
-        if (metaYear   && proj.year)   metaYear.textContent   = proj.year;
-        // Title / subtitle (static already, also update)
-        var titleEl    = section.querySelector('.proj-title-text');
-        var subtitleEl = section.querySelector('.proj-subtitle-text');
-        if (titleEl    && proj.title)    titleEl.textContent    = proj.title;
-        if (subtitleEl && proj.subtitle) subtitleEl.textContent = proj.subtitle;
+    // Hide extra research shells
+    var allShells = document.querySelectorAll('section[id^="research-"]');
+    allShells.forEach(function(shell, i) {
+      if (i >= articles.length) {
+        shell.style.display = 'none';
+        var nextHr = shell.nextElementSibling;
+        if (nextHr && nextHr.tagName === 'HR') nextHr.style.display = 'none';
+      } else {
+        var nextHr = shell.nextElementSibling;
+        if (nextHr && nextHr.tagName === 'HR') nextHr.style.display = '';
       }
-
-      // Build tech tags
-      var tags = '';
-      if (proj.tech) {
-        tags = proj.tech.split(',').map(function(t) {
-          return '<span class="tech-tag">' + escHtml(t.trim()) + '</span>';
-        }).join(' ');
-      }
-
-      // Contributions
-      var c1 = proj.contrib1 || '';
-      var c2 = proj.contrib2 || '';
-      var c3 = proj.contrib3 || '';
-      var contribHtml = '';
-      if (c1 || c2 || c3) {
-        contribHtml = [
-          '<div class="font-serif text-md mb-3">',
-          '  <span class="font-mono text-sm text-muted-light">KEY CONTRIBUTIONS</span>',
-          '  <ul class="contrib-list">',
-          c1 ? '<li>' + escHtml(c1) + '</li>' : '',
-          c2 ? '<li>' + escHtml(c2) + '</li>' : '',
-          c3 ? '<li>' + escHtml(c3) + '</li>' : '',
-          '  </ul>',
-          '</div>'
-        ].join('');
-      }
-
-      // Two photo slots
-      var img1url   = proj.image1   || '';
-      var img1label = proj.img1label || ('OUTPUT &mdash; PHOTO 1');
-      var img2url   = proj.image2   || '';
-      var img2label = proj.img2label || ('DETAIL &mdash; PHOTO 2');
-
-      var photoHtml = [
-        '<div class="project-photos">',
-        '  <div class="project-photo-slot' + (img1url ? '' : ' ph') + '" data-label="Photo 1">',
-        img1url
-          ? '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />'
-          : '',
-        '    <span class="project-photo-label">' + img1label + '</span>',
-        '  </div>',
-        '  <div class="project-photo-slot' + (img2url ? '' : ' ph') + '" data-label="Photo 2">',
-        img2url
-          ? '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />'
-          : '',
-        '    <span class="project-photo-label">' + img2label + '</span>',
-        '  </div>',
-        '</div>'
-      ].join('');
-
-      // Project link
-      var linkHtml = proj.link
-        ? '<div class="proj-links"><a href="' + escAttr(proj.link) + '" target="_blank">&nearr; View Project</a></div>'
-        : '';
-
-      // Description
-      var descHtml = proj.description
-        ? '<div class="font-serif text-md mb-3">' + escHtml(proj.description) + '</div>'
-        : '';
-
-      // Assemble body
-      slot.innerHTML = [
-        descHtml,
-        contribHtml,
-        photoHtml,
-        '<div style="margin-top:12px;">' + tags + '</div>',
-        linkHtml
-      ].join('');
     });
   }
 
