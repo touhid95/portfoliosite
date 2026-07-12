@@ -1829,10 +1829,11 @@ You help visitors learn about his work and skills.
     }
     setStatus(contentStatus, 'Saving\u2026', '');
     saveContentBtn.disabled = true;
+    var token = pwd || document.body.getAttribute('data-admin-token') || '';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/admin/save', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
     xhr.onload = function() {
       saveContentBtn.disabled = false;
       if (xhr.status === 200) {
@@ -1920,10 +1921,11 @@ You help visitors learn about his work and skills.
       return;
     }
 
+    var token = pwd || document.body.getAttribute('data-admin-token') || '';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/admin/save', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
     xhr.onload = function () {
       saveBtn.disabled = false;
       if (xhr.status === 200) {

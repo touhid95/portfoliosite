@@ -179,18 +179,23 @@
         var img2url   = proj.image2   || '';
         var img2label = proj.img2label || ('DETAIL &mdash; PHOTO 2');
 
-        var photoHtml = [
-          '<div class="project-photos">',
-          '  <div class="project-photo-slot' + (img1url ? '' : ' ph') + '" data-label="Photo 1">',
-          img1url ? '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
-          '    <span class="project-photo-label">' + img1label + '</span>',
-          '  </div>',
-          '  <div class="project-photo-slot' + (img2url ? '' : ' ph') + '" data-label="Photo 2">',
-          img2url ? '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
-          '    <span class="project-photo-label">' + img2label + '</span>',
-          '  </div>',
-          '</div>'
-        ].join('');
+        var photoHtml = '';
+        if (img1url || img2url) {
+          photoHtml = '<div class="project-photos">';
+          if (img1url) {
+            photoHtml += '  <div class="project-photo-slot" data-label="Photo 1">';
+            photoHtml += '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />';
+            photoHtml += '    <span class="project-photo-label">' + img1label + '</span>';
+            photoHtml += '  </div>';
+          }
+          if (img2url) {
+            photoHtml += '  <div class="project-photo-slot" data-label="Photo 2">';
+            photoHtml += '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />';
+            photoHtml += '    <span class="project-photo-label">' + img2label + '</span>';
+            photoHtml += '  </div>';
+          }
+          photoHtml += '</div>';
+        }
 
         var linkHtml = proj.link
           ? '<div class="proj-links"><a href="' + escAttr(proj.link) + '" target="_blank">&nearr; View Project</a></div>'
@@ -272,18 +277,23 @@
         var img2url   = art.image2   || '';
         var img2label = art.img2label || 'FIGURE 2';
 
-        var photoHtml = [
-          '<div class="project-photos">',
-          '  <div class="project-photo-slot' + (img1url ? '' : ' ph') + '" data-label="Figure 1">',
-          img1url ? '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
-          '    <span class="project-photo-label">' + img1label + '</span>',
-          '  </div>',
-          '  <div class="project-photo-slot' + (img2url ? '' : ' ph') + '" data-label="Figure 2">',
-          img2url ? '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />' : '',
-          '    <span class="project-photo-label">' + img2label + '</span>',
-          '  </div>',
-          '</div>'
-        ].join('');
+        var photoHtml = '';
+        if (img1url || img2url) {
+          photoHtml = '<div class="project-photos">';
+          if (img1url) {
+            photoHtml += '  <div class="project-photo-slot" data-label="Figure 1">';
+            photoHtml += '    <img src="' + escAttr(img1url) + '" alt="' + escAttr(img1label) + '" loading="lazy" onerror="this.style.display=\'none\'" />';
+            photoHtml += '    <span class="project-photo-label">' + img1label + '</span>';
+            photoHtml += '  </div>';
+          }
+          if (img2url) {
+            photoHtml += '  <div class="project-photo-slot" data-label="Figure 2">';
+            photoHtml += '    <img src="' + escAttr(img2url) + '" alt="' + escAttr(img2label) + '" loading="lazy" onerror="this.style.display=\'none\'" />';
+            photoHtml += '    <span class="project-photo-label">' + img2label + '</span>';
+            photoHtml += '  </div>';
+          }
+          photoHtml += '</div>';
+        }
 
         var tags = '';
         if (art.tags) {
@@ -314,7 +324,7 @@
     });
   }
 
-  /* Escape helpers */
+  /* ── Escape helpers ─────────────────────────────────── */
   function escHtml(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -326,18 +336,130 @@
     return String(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  /* ── Fallback content (shown when KV has no data yet) ── */
+  var FALLBACK_CONTENT = {
+    projects: [
+      {
+        title: 'JACSU Election Survey Analysis',
+        subtitle: 'EDA on Survey Data',
+        type: 'case-study',
+        domain: 'Policy Research',
+        status: 'complete',
+        year: '2025',
+        description: 'Comprehensive analysis of voter trends among Jahangirnagar University students ahead of the JACSU Election 2025. Provides data-driven insights into political leanings, reform priorities, and attitudes toward leadership.',
+        contrib1: 'Designed and distributed structured survey instruments capturing student political inclinations across demographic segments.',
+        contrib2: 'Performed exploratory data analysis revealing key voter blocs and reform priority clusters.',
+        contrib3: 'Produced visualised reports equipping political stakeholders with actionable campaign strategy insights.',
+        tech: 'Python, Pandas, Power BI',
+        link: '',
+        image1: '',
+        img1label: '',
+        image2: 'https://res.cloudinary.com/doonxbwcz/image/upload/v1783174710/Screenshot_2026-07-04_201755_cvxopt.png',
+        img2label: 'Political Spectrum'
+      },
+      {
+        title: 'Financial Market Predictive Analytics',
+        subtitle: 'Portfolio Forecasting & Asset Optimization',
+        type: 'case-study',
+        domain: 'finance / analytics',
+        status: 'complete',
+        year: '2024',
+        description: 'A stock trend forecasting and risk simulation model based on Modern Portfolio Theory (MPT) principles. Fetches public financial data, runs Monte Carlo allocations, and exports core risk-return metrics.',
+        contrib1: 'Automated streaming of ticker histories with Python yfinance API, performing daily data cleanses.',
+        contrib2: 'Executed 5,000 portfolio simulation iterations, finding the optimal weights for the Sharpe Ratio.',
+        contrib3: 'Crafted interactive dashboards displaying rolling standard deviations, beta values, and asset distributions.',
+        tech: 'Python, Pandas, NumPy, Power BI, yfinance, Monte Carlo',
+        link: 'https://github.com/touhid95/portfolio',
+        image1: '',
+        img1label: '',
+        image2: '',
+        img2label: ''
+      },
+      {
+        title: 'Retail Sales Database Optimization',
+        subtitle: 'Database Normalisation & Analytical Queries',
+        type: 'database-design',
+        domain: 'retail / SQL',
+        status: 'complete',
+        year: '2024',
+        description: 'An enterprise schema refactoring project designed to minimize storage redundancy and accelerate query times. Raw transaction files were modeled into Third Normal Form (3NF) tables.',
+        contrib1: 'Structured a 3NF database layout supporting 200,000 purchase logs.',
+        contrib2: 'Wrote query pipelines using SQL Common Table Expressions (CTEs), Subqueries, and Window Functions.',
+        contrib3: 'Designed retail performance boards mapped onto geographic areas with Tableau heatmaps.',
+        tech: 'SQL Server, 3NF Design, Window Functions, CTEs, Tableau',
+        link: '',
+        image1: '',
+        img1label: '',
+        image2: '',
+        img2label: ''
+      },
+      {
+        title: 'Customer Segmentation & RFM Analysis',
+        subtitle: 'Unsupervised Machine Learning & Segment Analysis',
+        type: 'ml-analysis',
+        domain: 'marketing / data-science',
+        status: 'complete',
+        year: '2023',
+        description: 'An analytical approach to segmenting retail store buyers using historical activity (Recency, Frequency, Monetary). By grouping buyers, businesses can tailor their retention campaigns.',
+        contrib1: 'Engineered cohort RFM scores from high-volume transactional audit files.',
+        contrib2: 'Applied KMeans clustering algorithms, evaluating clusters via the Elbow method and Silhouette analysis.',
+        contrib3: 'Profiled buyer segments, producing customised activation advice for the marketing division.',
+        tech: 'Python, Scikit-Learn, Pandas, KMeans Clustering, RFM Modeling, Seaborn',
+        link: '',
+        image1: '',
+        img1label: '',
+        image2: '',
+        img2label: ''
+      },
+      {
+        title: 'Cadet College Sports Analytics',
+        subtitle: 'Historical Sports Records Modeling & Forecasting',
+        type: 'sports-analytics',
+        domain: 'education / sports',
+        status: 'complete',
+        year: '2023',
+        description: "An athletic performance tracking dashboard consolidating Mirzapur Cadet College's historic scores. This analysis visualizes progress over multiple seasons and forecasts tournament outcomes.",
+        contrib1: 'Consolidated, digitised, and normalised sports metrics spanning a 10-year period.',
+        contrib2: 'Constructed predictive trends to project house standings under changing constraints.',
+        contrib3: 'Configured an automated tracker using Excel VBA scripts to dynamically calculate house margins.',
+        tech: 'Python, Excel VBA, Matplotlib, Data Cleaning, Time Series',
+        link: '',
+        image1: '',
+        img1label: '',
+        image2: '',
+        img2label: ''
+      }
+    ],
+    research: []
+  };
+
   /**
    * Fetch content from the API and apply it.
-   * Uses cache-busting to always get fresh data.
+   * Falls back to FALLBACK_CONTENT if KV returns empty.
    */
   function loadContent() {
     fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        applyContent(data);
+        /* Use API data if it has projects, otherwise fall back */
+        var hasProjects = data && Array.isArray(data.projects) && data.projects.length > 0;
+        var hasResearch = data && Array.isArray(data.research) && data.research.length > 0;
+        var merged = {};
+        if (data && typeof data === 'object') {
+          merged = data;
+        }
+        if (!hasProjects) {
+          merged.projects = FALLBACK_CONTENT.projects;
+        }
+        if (!hasResearch) {
+          merged.research = FALLBACK_CONTENT.research;
+        }
+        applyContent(merged);
         document.dispatchEvent(new Event('cms-loaded'));
       })
       .catch(function() {
+        /* API unavailable — use full fallback */
+        applyContent(FALLBACK_CONTENT);
         document.dispatchEvent(new Event('cms-loaded'));
       });
   }
