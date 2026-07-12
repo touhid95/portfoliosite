@@ -430,7 +430,29 @@
         img2label: ''
       }
     ],
-    research: []
+    research: [
+      {
+        title: 'JACSU Election 2025 — Voter Trend Analysis',
+        subtitle: 'A Survey-Based Study of Student Political Inclinations at Jahangirnagar University',
+        type: 'research-article',
+        domain: 'political science / data science',
+        status: 'published',
+        year: '2025',
+        authors: 'Mahfujul Kader Touhid',
+        journal: 'Jahangirnagar University — Independent Research',
+        abstract: 'The Jahangirnagar University Central Students\' Union (JUCSU) election is one of the most significant political events in Bangladesh, often referred to as the "Second Parliament." This study provides a comprehensive analysis of voter trends among Jahangirnagar University students ahead of the 2025 election, offering data-driven insights into political leanings, reform priorities, and attitudes toward leadership.',
+        finding1: 'Identified distinct political spectrum clusters among students, revealing divergent reform priorities between partisan and independent voter blocs.',
+        finding2: 'Quality education and job creation ranked as the top reform priorities across all political affiliations.',
+        finding3: 'Youth engagement and willingness to participate in organized political activity has increased significantly post-July Revolution.',
+        tags: 'Political Science, EDA, Python, Survey Analysis, Bangladesh',
+        doi: '',
+        link: '',
+        image1: '',
+        img1label: '',
+        image2: 'https://res.cloudinary.com/doonxbwcz/image/upload/v1783174710/Screenshot_2026-07-04_201755_cvxopt.png',
+        img2label: 'Political Spectrum Distribution'
+      }
+    ]
   };
 
   /**

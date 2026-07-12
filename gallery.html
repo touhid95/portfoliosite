@@ -103,7 +103,7 @@
 (function() {
   var container = document.getElementById('gallery-cms-container');
 
-  fetch('/api/gallery/list')
+  fetch('/api/gallery/list?t=' + Date.now(), { cache: 'no-store' })
     .then(function(r) { return r.json(); })
     .then(function(photos) {
       if (!photos || !photos.length) {

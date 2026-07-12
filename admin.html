@@ -2149,10 +2149,11 @@ You help visitors learn about his work and skills.
       }
     });
 
+    var token = pwd || document.body.getAttribute('data-admin-token') || '';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/gallery/save-all', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + pwd);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
     xhr.onload = function () {
       gallerySaveBtn.disabled = false;
       if (xhr.status === 200) {
