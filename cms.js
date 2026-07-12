@@ -463,19 +463,18 @@
     fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(function(res) { return res.json(); })
       .then(function(data) {
-        /* Use API data if it has projects, otherwise fall back */
-        var hasProjects = data && Array.isArray(data.projects) && data.projects.length > 0;
-        var hasResearch = data && Array.isArray(data.research) && data.research.length > 0;
+        /* Use API data if it has projects/research, otherwise fall back */
+        var projs = data && data.projects ? (Array.isArray(data.projects) ? data.projects : Object.values(data.projects)) : [];
+        var arts = data && data.research ? (Array.isArray(data.research) ? data.research : Object.values(data.research)) : [];
+
         var merged = {};
         if (data && typeof data === 'object') {
           merged = data;
         }
-        if (!hasProjects) {
-          merged.projects = FALLBACK_CONTENT.projects;
-        }
-        if (!hasResearch) {
-          merged.research = FALLBACK_CONTENT.research;
-        }
+        
+        merged.projects = projs.length > 0 ? projs : FALLBACK_CONTENT.projects;
+        merged.research = arts.length > 0 ? arts : FALLBACK_CONTENT.research;
+
         applyContent(merged);
         document.dispatchEvent(new Event('cms-loaded'));
       })
