@@ -2504,31 +2504,42 @@ You help visitors learn about his work and skills.
 
   /* ── Jobs Tracker ──────────────────────────────────────── */
 
-  jobCvZone.addEventListener('dragleave', function () {
-    jobCvZone.classList.remove('drag-over');
-  });
-  jobCvZone.addEventListener('drop', function (e) {
-    e.preventDefault();
-    jobCvZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-      jobsCvFile = e.dataTransfer.files[0];
-      jobCvLabel.textContent = jobsCvFile.name;
-      setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
-      uploadJobCv();
-    }
-  });
-  jobCvFileInput.addEventListener('change', function () {
-    if (jobCvFileInput.files.length) {
-      jobsCvFile = jobCvFileInput.files[0];
-      jobCvLabel.textContent = jobsCvFile.name;
-      setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
-      uploadJobCv();
-    }
-  });
+  var jobCvZone      = document.getElementById('job-cv-zone');
+  var jobCvFileInput = document.getElementById('job-cv-file-input');
+  var jobCvLabel     = document.getElementById('job-cv-label');
+  var jobCvStatus    = document.getElementById('job-cv-status');
+  var jobsCvFile     = null;
+
+  if (jobCvZone) {
+    jobCvZone.addEventListener('dragleave', function () {
+      jobCvZone.classList.remove('drag-over');
+    });
+    jobCvZone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      jobCvZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) {
+        jobsCvFile = e.dataTransfer.files[0];
+        if (jobCvLabel) jobCvLabel.textContent = jobsCvFile.name;
+        if (jobCvStatus) setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
+        uploadJobCv();
+      }
+    });
+  }
+
+  if (jobCvFileInput) {
+    jobCvFileInput.addEventListener('change', function () {
+      if (jobCvFileInput.files.length) {
+        jobsCvFile = jobCvFileInput.files[0];
+        if (jobCvLabel) jobCvLabel.textContent = jobsCvFile.name;
+        if (jobCvStatus) setStatus(jobCvStatus, 'Selected: ' + jobsCvFile.name, 'ok');
+        uploadJobCv();
+      }
+    });
+  }
 
   function uploadJobCv() {
     if (!jobsCvFile) return;
-    setStatus(jobCvStatus, 'Uploading CV...', '');
+    if (jobCvStatus) setStatus(jobCvStatus, 'Uploading CV...', '');
     var formData = new FormData();
     formData.append('file', jobsCvFile);
 
@@ -2540,17 +2551,17 @@ You help visitors learn about his work and skills.
         var data = JSON.parse(xhr.responseText);
         var url = data.url || '';
         jobCvUrl.value = url;
-        jobCvLabel.textContent = '[ CV uploaded ]';
-        setStatus(jobCvStatus, 'CV uploaded \u2714', 'ok');
+        if (jobCvLabel) jobCvLabel.textContent = '[ CV uploaded ]';
+        if (jobCvStatus) setStatus(jobCvStatus, 'CV uploaded \u2714', 'ok');
         jobsCvFile = null;
-        jobCvFileInput.value = '';
+        if (jobCvFileInput) jobCvFileInput.value = '';
       } else {
         var errMsg = 'Upload failed';
         try { var d = JSON.parse(xhr.responseText); errMsg = d.error || errMsg; } catch(ex) {}
-        setStatus(jobCvStatus, errMsg, 'err');
+        if (jobCvStatus) setStatus(jobCvStatus, errMsg, 'err');
       }
     };
-    xhr.onerror = function () { setStatus(jobCvStatus, 'Network error.', 'err'); };
+    xhr.onerror = function () { if (jobCvStatus) setStatus(jobCvStatus, 'Network error.', 'err'); };
     xhr.send(formData);
   }
 
@@ -2675,8 +2686,8 @@ You help visitors learn about his work and skills.
     jobDeadline.value = '';
     jobApplyLink.value = '';
     jobCvUrl.value = '';
-    jobCvLabel.textContent = '[ Upload CV ]';
-    jobCvFileInput.value = '';
+    if (jobCvLabel) jobCvLabel.textContent = '[ Upload CV ]';
+    if (jobCvFileInput) jobCvFileInput.value = '';
     jobsCvFile = null;
     jobStatus.value = 'Wishlist';
     jobNotifyDays.value = '3';
@@ -2684,7 +2695,7 @@ You help visitors learn about his work and skills.
     jobCancelBtn.style.display = 'none';
     document.getElementById('jobs-form-title').textContent = 'ADD NEW JOB';
     setStatus(jobFormStatus, 'Fill in the fields and click Save Job.', '');
-    setStatus(jobCvStatus, '');
+    if (jobCvStatus) setStatus(jobCvStatus, '');
   }
 
   /* ── Edit Job ────────────────────────────────────────── */
@@ -2701,15 +2712,15 @@ You help visitors learn about his work and skills.
     jobDeadline.value = job.deadline || '';
     jobApplyLink.value = job.applyLink || '';
     jobCvUrl.value = job.cvUrl || '';
-    jobCvLabel.textContent = job.cvUrl ? '[ CV uploaded ]' : '[ Upload CV ]';
-    jobCvFileInput.value = '';
+    if (jobCvLabel) jobCvLabel.textContent = job.cvUrl ? '[ CV uploaded ]' : '[ Upload CV ]';
+    if (jobCvFileInput) jobCvFileInput.value = '';
     jobsCvFile = null;
     jobStatus.value = job.status || 'Wishlist';
     jobNotifyDays.value = (job.notifyDays || 3).toString();
     jobNotes.value = job.notes || '';
     jobCancelBtn.style.display = '';
     document.getElementById('jobs-form-title').textContent = 'EDIT JOB — ' + job.company;
-    setStatus(jobCvStatus, '');
+    if (jobCvStatus) setStatus(jobCvStatus, '');
     setStatus(jobFormStatus, 'Edit fields and click Save Job to update.', '');
 
     /* Scroll to form */
@@ -2851,6 +2862,9 @@ You help visitors learn about his work and skills.
       this.style.color = '#FCFAF2';
     });
   });
+
+  /* Auto-skip login per user request */
+  enableLocalMock();
 
 }());
 </script>
