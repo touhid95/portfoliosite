@@ -103,3 +103,7 @@ completion = client.chat.completions.create(
 # Handle both content and tool calls for non-streaming
 if completion.choices[0].message.content is not None:
   print(completion.choices[0].message.content)
+
+
+
+  superbase password database fRb8TGEpbHRy-La

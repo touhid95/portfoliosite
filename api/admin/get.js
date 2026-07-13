@@ -1,7 +1,12 @@
 /**
  * /api/admin/get.js
- * Vercel Edge Function — Read all admin data from Vercel KV
+ * Vercel Edge Function — Read all admin data from Supabase
  * Protected by ADMIN_PASSWORD environment variable
+ *
+ * Env vars required:
+ *   ADMIN_PASSWORD       — password checked in Authorization header
+ *   SUPABASE_URL         — e.g. https://xxxx.supabase.co
+ *   SUPABASE_SERVICE_KEY — service_role secret key (server-side only)
  */
 export const config = { runtime: 'edge' };
 
@@ -12,6 +17,36 @@ const CORS = {
   'Cache-Control': 'no-cache, no-store, must-revalidate',
   'Pragma': 'no-cache'
 };
+
+/**
+ * Read multiple keys from portfolio_kv in a single Supabase query.
+ * Returns a plain object: { key => value }
+ */
+async function kvGetMany(supabaseUrl, serviceKey, keys) {
+  const keyList = keys.map(k => `"${k}"`).join(',');
+  const res = await fetch(
+    `${supabaseUrl}/rest/v1/portfolio_kv?key=in.(${keyList})&select=key,value`,
+    {
+      headers: {
+        'apikey': serviceKey,
+        'Authorization': `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    }
+  );
+
+  if (!res.ok) return {};
+
+  const rows = await res.json();
+  const result = {};
+  if (Array.isArray(rows)) {
+    rows.forEach(row => {
+      result[row.key] = row.value;
+    });
+  }
+  return result;
+}
 
 export default async function handler(request) {
   if (request.method === 'OPTIONS') {
@@ -40,39 +75,36 @@ export default async function handler(request) {
     );
   }
 
-  /* Read from KV */
-  const kvUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
+  /* Supabase config */
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceKey  = process.env.SUPABASE_SERVICE_KEY;
 
-  if (!kvUrl || !kvToken) {
+  if (!supabaseUrl || !serviceKey) {
     return new Response(
-      JSON.stringify({ knowledge: '', systemPrompt: '', content: {}, note: 'KV not configured' }),
+      JSON.stringify({
+        knowledge: '', systemPrompt: '', content: {}, jobs: [],
+        note: 'Supabase not configured — add SUPABASE_URL and SUPABASE_SERVICE_KEY to Vercel env vars'
+      }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }
 
   try {
-    const kvHeaders = { Authorization: `Bearer ${kvToken}` };
-    const fetchOpts = { headers: kvHeaders, cache: 'no-store' };
-
-    const [kvKnowledge, kvPrompt, kvContent, kvJobs] = await Promise.all([
-      fetch(`${kvUrl}/get/touhid_knowledge`,     fetchOpts),
-      fetch(`${kvUrl}/get/touhid_system_prompt`, fetchOpts),
-      fetch(`${kvUrl}/get/touhid_content`,       fetchOpts),
-      fetch(`${kvUrl}/get/touhid_jobs`,          fetchOpts)
+    const rows = await kvGetMany(supabaseUrl, serviceKey, [
+      'touhid_knowledge',
+      'touhid_system_prompt',
+      'touhid_content',
+      'touhid_jobs'
     ]);
 
-    const kData = kvKnowledge.ok ? await kvKnowledge.json() : {};
-    const pData = kvPrompt.ok    ? await kvPrompt.json()    : {};
-    const cData = kvContent.ok   ? await kvContent.json()   : {};
-    const jData = kvJobs.ok      ? await kvJobs.json()      : {};
+    const knowledge    = rows['touhid_knowledge']     || '';
+    const systemPrompt = rows['touhid_system_prompt'] || '';
 
-    const knowledge    = kData.result || '';
-    const systemPrompt = pData.result || '';
     let content = {};
-    try { content = cData.result ? JSON.parse(cData.result) : {}; } catch {}
+    try { content = rows['touhid_content'] ? JSON.parse(rows['touhid_content']) : {}; } catch {}
+
     let jobs = [];
-    try { jobs = jData.result ? JSON.parse(jData.result) : []; } catch {}
+    try { jobs = rows['touhid_jobs'] ? JSON.parse(rows['touhid_jobs']) : []; } catch {}
 
     return new Response(
       JSON.stringify({ knowledge, systemPrompt, content, jobs }),
@@ -82,7 +114,7 @@ export default async function handler(request) {
   } catch (err) {
     console.error('Get handler error:', err);
     return new Response(
-      JSON.stringify({ knowledge: '', systemPrompt: '', content: {} }),
+      JSON.stringify({ knowledge: '', systemPrompt: '', content: {}, jobs: [] }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }

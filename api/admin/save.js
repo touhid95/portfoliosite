@@ -1,7 +1,13 @@
 /**
  * /api/admin/save.js
- * Vercel Edge Function — Save all admin data to Vercel KV
+ * Vercel Edge Function — Save all admin data to Supabase
  * Protected by ADMIN_PASSWORD environment variable
+ *
+ * Uses Supabase REST API upsert (INSERT ... ON CONFLICT DO UPDATE)
+ * Env vars required:
+ *   ADMIN_PASSWORD       — password checked in Authorization header
+ *   SUPABASE_URL         — e.g. https://xxxx.supabase.co
+ *   SUPABASE_SERVICE_KEY — service_role secret key (server-side only)
  */
 export const config = { runtime: 'edge' };
 
@@ -12,6 +18,24 @@ const CORS = {
   'Cache-Control': 'no-cache, no-store, must-revalidate',
   'Pragma': 'no-cache'
 };
+
+/**
+ * Upsert a single key-value row into portfolio_kv table.
+ * Uses Supabase's "Prefer: resolution=merge-duplicates" for upsert behaviour.
+ */
+async function kvSet(supabaseUrl, serviceKey, key, value) {
+  const res = await fetch(`${supabaseUrl}/rest/v1/portfolio_kv`, {
+    method: 'POST',
+    headers: {
+      'apikey': serviceKey,
+      'Authorization': `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
+  });
+  return res;
+}
 
 export default async function handler(request) {
   if (request.method === 'OPTIONS') {
@@ -47,7 +71,7 @@ export default async function handler(request) {
     knowledge    = (body.knowledge    || '').trim();
     systemPrompt = (body.systemPrompt || '').trim();
     content      = body.content || null;
-    jobs         = body.jobs || null;
+    jobs         = body.jobs    || null;
   } catch {
     return new Response(
       JSON.stringify({ error: 'Invalid JSON' }),
@@ -55,13 +79,13 @@ export default async function handler(request) {
     );
   }
 
-  /* Write to KV */
-  const kvUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
+  /* Supabase config */
+  const supabaseUrl  = process.env.SUPABASE_URL;
+  const serviceKey   = process.env.SUPABASE_SERVICE_KEY;
 
-  if (!kvUrl || !kvToken) {
+  if (!supabaseUrl || !serviceKey) {
     return new Response(
-      JSON.stringify({ error: 'KV store not configured' }),
+      JSON.stringify({ error: 'Supabase not configured — add SUPABASE_URL and SUPABASE_SERVICE_KEY to Vercel env vars' }),
       { status: 503, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }
@@ -70,51 +94,32 @@ export default async function handler(request) {
     const writes = [];
 
     /* Always write knowledge */
-    writes.push(
-      fetch(`${kvUrl}/set/touhid_knowledge`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(knowledge)
-      })
-    );
+    writes.push(kvSet(supabaseUrl, serviceKey, 'touhid_knowledge', knowledge));
 
     /* Only write system prompt if provided */
     if (systemPrompt) {
-      writes.push(
-        fetch(`${kvUrl}/set/touhid_system_prompt`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(systemPrompt)
-        })
-      );
+      writes.push(kvSet(supabaseUrl, serviceKey, 'touhid_system_prompt', systemPrompt));
     }
 
     /* Write content object if provided */
     if (content !== null) {
-      writes.push(
-        fetch(`${kvUrl}/set/touhid_content`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(JSON.stringify(content))
-        })
-      );
+      writes.push(kvSet(supabaseUrl, serviceKey, 'touhid_content', JSON.stringify(content)));
     }
 
     /* Write jobs if provided */
     if (jobs !== null) {
-      writes.push(
-        fetch(`${kvUrl}/set/touhid_jobs`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(JSON.stringify(jobs))
-        })
-      );
+      writes.push(kvSet(supabaseUrl, serviceKey, 'touhid_jobs', JSON.stringify(jobs)));
     }
 
     const results = await Promise.all(writes);
     if (results.some(r => !r.ok)) {
+      // Collect error details for debugging
+      const errorTexts = await Promise.all(
+        results.filter(r => !r.ok).map(r => r.text())
+      );
+      console.error('Supabase write errors:', errorTexts);
       return new Response(
-        JSON.stringify({ error: 'Failed to save one or more fields' }),
+        JSON.stringify({ error: 'Failed to save one or more fields', details: errorTexts }),
         { status: 502, headers: { 'Content-Type': 'application/json', ...CORS } }
       );
     }
@@ -127,7 +132,7 @@ export default async function handler(request) {
   } catch (err) {
     console.error('Save handler error:', err);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: 'Internal server error', message: err.message }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } }
     );
   }
