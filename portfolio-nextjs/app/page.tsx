@@ -23,17 +23,13 @@ export default async function HomePage() {
 
       <Nav />
 
-      <div className="mb-5 mt-5">
-        <div className="sep-line mb-4 mt-2" />
-        <div className="mb-4 mt-4">
-          <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>
-            {p.name || 'MAHFUJUL KADER TOUHID'}
-          </h1>
-        </div>
-        <div className="sep-line" />
+      <div className="mt-3 mb-2">
+        <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>
+          {p.name || 'MAHFUJUL KADER TOUHID'}
+        </h1>
       </div>
 
-      <hr className="hr-light mb-3" />
+      <hr className="hr-light mb-3 mt-3" />
 
       <div className="font-mono text-sm text-muted mb-4">
         {h.subtitle || 'UNDERGRADUATE \u00a0·\u00a0 DATA ANALYST \u00a0·\u00a0 IBA-JU'}
