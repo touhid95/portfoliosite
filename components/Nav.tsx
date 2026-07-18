@@ -2,7 +2,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const links = [
+type NavLink = { href: string; label: string; target?: string };
+
+const links: NavLink[] = [
   { href: '/',           label: 'HOME' },
   { href: '/about',      label: 'ABOUT' },
   { href: '/education',  label: 'EDUCATION' },
