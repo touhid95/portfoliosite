@@ -20,12 +20,8 @@ export default async function ProjectsPage() {
         <hr className="hr-light mb-4 mt-2" />
       </div>
       <Nav />
-      <div className="mb-5 mt-5">
-        <div className="sep-line mb-4 mt-2" />
-        <div className="mb-4 mt-4">
-          <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>PROJECTS</h1>
-        </div>
-        <div className="sep-line" />
+      <div className="mt-3 mb-2">
+        <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>PROJECTS</h1>
       </div>
       <hr className="hr-light mb-3" />
       <div className="font-mono text-sm text-muted mb-3">SELECTED WORK &amp; CASE STUDIES</div>
