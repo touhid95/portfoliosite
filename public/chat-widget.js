@@ -304,13 +304,20 @@
   /* ── OPEN / CLOSE ─────────────────────────────────────── */
   function openChat() {
     isOpen = true;
-    $panel.classList.add('open');
-    $body.scrollTop = $body.scrollHeight;
+    $panel.style.display = 'flex';
+    // Allow display: flex to apply before adding class for transition
+    setTimeout(function() {
+      $panel.classList.add('open');
+      $body.scrollTop = $body.scrollHeight;
+    }, 10);
     setTimeout(function () { $input.focus(); }, 220);
   }
   function closeChat() {
     isOpen = false;
     $panel.classList.remove('open');
+    setTimeout(function() {
+      if (!isOpen) $panel.style.display = 'none';
+    }, 200); // Wait for CSS transition to finish before hiding
   }
 
   /* ── BUILD DOM ────────────────────────────────────────── */
@@ -324,6 +331,7 @@
     /* Panel */
     $panel = document.createElement('div');
     $panel.id = 'ask-touhid-panel';
+    $panel.style.display = 'none'; // Ensure hidden on load
     $panel.setAttribute('role', 'dialog');
     $panel.setAttribute('aria-label', 'Portfolio AI Assistant');
 
