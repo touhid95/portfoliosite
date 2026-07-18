@@ -59,7 +59,7 @@ export default function ProjectCard({ proj, num }: { proj: Project; num: string 
           <span className="okf-meta-item"><strong>year:</strong> <span className="okf-year">{proj.year}</span></span>
         </div>
         <div className="okf-title-block" style={{ cursor: 'pointer' }} onClick={() => setIsExpanded(false)} title="Click to collapse">
-          <span className="proj-num">// DOCUMENT {num}</span>
+          <span className="proj-num">{"//"} DOCUMENT {num}</span>
           <div className="font-serif text-lg font-bold mb-1">
             <span className="proj-title-text">{proj.title}</span>
           </div>

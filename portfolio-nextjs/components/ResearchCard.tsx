@@ -25,7 +25,7 @@ export default function ResearchCard({ art, num }: { art: Research; num: string 
           <span className="okf-meta-item"><strong>year:</strong> <span className="res-year">{art.year}</span></span>
         </div>
         <div className="okf-title-block">
-          <span className="proj-num">// ARTICLE {num}</span>
+          <span className="proj-num">{"//"} ARTICLE {num}</span>
           <div className="font-serif text-lg font-bold mb-1">
             <span className="res-title-text">{art.title}</span>
           </div>
