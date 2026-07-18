@@ -342,7 +342,7 @@
     $btn = document.createElement('button');
     $btn.id = 'ask-touhid-btn';
     $btn.setAttribute('aria-label', 'Open Portfolio AI Assistant');
-    $btn.innerHTML = '<span class="btn-dot"></span>Portfolio Assistant';
+    $btn.innerHTML = '<span class="btn-dot"></span><span class="btn-text">Portfolio Assistant</span>';
 
     /* Panel */
     $panel = document.createElement('div');

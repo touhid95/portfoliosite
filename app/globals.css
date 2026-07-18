@@ -820,6 +820,21 @@ input[type="submit"]:hover {
 
 /* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  #ask-touhid-btn  { right: 14px; bottom: 14px; font-size: 10px; padding: 10px 14px; }
-  #ask-touhid-panel { right: 12px; bottom: 72px; width: calc(100vw - 24px); max-height: 68vh; }
+  #ask-touhid-btn {
+    right: 20px;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
+  }
+  #ask-touhid-btn .btn-text { display: none; }
+  #ask-touhid-panel { 
+    right: 12px; 
+    bottom: max(76px, calc(env(safe-area-inset-bottom) + 56px)); 
+    width: calc(100vw - 24px); 
+    max-height: 68vh; 
+  }
 }
