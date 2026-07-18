@@ -137,16 +137,25 @@
     try { sessionStorage.setItem(SK, JSON.stringify(h.slice(-40))); } catch (e) {}
   }
 
+  /* ── UUID ─────────────────────────────────────────────── */
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
   /* ── STATE ────────────────────────────────────────────── */
   var isOpen    = false;
   var isBusy    = false;
   var isOffline = false;
   var history   = [];
   var username  = localStorage.getItem('pac_username') || null;
-  var $panel, $btn, $body, $input, $sendBtn, $notice;
+  var userId    = localStorage.getItem('pac_userId') || null;
+  var $panel, $btn, $body, $input, $sendBtn, $notice, $closeBtn;
 
   /* ── API CALL ─────────────────────────────────────────── */
-  function callAPI(message, isFetchHistory, cb) {
+  function callAPI(message, isFetchHistory, isWelcomeRequest, cb) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', API, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -169,7 +178,7 @@
       isOffline = true;
       cb(null, fallback(message));
     };
-    xhr.send(JSON.stringify({ message: message, username: username, fetchHistory: isFetchHistory }));
+    xhr.send(JSON.stringify({ message: message, username: username, userId: userId, fetchHistory: isFetchHistory, isWelcomeRequest: isWelcomeRequest }));
   }
 
   /* ── TYPEWRITER ───────────────────────────────────────── */
@@ -237,13 +246,15 @@
 
     renderMsg('user', msg);
 
-    if (!username) {
+    if (!username || !userId) {
       username = msg;
+      userId = generateUUID();
       localStorage.setItem('pac_username', username);
+      localStorage.setItem('pac_userId', userId);
       
       setTimeout(function () {
         showTyping();
-        callAPI('', true, function (err, reply, serverHistory) {
+        callAPI('', true, false, function (err, reply, serverHistory) {
           hideTyping();
           if (serverHistory && serverHistory.length > 0) {
             $body.innerHTML = '';
@@ -273,7 +284,7 @@
 
     setTimeout(function () {
       showTyping();
-      callAPI(msg, false, function (err, reply) {
+      callAPI(msg, false, false, function (err, reply) {
         hideTyping();
         if (isOffline) $notice.style.display = 'block';
         else $notice.style.display = 'none';
@@ -322,12 +333,12 @@
     var title = document.createElement('span');
     title.id  = 'chat-header-title';
     title.textContent = 'Portfolio Assistant';
-    var cls   = document.createElement('button');
-    cls.id    = 'chat-close-btn';
-    cls.setAttribute('aria-label', 'Close');
-    cls.innerHTML = '&times;';
+    $closeBtn = document.createElement('button');
+    $closeBtn.id    = 'chat-close-btn';
+    $closeBtn.setAttribute('aria-label', 'Close');
+    $closeBtn.innerHTML = '&times;';
     hdr.appendChild(title);
-    hdr.appendChild(cls);
+    hdr.appendChild($closeBtn);
 
     /* Offline notice */
     $notice = document.createElement('div');
@@ -379,35 +390,37 @@
 
   /* ── INIT ─────────────────────────────────────────────── */
   function init() {
+    if (window._chatWidgetInitialized) return;
+    window._chatWidgetInitialized = true;
+
     build();
 
-    if (!username) {
+    if (!username || !userId) {
       var greeting = "Hi! Before we start, what is your name? (This lets me remember our conversation if you return!)";
       renderMsg('ai', greeting);
     } else {
       showTyping();
-      callAPI('', true, function(err, reply, serverHistory) {
+      callAPI('', false, true, function(err, reply) {
         hideTyping();
-        if (serverHistory && serverHistory.length > 0) {
-          history = serverHistory;
-          history.forEach(function (m) { renderMsg(m.role, m.text); });
+        $body.innerHTML = ''; // Clear any existing UI history just in case
+        if (reply) {
+          history = [{ role: 'ai', text: reply }];
+          renderMsg('ai', reply);
           saveHistory(history);
         } else {
-          history = loadHistory();
-          if (history.length === 0) {
-            var greeting = "Welcome back, " + username + "! What would you like to know?";
-            history.push({ role: 'ai', text: greeting });
-            renderMsg('ai', greeting);
-            saveHistory(history);
-          } else {
-            history.forEach(function (m) { renderMsg(m.role, m.text); });
-          }
+          var defaultGreeting = "Welcome back, " + username + "! What would you like to know?";
+          history = [{ role: 'ai', text: defaultGreeting }];
+          renderMsg('ai', defaultGreeting);
+          saveHistory(history);
         }
       });
     }
 
-    $btn.addEventListener('click', openChat);
-    document.getElementById('chat-close-btn').addEventListener('click', closeChat);
+    $btn.addEventListener('click', function() {
+      if (isOpen) closeChat();
+      else openChat();
+    });
+    $closeBtn.addEventListener('click', closeChat);
     $sendBtn.addEventListener('click', function () { send($input.value); });
     $input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send($input.value); }

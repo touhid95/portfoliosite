@@ -42,7 +42,7 @@ async function fetchOkfKnowledge(request) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
     
-    const files = ['profile.md', 'experience.md', 'education.md', 'projects.md'];
+    const files = ['profile.md', 'experience.md', 'education.md', 'projects.md', 'research.md'];
     let knowledgeBase = '';
     
     for (const file of files) {
@@ -271,12 +271,13 @@ async function getCustomSystemPrompt() {
 }
 
 /* ── Dynamic User Profiling ──────────────────────────────── */
-async function getUserProfile(username) {
+async function getUserProfile(userId, username) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token || !username) return '';
+  const key = userId || username;
+  if (!url || !token || !key) return '';
   try {
-    const res = await fetch(`${url}/get/user_profile_${encodeURIComponent(username)}`, {
+    const res = await fetch(`${url}/get/user_profile_${encodeURIComponent(key)}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) return '';
@@ -287,10 +288,11 @@ async function getUserProfile(username) {
   }
 }
 
-async function extractUserProfile(cfg, username, message, currentProfile) {
+async function extractUserProfile(cfg, userId, username, message, currentProfile) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token || !username || !message) return;
+  const key = userId || username;
+  if (!url || !token || !key || !message) return;
 
   const extractionPrompt = `You are an AI tasked with maintaining a memory profile of a user named "${username}".
 Current Profile:
@@ -312,7 +314,7 @@ If the message does not reveal anything new or useful, return EXACTLY the same C
     }
     
     if (updatedProfile && updatedProfile !== currentProfile && !updatedProfile.includes('No profile yet.')) {
-      await fetch(`${url}/set/user_profile_${encodeURIComponent(username)}`, {
+      await fetch(`${url}/set/user_profile_${encodeURIComponent(key)}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedProfile.trim())
@@ -324,12 +326,13 @@ If the message does not reveal anything new or useful, return EXACTLY the same C
 }
 
 /* ── KV Chat History ─────────────────────────────────────── */
-async function getChatHistory(username) {
+async function getChatHistory(userId, username) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token || !username) return [];
+  const key = userId || username;
+  if (!url || !token || !key) return [];
   try {
-    const res = await fetch(`${url}/get/chat_history_${encodeURIComponent(username)}`, {
+    const res = await fetch(`${url}/get/chat_history_${encodeURIComponent(key)}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) return [];
@@ -340,16 +343,17 @@ async function getChatHistory(username) {
   }
 }
 
-async function saveChatHistory(username, history) {
+async function saveChatHistory(userId, username, history) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token || !username) return;
+  const key = userId || username;
+  if (!url || !token || !key) return;
   try {
     await fetch(`${url}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify([
-        ['SET', `chat_history_${encodeURIComponent(username)}`, JSON.stringify(history)],
+        ['SET', `chat_history_${encodeURIComponent(key)}`, JSON.stringify(history)],
         ['SADD', 'touhid_interactors', username]
       ])
     });
@@ -500,30 +504,30 @@ function jsonResponse(body, status = 200) {
 }
 
 /* ── Main handler ────────────────────────────────────────── */
-export default async function handler(request, context) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS });
-  }
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405, headers: CORS });
-  }
+export async function OPTIONS(request) {
+  return new Response(null, { status: 204, headers: CORS });
+}
 
-  let message, username, fetchHistory;
+export async function POST(request, context) {
+
+  let message, username, userId, fetchHistory, isWelcomeRequest;
   try {
     const body = await request.json();
     message = (body.message || '').trim();
     username = (body.username || '').trim();
+    userId = (body.userId || '').trim();
     fetchHistory = !!body.fetchHistory;
+    isWelcomeRequest = !!body.isWelcomeRequest;
   } catch {
     return jsonResponse({ error: 'Invalid JSON' }, 400);
   }
 
-  if (fetchHistory && username) {
-    const history = await getChatHistory(username);
+  if (fetchHistory && (userId || username)) {
+    const history = await getChatHistory(userId, username);
     return jsonResponse({ reply: '', history: history });
   }
 
-  if (!message && !fetchHistory) {
+  if (!message && !fetchHistory && !isWelcomeRequest) {
     return jsonResponse({ error: 'Message is required' }, 400);
   }
 
@@ -539,18 +543,23 @@ export default async function handler(request, context) {
 
   /* Fetch all necessary KV data and static files in parallel */
   const [baseKnowledge, extraKnowledge, customPrompt, history, userProfile] = await Promise.all([
-    fetchOkfKnowledge(request),
-    getKnowledge(),
+    isWelcomeRequest ? Promise.resolve('') : fetchOkfKnowledge(request),
+    isWelcomeRequest ? Promise.resolve('') : getKnowledge(),
     getCustomSystemPrompt(),
-    username ? getChatHistory(username) : Promise.resolve([]),
-    username ? getUserProfile(username) : Promise.resolve('')
+    (userId || username) ? getChatHistory(userId, username) : Promise.resolve([]),
+    (userId || username) ? getUserProfile(userId, username) : Promise.resolve('')
   ]);
   
-  const relevantContext = retrieveRelevantChunks(baseKnowledge, extraKnowledge, message);
+  const relevantContext = isWelcomeRequest ? '' : retrieveRelevantChunks(baseKnowledge, extraKnowledge, message);
 
   /* Use admin-saved system prompt if available, otherwise use built-in */
   let systemPrompt;
-  if (customPrompt) {
+  if (isWelcomeRequest) {
+    systemPrompt = `You are Touhid's personal AI assistant. 
+The user '${username}' just returned to the chat.
+Their profile/memory: ${userProfile || 'No specific memory yet.'}
+Generate a warm, brief (1-2 sentences) welcome back message for them. Do NOT answer any questions. Just greet them naturally based on what you remember about them.`;
+  } else if (customPrompt) {
     let modifiedCustom = customPrompt;
     if (customPrompt.includes('{{KNOWLEDGE}}')) {
       modifiedCustom = modifiedCustom.replace('{{KNOWLEDGE}}', relevantContext);
@@ -602,12 +611,12 @@ export default async function handler(request, context) {
         break;
     }
 
-    if (username) {
+    if ((userId || username) && !isWelcomeRequest) {
       history.push({ role: 'user', text: message });
       history.push({ role: 'ai', text: reply });
       
-      const savePromise = saveChatHistory(username, history);
-      const profilePromise = extractUserProfile(cfg, username, message, userProfile);
+      const savePromise = saveChatHistory(userId, username, history);
+      const profilePromise = extractUserProfile(cfg, userId, username, message, userProfile);
       
       if (context && context.waitUntil) {
         context.waitUntil(Promise.all([savePromise, profilePromise]));
