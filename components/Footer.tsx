@@ -9,8 +9,7 @@ export default function Footer() {
       <Link href="/education" className="text-muted-lighter">Education</Link> &nbsp;&middot;&nbsp;
       <Link href="/projects" className="text-muted-lighter">Projects</Link> &nbsp;&middot;&nbsp;
       <Link href="/gallery" className="text-muted-lighter">Gallery</Link> &nbsp;&middot;&nbsp;
-      <Link href="/contact" className="text-muted-lighter">Contact</Link> &nbsp;&middot;&nbsp;
-      <Link href="/cv" target="_blank" className="text-muted-lighter">CV</Link>
+      <Link href="/contact" className="text-muted-lighter">Contact</Link>
     </footer>
   );
 }

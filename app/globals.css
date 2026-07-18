@@ -113,13 +113,23 @@ a:hover { color: #BC2026; }
 .nav-wrapper {
   position: relative;
   margin: 16px 0;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.nav-wrapper {
+  scrollbar-width: none;
 }
 
 .nav-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 0;
+  flex-wrap: nowrap;
+  gap: 12px;
   align-items: center;
+  min-width: max-content;
 }
 .nav-links a {
   display: inline-block;

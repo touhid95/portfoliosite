@@ -33,15 +33,15 @@ export default async function HomePage() {
         {h.subtitle || 'UNDERGRADUATE \u00a0·\u00a0 DATA ANALYST \u00a0·\u00a0 IBA-JU'}
       </div>
 
-      <div className="font-mono text-sm mb-5">
+      <div className="font-mono text-sm mb-5" style={{ lineHeight: '1.6' }}>
         {p.location || 'Sector-6, Uttara, Dhaka'}
-        &nbsp;·&nbsp;
-        <a className="text-blue" href={p.emailLink || `mailto:${p.email || 'm.k.touhid95@gmail.com'}`}>
+        {' · '}
+        <a className="text-blue break-words" href={p.emailLink || `mailto:${p.email || 'm.k.touhid95@gmail.com'}`}>
           {p.email || 'm.k.touhid95@gmail.com'}
         </a>
-        &nbsp;·&nbsp;
+        {' · '}
         <a className="text-blue" href={p.linkedin || 'https://www.linkedin.com/in/mktouhid/'} target="_blank" rel="noreferrer">LinkedIn</a>
-        &nbsp;·&nbsp;
+        {' · '}
         <a className="text-blue" href={p.github || 'https://github.com/touhid95/portfolio'} target="_blank" rel="noreferrer">GitHub</a>
       </div>
 
