@@ -152,6 +152,9 @@
   var history   = [];
   var username  = localStorage.getItem('pac_username') || null;
   var userId    = localStorage.getItem('pac_userId') || null;
+  var chatChannel = null;
+  var isLiveTakeover = false;
+  var supabase = null;
   var $panel, $btn, $body, $input, $sendBtn, $notice, $closeBtn;
 
   /* ── API CALL ─────────────────────────────────────────── */
