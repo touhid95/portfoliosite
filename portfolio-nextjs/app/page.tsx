@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { getCmsContent } from '@/lib/cms';
-import Link from 'next/link';
-
 export const metadata: Metadata = {
   title: 'Mahfujul Kader Touhid — Portfolio',
   description: 'Undergraduate · Data Analyst · IBA-JU. Projects, research, and contact.',

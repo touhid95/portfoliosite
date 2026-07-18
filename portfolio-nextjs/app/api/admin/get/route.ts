@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...CORS },
     });
-  } catch (err) {
+  } catch {
     return new Response(JSON.stringify({ knowledge: '', systemPrompt: '', content: {}, jobs: [] }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...CORS },

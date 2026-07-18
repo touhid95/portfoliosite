@@ -1,5 +1,4 @@
 export const runtime = 'edge';
-import { NextRequest } from 'next/server';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
