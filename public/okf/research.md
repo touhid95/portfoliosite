@@ -12,9 +12,16 @@ related_links:
 last_updated: 2026-07-18
 ---
 
-# Research Articles
+# Research, Thoughts, and Blog Articles
 
-Academic writing, papers, and analytical reports produced by Mahfujul Kader Touhid.
+Academic writing, papers, analytical reports, thoughts, and blog posts produced by Mahfujul Kader Touhid.
+
+**AI Assistant Taxonomy Note:**
+Articles in this system are categorized by the `type` field:
+1. `research-article`: Formal academic or empirical research papers.
+2. `thoughts`: Informal musings, theories, and intellectual reflections.
+3. `blog`: General updates, tutorials, or casual posts.
+When a user asks about "blogs" or "thoughts", explicitly refer to articles with those types.
 
 ---
 

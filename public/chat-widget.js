@@ -235,16 +235,32 @@
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
-  /* ── SEND ─────────────────────────────────────────────── */
-  function send(text) {
-    var msg = (text || '').trim();
-    if (!msg || isBusy) return;
+  /* ── SEND MESSAGE ──────────────────────────────────────── */
+  function send(msg) {
+    if (!msg.trim() || isBusy) return;
+
     isBusy = true;
     $sendBtn.disabled = true;
     $input.value = '';
     $input.style.height = 'auto';
 
+    if (chatChannel) {
+      chatChannel.send({
+        type: 'broadcast',
+        event: 'user_message',
+        payload: { userId, username, text: msg }
+      }).catch(err => console.warn('Broadcast failed:', err));
+    }
+
     renderMsg('user', msg);
+
+    if (isLiveTakeover) {
+      // Admin is answering, so we don't call the AI API.
+      // But we let the user continue sending messages.
+      isBusy = false;
+      $sendBtn.disabled = false;
+      return;
+    }
 
     if (!username || !userId) {
       username = msg;
@@ -396,12 +412,63 @@
     document.body.appendChild($panel);
   }
 
+  /* ── SUPABASE REALTIME LIVE CHAT ───────────────────────── */
+  async function initLiveChat() {
+    try {
+      const res = await fetch('/api/config');
+      if (!res.ok) return;
+      const cfg = await res.json();
+      if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) return;
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      script.onload = () => {
+        supabase = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+        chatChannel = supabase.channel('portfolio-live-chat');
+        
+        chatChannel
+          .on('broadcast', { event: 'admin_message' }, payload => {
+            if (payload.payload.userId === userId) {
+              isLiveTakeover = true;
+              hideTyping();
+              
+              const titleNode = document.getElementById('chat-header-title');
+              if (titleNode) titleNode.innerHTML = 'Touhid <span style="color:#BC2026;font-size:0.6em;vertical-align:middle;margin-left:4px">LIVE</span>';
+              
+              renderMsg('ai', payload.payload.text);
+              history.push({ role: 'ai', text: payload.payload.text });
+              saveHistory(history);
+            }
+          })
+          .on('broadcast', { event: 'admin_override' }, payload => {
+            if (payload.payload.userId === userId) {
+              isLiveTakeover = true;
+              hideTyping();
+            }
+          })
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              chatChannel.send({
+                type: 'broadcast',
+                event: 'user_online',
+                payload: { userId, username }
+              });
+            }
+          });
+      };
+      document.head.appendChild(script);
+    } catch (err) {
+      console.warn('Live chat init failed:', err);
+    }
+  }
+
   /* ── INIT ─────────────────────────────────────────────── */
   function init() {
     if (window._chatWidgetInitialized) return;
     window._chatWidgetInitialized = true;
 
     build();
+    initLiveChat();
 
     if (!username || !userId) {
       var greeting = "Hi! Before we start, what is your name? (This lets me remember our conversation if you return!)";

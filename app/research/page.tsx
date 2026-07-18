@@ -12,6 +12,10 @@ export const metadata: Metadata = {
 export default async function ResearchPage() {
   const content = await getCmsContent();
   const articles = content.research || [];
+  
+  const researchArticles = articles.filter(a => a.type === 'research-article' || !a.type);
+  const thoughts = articles.filter(a => a.type === 'thoughts');
+  const blogs = articles.filter(a => a.type === 'blog');
 
   return (
     <>
@@ -38,15 +42,54 @@ export default async function ResearchPage() {
             No research articles yet. Add them via the Admin Panel.
           </div>
         ) : (
-          articles.map((art, i) => {
-            const num = String(i + 1).padStart(2, '0');
-            return (
-              <div key={i}>
-                <ResearchCard art={art} num={num} />
-                {i < articles.length - 1 && <hr className="hr-light mb-4 mt-2" />}
+          <>
+            {researchArticles.length > 0 && (
+              <div className="mb-5">
+                <h2 className="font-mono text-sm text-red mb-3">RESEARCH ARTICLES</h2>
+                {researchArticles.map((art, i) => {
+                  const num = String(i + 1).padStart(2, '0');
+                  return (
+                    <div key={i}>
+                      <ResearchCard art={art} num={num} />
+                      {i < researchArticles.length - 1 && <hr className="hr-light mb-4 mt-2" />}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })
+            )}
+            
+            {thoughts.length > 0 && (
+              <div className="mb-5">
+                <hr className="hr-light mb-4" />
+                <h2 className="font-mono text-sm text-red mb-3">THOUGHTS</h2>
+                {thoughts.map((art, i) => {
+                  const num = String(i + 1).padStart(2, '0');
+                  return (
+                    <div key={i}>
+                      <ResearchCard art={art} num={num} />
+                      {i < thoughts.length - 1 && <hr className="hr-light mb-4 mt-2" />}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {blogs.length > 0 && (
+              <div className="mb-5">
+                <hr className="hr-light mb-4" />
+                <h2 className="font-mono text-sm text-red mb-3">BLOG</h2>
+                {blogs.map((art, i) => {
+                  const num = String(i + 1).padStart(2, '0');
+                  return (
+                    <div key={i}>
+                      <ResearchCard art={art} num={num} />
+                      {i < blogs.length - 1 && <hr className="hr-light mb-4 mt-2" />}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </div>
 

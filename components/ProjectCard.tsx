@@ -28,9 +28,12 @@ export default function ProjectCard({ proj, num }: { proj: Project; num: string 
         onClick={() => setIsExpanded(true)}
         title="Click to expand project details"
       >
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '24px', flexWrap: 'wrap' }}>
-          <span className="font-mono text-sm text-muted-light" style={{ width: '80px' }}>PROJ {num}</span>
-          <span className="font-serif text-lg font-bold" style={{ color: '#2C2C2C' }}>{proj.title}</span>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
+          <span className="font-mono text-sm text-muted-light" style={{ width: '80px', marginTop: '2px' }}>PROJ {num}</span>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="font-serif text-lg font-bold" style={{ color: '#2C2C2C' }}>{proj.title}</span>
+            {proj.subtitle && <span className="font-mono text-xs text-muted mt-1">{proj.subtitle}</span>}
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span className="font-mono text-sm text-muted">{proj.year || '2026'}</span>
