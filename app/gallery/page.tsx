@@ -50,12 +50,7 @@ export default async function GalleryPage() {
 
       <hr className="hr-light mb-3" />
       <div className="font-mono text-sm text-muted mb-5">PHOTOGRAPHY &amp; VISUAL WORK</div>
-      {/* ── Architectural section-cut divider ── */}
-      <div className="gallery-section-cut" aria-hidden="true">
-        <span className="gallery-section-tick" />
-        <span className="gallery-section-bar" />
-        <span className="gallery-section-tick" />
-      </div>
+
 
       {/* ── Gallery body ── */}
       {gallery.length === 0 ? (
