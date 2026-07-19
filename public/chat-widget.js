@@ -344,22 +344,22 @@
     /* Toggle button — neutral label */
     $btn = document.createElement('button');
     $btn.id = 'ask-touhid-btn';
-    $btn.setAttribute('aria-label', 'Open Portfolio AI Assistant');
-    $btn.innerHTML = '<span class="btn-dot"></span><span class="btn-text">Portfolio Assistant</span>';
+    $btn.setAttribute('aria-label', 'Open Assistant');
+    $btn.innerHTML = '<span class="btn-dot"></span><span class="btn-text">Assistant</span>';
 
     /* Panel */
     $panel = document.createElement('div');
     $panel.id = 'ask-touhid-panel';
     $panel.style.display = 'none'; // Ensure hidden on load
     $panel.setAttribute('role', 'dialog');
-    $panel.setAttribute('aria-label', 'Portfolio AI Assistant');
+    $panel.setAttribute('aria-label', 'Assistant');
 
     /* Header */
     var hdr   = document.createElement('div');
     hdr.id    = 'chat-header';
     var title = document.createElement('span');
     title.id  = 'chat-header-title';
-    title.textContent = 'Portfolio Assistant';
+    title.textContent = 'Assistant';
     $closeBtn = document.createElement('button');
     $closeBtn.id    = 'chat-close-btn';
     $closeBtn.setAttribute('aria-label', 'Close');

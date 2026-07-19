@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 type NavLink = { href: string; label: string; target?: string };
 
 const links: NavLink[] = [
-  { href: '/',           label: 'HOME' },
   { href: '/about',      label: 'ABOUT' },
   { href: '/education',  label: 'EDUCATION' },
   { href: '/projects',   label: 'PROJECTS' },

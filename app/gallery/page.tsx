@@ -37,11 +37,6 @@ export default async function GalleryPage() {
 
   return (
     <>
-      {/* ── Page header — same pattern as all other pages ── */}
-      <div className="mb-4">
-        <span className="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
-        <hr className="hr-light mb-4 mt-2" />
-      </div>
       <Nav />
 
       {/* ── Gallery title block ── */}

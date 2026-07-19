@@ -4,103 +4,73 @@ import Footer from '@/components/Footer';
 import { getCmsContent } from '@/lib/cms';
 
 export const metadata: Metadata = {
-  title: 'About | Mahfujul Kader Touhid',
-  description: 'About Mahfujul Kader Touhid — data science enthusiast, BBA student at IBA-JU.',
+  title: 'Mahfujul Kader Touhid',
+  description: 'Mahfujul Kader Touhid — data enthusiast, photographer, and BBA student at IBA-JU.',
 };
 
 export default async function AboutPage() {
   const content = await getCmsContent();
-  const a = content.about || {};
+  const p = content.personal || {};
 
   return (
     <>
-      <div className="mb-4">
-        <span className="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
-        <hr className="hr-light mb-4 mt-2" />
-      </div>
       <Nav />
+
+      {/* ── Name block ── */}
       <div className="mt-3 mb-2">
-        <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>ABOUT</h1>
+        <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>
+          {p.name || 'MAHFUJUL KADER TOUHID'}
+        </h1>
       </div>
-      <hr className="hr-light mb-3" />
-      <div className="font-mono text-sm text-muted mb-5">MAN IN HIGH CASTLE</div>
-      <hr className="hr-red mb-4 mt-5" />
 
+      <hr className="hr-light mb-3 mt-3" />
+
+      <div className="font-mono text-sm text-muted mb-4">
+        {p.location || 'Dhaka, Bangladesh'}
+        {' · '}
+        <a className="text-blue" href={p.emailLink || `mailto:${p.email || 'm.k.touhid95@gmail.com'}`}>
+          {p.email || 'm.k.touhid95@gmail.com'}
+        </a>
+        {' · '}
+        <a className="text-blue" href={p.linkedin || 'https://www.linkedin.com/in/mktouhid/'} target="_blank" rel="noreferrer">LinkedIn</a>
+        {' · '}
+        <a className="text-blue" href={p.github || 'https://github.com/touhid95/portfolio'} target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+
+      <hr className="hr-red mb-4 mt-4" />
+
+      {/* ── On character ── */}
       <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">WHO AM I</div>
-        <div className="col-content">
-          <p className="font-serif text-md" style={{ margin: '0 0 16px' }}
-            dangerouslySetInnerHTML={{ __html: a.whoami1 || 'My name is <b>Mahfujul Kader Touhid</b>. I am an undergraduate student at the Institute of Business Administration, Jahangirnagar University (IBA-JU), pursuing a Bachelor of Business Administration.' }}
-          />
-          <p className="font-serif text-md" style={{ margin: '0 0 16px' }}>
-            {a.whoami2 || 'I am a driven person and enthusiast about data science. My curriculum revolves around core business knowledge, especially finance. However, my vision is — if I keep learning enough, maybe I will be building the next Aladdin of BlackRock.'}
-          </p>
-          <p className="font-serif text-md" style={{ margin: 0 }}>
-            <i>{a.strengths || 'My personal strengths: I learn fast and I maintain deadlines.'}</i>
-          </p>
+        <div className="col-label font-mono text-sm text-muted-light">CHARACTER</div>
+        <div className="col-content font-serif text-md" style={{ lineHeight: 1.75 }}>
+          Curious by nature, disciplined by practice. I believe most things worth knowing
+          sit at the boundary between two fields — and that is exactly where I like to work.
         </div>
       </section>
+
       <hr className="hr-light mb-4 mt-4" />
 
-      <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">OBJECTIVE</div>
-        <div className="col-content font-serif text-md">
-          {a.objective || 'Working in a pressurized scenario to learn as much as possible in as short a time as possible.'}
-        </div>
-      </section>
-      <hr className="hr-light mb-4 mt-4" />
-
-      <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">EXPERIENCE</div>
-        <div className="col-content">
-          <div className="font-serif text-md font-bold mb-2">{a.expTitle || 'Data Analyst'}</div>
-          <blockquote style={{ margin: '0 0 0 1px', paddingLeft: '14px', borderLeft: '2px solid #E0E0E0', color: '#555' }}>
-            <span className="font-serif text-md">
-              {a.expDesc || 'Worked on academic projects as a research assistant in IBA to handle business data.'}
-            </span>
-          </blockquote>
-        </div>
-      </section>
-      <hr className="hr-light mb-4 mt-4" />
-
+      {/* ── On interests ── */}
       <section className="row mt-4">
         <div className="col-label font-mono text-sm text-muted-light">INTERESTS</div>
-        <div className="col-content">
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', color: '#555' }} className="font-serif text-md">
-            {[a.interest_1 || 'Data Science and Analytics', a.interest_2 || 'SQL and Database Management', a.interest_3 || 'Finance and Business Strategy', a.interest_4 || 'Public Speaking and Debate', a.interest_5 || 'Football', a.interest_6 || 'Photography'].map((item, i, arr) => (
-              <li key={i} style={{ padding: '6px 0', borderBottom: i < arr.length - 1 ? '1px solid #f0ede4' : undefined }}>
-                &middot;&nbsp; {item}
-              </li>
-            ))}
-          </ul>
+        <div className="col-content font-serif text-md" style={{ lineHeight: 1.75 }}>
+          Data and its stories. Finance as a language. Photography as a way of slowing down.
+          Football for the joy of it. Debate for the discipline of clarity.
         </div>
       </section>
+
       <hr className="hr-light mb-4 mt-4" />
 
+      {/* ── On practice ── */}
       <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">SKILLS</div>
-        <div className="col-content">
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', color: '#555' }} className="font-serif text-md">
-            <li style={{ padding: '6px 0', borderBottom: '1px solid #f0ede4' }}>&middot;&nbsp; {a.skill_1 || 'SQL — 5-star gold rated on HackerRank'}</li>
-            <li style={{ padding: '6px 0', borderBottom: '1px solid #f0ede4' }}>&middot;&nbsp; {a.skill_2 || 'Python — Pandas, NumPy, Matplotlib, Seaborn'}</li>
-            <li style={{ padding: '6px 0', borderBottom: '1px solid #f0ede4' }}>&middot;&nbsp; {a.skill_3 || 'Power BI · Tableau · Microsoft Excel'}</li>
-            <li style={{ padding: '6px 0', borderBottom: '1px solid #f0ede4' }}>&middot;&nbsp; {a.skill_4 || 'Public Speaking, MS Office, Prezi, Photoshop, Illustrator'}</li>
-            <li style={{ padding: '6px 0' }}>&middot;&nbsp;
-              <a href={a.skill_5_link1 || 'https://github.com/touhid95/portfolio'} target="_blank" rel="noreferrer" className="text-blue">{a.skill_5_text1 || 'GitHub Portfolio'}</a>
-              &nbsp;·&nbsp;
-              <a href={a.skill_5_link2 || 'https://drive.google.com/drive/folders/1YMb8mrbaCoMiCzjBfWzGI-TPjOJgBgod'} target="_blank" rel="noreferrer" className="text-blue">{a.skill_5_text2 || 'Google Drive Portfolio'}</a>
-            </li>
-          </ul>
+        <div className="col-label font-mono text-sm text-muted-light">PRACTICE</div>
+        <div className="col-content font-serif text-md" style={{ lineHeight: 1.75 }}>
+          BBA student at IBA&#8209;JU. I spend most of my time with data — building models,
+          finding patterns, asking better questions. The goal is not a title. It is
+          to understand systems deeply enough to eventually shape them.
         </div>
       </section>
-      <hr className="hr-light mb-4 mt-4" />
 
-      <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">CAREER<br />GOALS</div>
-        <div className="col-content font-serif text-md">
-          {a.careerGoal || 'To become a data-driven decision-maker in the finance and business sector. I aspire to combine business knowledge with advanced data science skills to solve real-world problems at scale.'}
-        </div>
-      </section>
       <hr className="hr-light mb-4 mt-4" />
       <Footer />
     </>

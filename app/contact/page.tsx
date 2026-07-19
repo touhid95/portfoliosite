@@ -15,12 +15,6 @@ export default async function ContactPage() {
 
   return (
     <>
-
-
-      <div className="mb-4">
-        <span className="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
-        <hr className="hr-light mb-4 mt-2" />
-      </div>
       <Nav />
       <div className="mt-3 mb-2">
         <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>CONTACT</h1>
