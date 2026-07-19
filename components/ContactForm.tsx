@@ -171,8 +171,6 @@ export default function ContactForm() {
         </div>
 
         <div className="mb-3">
-          <label htmlFor={msgId} className="font-mono text-sm text-muted block">MESSAGE</label>
-          <br />
           <textarea
             id={msgId}
             name="message"
