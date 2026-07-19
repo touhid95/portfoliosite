@@ -15,13 +15,39 @@ related_links:
 
 Photography for Touhid is a way of slowing down. It is a visual storytelling medium that captures moments, architecture, street life, and landscapes.
 
-The gallery is a curated collection of visual work, often categorized by themes such as:
-- **STREET**
-- **LANDSCAPE**
-- **PORTRAIT**
-- **ARCHITECTURE**
+The gallery is a curated collection of visual work, displayed in a minimal, staggered, architectural layout, emphasizing the raw visual story without unnecessary clutter.
 
-The gallery page showcases these images in a minimal, staggered, architectural layout, emphasizing the raw visual story without unnecessary clutter.
+## Current Collection
+
+Here are the specific photographs currently featured in the portfolio gallery:
+
+1. **Floating**
+   - Category / Section: Street
+   - Description / Subject: A moment captured on the street.
+
+2. **2 Fallen Angels**
+   - Category / Section: Jahangirnagar
+   - Description / Subject: A photographic capture from the Jahangirnagar University campus.
+
+3. **MMHH Mir Mosharaff Hossain Hall**
+   - Category / Section: Jahangirnagar
+   - Description / Subject: Architecture / landscape shot of the Mir Mosharaff Hossain Hall.
+
+4. **Legacy of Blood**
+   - Category / Section: Macro
+   - Description / Subject: A detailed macro photograph.
+
+5. **Glimmer**
+   - Category / Section: Photo Walk
+   - Description / Subject: A capture from a photo walk, highlighting light and observation.
+
+6. **Morning Brew**
+   - Category / Section: Photo Walk
+   - Description / Subject: A morning scene captured during a photo walk.
+
+7. **Black-hooded Oriole**
+   - Category / Section: Wildlife
+   - Description / Subject: A wildlife capture of a Black-hooded Oriole.
 
 ## Tone & Philosophy
 
