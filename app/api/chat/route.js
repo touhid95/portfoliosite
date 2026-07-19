@@ -42,7 +42,7 @@ async function fetchOkfKnowledge(request) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
     
-    const files = ['profile.md', 'experience.md', 'education.md', 'projects.md', 'research.md'];
+    const files = ['profile.md', 'about.md', 'experience.md', 'education.md', 'projects.md', 'research.md', 'contact.md'];
     let knowledgeBase = '';
     
     for (const file of files) {
