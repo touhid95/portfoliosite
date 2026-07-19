@@ -37,7 +37,7 @@ export default function ProjectCard({ proj, num }: { proj: Project; num: string 
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span className="font-mono text-sm text-muted">{proj.year || '2026'}</span>
-          <span className="font-mono text-sm text-muted-light font-bold" style={{ fontSize: '18px' }}>+</span>
+          <span className="font-mono text-sm text-red font-bold" style={{ fontSize: '18px' }}>+</span>
         </div>
       </div>
     );

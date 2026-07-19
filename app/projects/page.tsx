@@ -21,11 +21,6 @@ export default async function ProjectsPage() {
       </div>
       <hr className="hr-light mb-3" />
       <div className="font-mono text-sm text-muted mb-3">SELECTED WORK &amp; CASE STUDIES</div>
-      <div className="font-mono text-sm text-muted-lighter mb-5">
-        <a href="https://github.com/touhid95/portfolio" target="_blank" rel="noreferrer" className="text-blue">↗ GitHub Portfolio</a>
-        &nbsp;·&nbsp;
-        <a href="https://drive.google.com/drive/folders/1YMb8mrbaCoMiCzjBfWzGI-TPjOJgBgod" target="_blank" rel="noreferrer" className="text-blue">↗ Google Drive</a>
-      </div>
       <hr className="hr-red mb-5" />
 
       <div id="projects-list-container">

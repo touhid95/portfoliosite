@@ -44,7 +44,6 @@ export default async function GalleryPage() {
         <h1 className="font-serif text-xxl m-0 font-bold">GALLERY</h1>
         <div className="gallery-title-meta">
           <span className="font-mono text-xs text-muted-lighter">COLLECTION 2024</span>
-          <span className="font-mono text-xs text-muted-lighter">PHOTOGRAPHY &amp; VISUAL WORK</span>
         </div>
       </div>
 
