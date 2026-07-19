@@ -1028,6 +1028,7 @@ input[type="submit"]:hover {
 .gallery-caption-section {
   letter-spacing: 0.1em;
   display: block;
+  color: #BC2026;
 }
 .gallery-caption-title {
   font-family: 'Georgia', serif;

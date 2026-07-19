@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
-import ContactForm from '@/components/ContactForm';
 import { getCmsContent } from '@/lib/cms';
 
 export const metadata: Metadata = {
@@ -65,9 +64,13 @@ export default async function ContactPage() {
       <hr className="hr-light mb-4 mt-4" />
 
       <section className="row mt-4">
-        <div className="col-label font-mono text-sm text-muted-light">SEND A<br />MESSAGE</div>
+        <div className="col-label font-mono text-sm text-muted-light">MESSAGE</div>
         <div className="col-content">
-          <ContactForm />
+          <p className="font-serif text-md" style={{ color: '#888', lineHeight: 1.85, margin: 0 }}>
+            If it&rsquo;s urgent, open the <strong style={{ color: '#BC2026', fontWeight: 'normal', fontStyle: 'italic' }}>Assistant</strong> at
+            the bottom&#8209;right corner of this page — it can take your message directly.
+            Don&rsquo;t forget to leave your email so Touhid can write back.
+          </p>
         </div>
       </section>
       <hr className="hr-light mb-4 mt-4" />
