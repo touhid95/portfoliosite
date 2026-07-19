@@ -894,6 +894,28 @@ input[type="submit"]:hover {
   column-gap: 32px;
 }
 
+/* ── Architectural section-cut divider (replaces hr-red) ── */
+.gallery-section-cut {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 0;
+  height: 20px;
+  position: relative;
+}
+.gallery-section-tick {
+  display: block;
+  width: 2px;
+  height: 20px;
+  background: #BC2026;
+  flex-shrink: 0;
+}
+.gallery-section-bar {
+  flex: 1;
+  height: 4px;
+  background: #BC2026;
+  display: block;
+}
+
 /* ── Index row spanning full width ── */
 .gallery-entry-index {
   grid-area: idx;
@@ -901,12 +923,24 @@ input[type="submit"]:hover {
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
-  letter-spacing: 0.06em;
 }
+/* Index numbers — red, bold architectural reference */
+.gallery-index-num {
+  color: #BC2026;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+.gallery-index-num--right {
+  color: #cccccc;
+  font-weight: normal;
+}
+/* The rule between numbers — has red tint to echo the accent */
 .gallery-index-rule {
   flex: 1;
   height: 1px;
-  background: #E0E0E0;
+  background: linear-gradient(to right, #BC2026 0%, #E0E0E0 30%);
   display: block;
 }
 
@@ -931,17 +965,46 @@ input[type="submit"]:hover {
   transform: scale(1.025);
 }
 
-/* Red accent corner (top-left) — architectural mark */
+/* Red L-bracket corner — architectural detail callout mark */
 .gallery-frame-corner {
   position: absolute;
   top: 0;
   left: 0;
-  width: 3px;
+  width: 36px;
+  height: 36px;
+  z-index: 2;
+  pointer-events: none;
+}
+/* Vertical arm of the L */
+.gallery-corner-v {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
   height: 36px;
   background: #BC2026;
-  z-index: 2;
 }
+/* Horizontal arm of the L */
+.gallery-corner-h {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 4px;
+  background: #BC2026;
+}
+/* Right-variant: bracket flips to top-right corner */
 .gallery-entry--right .gallery-frame-corner {
+  left: auto;
+  right: 0;
+}
+.gallery-entry--right .gallery-corner-v {
+  left: auto;
+  right: 0;
+}
+.gallery-entry--right .gallery-corner-h {
   left: auto;
   right: 0;
 }
@@ -994,53 +1057,7 @@ input[type="submit"]:hover {
   border-left: 3px solid #BC2026;
 }
 
-/* ── Inquire section ── */
-.gallery-inquire {
-  padding: 0;
-  margin-bottom: 16px;
-}
-.gallery-inquire-inner {
-  text-align: center;
-  padding: 40px 24px;
-}
-.gallery-inquire-heading {
-  font-size: 32px;
-  font-weight: bold;
-  letter-spacing: 0.04em;
-  margin: 0 0 16px;
-  color: #2C2C2C;
-}
-.gallery-inquire-body {
-  max-width: 380px;
-  margin: 0 auto 28px;
-  line-height: 1.7;
-  color: #888;
-}
-.gallery-inquire-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-.gallery-inquire-btn {
-  display: inline-block;
-  padding: 9px 20px;
-  border: 1px solid #2C2C2C;
-  color: #2C2C2C;
-  letter-spacing: 0.1em;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-}
-.gallery-inquire-btn:hover {
-  background: #BC2026;
-  border-color: #BC2026;
-  color: #FCFAF2;
-}
-.gallery-inquire-link {
-  letter-spacing: 0.07em;
-  transition: color 0.15s ease;
-}
-.gallery-inquire-link:hover { color: #BC2026; }
+
 
 /* ── Tablet: tighten layout ── */
 @media (max-width: 780px) {
@@ -1084,8 +1101,8 @@ input[type="submit"]:hover {
   .gallery-frame {
     aspect-ratio: 4 / 3;
   }
+  .gallery-section-cut { height: 14px; }
+  .gallery-section-tick { height: 14px; }
+  .gallery-section-bar  { height: 3px; }
   .gallery-caption-title { font-size: 16px; }
-  .gallery-inquire-inner { padding: 32px 0; }
-  .gallery-inquire-heading { font-size: 20px; letter-spacing: 0.02em; }
-  .gallery-inquire-actions { flex-direction: column; gap: 14px; }
 }

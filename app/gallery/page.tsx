@@ -55,7 +55,12 @@ export default async function GalleryPage() {
 
       <hr className="hr-light mb-3" />
       <div className="font-mono text-sm text-muted mb-5">PHOTOGRAPHY &amp; VISUAL WORK</div>
-      <hr className="hr-red" style={{ marginBottom: 0 }} />
+      {/* ── Architectural section-cut divider ── */}
+      <div className="gallery-section-cut" aria-hidden="true">
+        <span className="gallery-section-tick" />
+        <span className="gallery-section-bar" />
+        <span className="gallery-section-tick" />
+      </div>
 
       {/* ── Gallery body ── */}
       {gallery.length === 0 ? (
@@ -80,11 +85,11 @@ export default async function GalleryPage() {
                 className={`gallery-entry ${isEven ? 'gallery-entry--left' : 'gallery-entry--right'}`}
                 id={`gallery-item-${item.id}`}
               >
-                {/* Index rule */}
-                <div className="gallery-entry-index font-mono text-xs text-muted-lighter">
-                  <span>{index}</span>
+                {/* Index rule — red architectural section line */}
+                <div className="gallery-entry-index font-mono text-xs">
+                  <span className="gallery-index-num">{index}</span>
                   <span className="gallery-index-rule" aria-hidden="true" />
-                  <span>{total}</span>
+                  <span className="gallery-index-num gallery-index-num--right">{total}</span>
                 </div>
 
                 {/* Image frame */}
@@ -96,8 +101,11 @@ export default async function GalleryPage() {
                     loading="lazy"
                     className="gallery-frame-img"
                   />
-                  {/* Accent corner mark */}
-                  <div className="gallery-frame-corner" aria-hidden="true" />
+                  {/* L-bracket architectural corner mark */}
+                  <div className="gallery-frame-corner" aria-hidden="true">
+                    <span className="gallery-corner-v" />
+                    <span className="gallery-corner-h" />
+                  </div>
                 </div>
 
                 {/* Caption block */}
@@ -120,28 +128,7 @@ export default async function GalleryPage() {
         </div>
       )}
 
-      {/* ── Inquire section ── */}
-      <section className="gallery-inquire" aria-labelledby="inquire-heading">
-        <hr className="hr-light" style={{ marginBottom: 40 }} />
-        <div className="gallery-inquire-inner">
-          <h2 className="font-serif gallery-inquire-heading" id="inquire-heading">
-            INQUIRE FOR ARCHIVE
-          </h2>
-          <p className="font-mono text-sm text-muted gallery-inquire-body">
-            Our digital collection is a fraction of the physical archive. For licensing,
-            curation requests, or high-fidelity print acquisition, please reach out to our custodial office.
-          </p>
-          <div className="gallery-inquire-actions">
-            <a href="/contact" className="gallery-inquire-btn font-mono text-xs">
-              EMAIL THE CURATOR
-            </a>
-            <a href="#" className="gallery-inquire-link font-mono text-xs text-muted">
-              VIEW CATALOGUE INDEX &nbsp;→
-            </a>
-          </div>
-        </div>
-        <hr className="hr-light" style={{ marginTop: 40 }} />
-      </section>
+
 
       <Footer />
     </>
