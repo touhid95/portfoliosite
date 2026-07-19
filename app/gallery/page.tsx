@@ -16,7 +16,7 @@ interface GalleryItem {
 
 async function getGallery(): Promise<GalleryItem[]> {
   const supabaseUrl = process.env.SUPABASE_URL;
-  const anonKey    = process.env.SUPABASE_ANON_KEY;
+  const anonKey = process.env.SUPABASE_ANON_KEY;
   if (!supabaseUrl || !anonKey) return [];
   try {
     const res = await fetch(
@@ -43,7 +43,7 @@ export default async function GalleryPage() {
       <div className="gallery-title-block">
         <h1 className="font-serif text-xxl m-0 font-bold">GALLERY</h1>
         <div className="gallery-title-meta">
-          <span className="font-mono text-xs text-muted-lighter">COLLECTION 2024</span>
+          <span className="font-mono text-xs text-muted-lighter"> Mirror story with lens </span>
         </div>
       </div>
 

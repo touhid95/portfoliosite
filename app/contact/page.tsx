@@ -19,7 +19,7 @@ export default async function ContactPage() {
         <h1 className="font-serif text-xxl m-0 font-bold" style={{ margin: 0 }}>CONTACT</h1>
       </div>
       <hr className="hr-red mb-3" />
-      <div className="font-mono text-sm text-muted mb-5">GET IN TOUCH</div>
+      <div className="font-mono text-sm text-muted mb-5"> Open to ideas, currently finding Edtech as cool venture </div>
       <hr className="hr-red mb-4 mt-5" />
 
       <section className="row mt-4">
@@ -69,7 +69,7 @@ export default async function ContactPage() {
           <p className="font-serif text-md" style={{ color: '#888', lineHeight: 1.85, margin: 0 }}>
             If it&rsquo;s urgent, open the <strong style={{ color: '#BC2026', fontWeight: 'normal', fontStyle: 'italic' }}>Assistant</strong> at
             the bottom&#8209;right corner of this page — it can take your message directly.
-            Don&rsquo;t forget to leave your email so Touhid can write back.
+            Don&rsquo;t forget to leave your email so I can write back.
           </p>
         </div>
       </section>
