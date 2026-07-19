@@ -838,3 +838,254 @@ input[type="submit"]:hover {
     max-height: 68vh; 
   }
 }
+
+/* ============================================================
+   GALLERY — ARCHITECTURAL EDITORIAL REDESIGN
+   Palette inherited: cream #FCFAF2 · dark #2C2C2C · red #BC2026
+   ============================================================ */
+
+/* ── Title block — heading + right-aligned meta ── */
+.gallery-title-block {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 24px 0 8px;
+  gap: 16px;
+}
+.gallery-title-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding-bottom: 6px;
+}
+
+/* ── Editorial list container ── */
+.gallery-editorial-list {
+  margin-top: 0;
+  margin-bottom: 48px;
+}
+
+/* ── Single entry ── */
+.gallery-entry {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  margin-bottom: 0;
+  border-bottom: 1px solid #E0E0E0;
+  padding: 40px 0 36px;
+  position: relative;
+}
+
+/* Left-offset variant: image occupies 72% width, pushed right slightly */
+.gallery-entry--left {
+  grid-template-columns: 1fr 420px;
+  grid-template-areas:
+    "idx idx"
+    "caption frame";
+  column-gap: 32px;
+}
+
+/* Right-offset variant: image occupies 72% width, left */
+.gallery-entry--right {
+  grid-template-columns: 420px 1fr;
+  grid-template-areas:
+    "idx idx"
+    "frame caption";
+  column-gap: 32px;
+}
+
+/* ── Index row spanning full width ── */
+.gallery-entry-index {
+  grid-area: idx;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  letter-spacing: 0.06em;
+}
+.gallery-index-rule {
+  flex: 1;
+  height: 1px;
+  background: #E0E0E0;
+  display: block;
+}
+
+/* ── Image frame ── */
+.gallery-frame {
+  grid-area: frame;
+  position: relative;
+  overflow: hidden;
+  background: #f5f3e9;
+  /* Architectural: 3:2 landscape ratio */
+  aspect-ratio: 3 / 2;
+}
+.gallery-frame-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.gallery-entry:hover .gallery-frame-img {
+  transform: scale(1.025);
+}
+
+/* Red accent corner (top-left) — architectural mark */
+.gallery-frame-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 36px;
+  background: #BC2026;
+  z-index: 2;
+}
+.gallery-entry--right .gallery-frame-corner {
+  left: auto;
+  right: 0;
+}
+
+/* ── Caption block ── */
+.gallery-caption-block {
+  grid-area: caption;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+  gap: 10px;
+}
+.gallery-entry--left .gallery-caption-block {
+  padding-right: 8px;
+}
+.gallery-entry--right .gallery-caption-block {
+  padding-left: 8px;
+}
+
+.gallery-caption-section {
+  letter-spacing: 0.1em;
+  display: block;
+}
+.gallery-caption-title {
+  font-family: 'Georgia', serif;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #2C2C2C;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+.gallery-caption-ref {
+  display: block;
+  letter-spacing: 0.07em;
+  margin-top: 4px;
+}
+
+/* ── Empty state ── */
+.gallery-empty {
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery-empty-inner {
+  text-align: center;
+  border: 1px solid #E0E0E0;
+  padding: 40px 48px;
+  border-left: 3px solid #BC2026;
+}
+
+/* ── Inquire section ── */
+.gallery-inquire {
+  padding: 0;
+  margin-bottom: 16px;
+}
+.gallery-inquire-inner {
+  text-align: center;
+  padding: 40px 24px;
+}
+.gallery-inquire-heading {
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  margin: 0 0 16px;
+  color: #2C2C2C;
+}
+.gallery-inquire-body {
+  max-width: 380px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+  color: #888;
+}
+.gallery-inquire-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.gallery-inquire-btn {
+  display: inline-block;
+  padding: 9px 20px;
+  border: 1px solid #2C2C2C;
+  color: #2C2C2C;
+  letter-spacing: 0.1em;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.gallery-inquire-btn:hover {
+  background: #BC2026;
+  border-color: #BC2026;
+  color: #FCFAF2;
+}
+.gallery-inquire-link {
+  letter-spacing: 0.07em;
+  transition: color 0.15s ease;
+}
+.gallery-inquire-link:hover { color: #BC2026; }
+
+/* ── Tablet: tighten layout ── */
+@media (max-width: 780px) {
+  .gallery-entry--left,
+  .gallery-entry--right {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "idx"
+      "frame"
+      "caption";
+    column-gap: 0;
+    row-gap: 16px;
+  }
+  .gallery-frame {
+    aspect-ratio: 16 / 9;
+  }
+  .gallery-caption-block {
+    padding: 0 !important;
+  }
+  .gallery-caption-title {
+    font-size: 18px;
+  }
+  .gallery-title-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .gallery-title-meta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .gallery-inquire-heading { font-size: 24px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .gallery-entry {
+    padding: 28px 0 24px;
+  }
+  .gallery-frame {
+    aspect-ratio: 4 / 3;
+  }
+  .gallery-caption-title { font-size: 16px; }
+  .gallery-inquire-inner { padding: 32px 0; }
+  .gallery-inquire-heading { font-size: 20px; letter-spacing: 0.02em; }
+  .gallery-inquire-actions { flex-direction: column; gap: 14px; }
+}

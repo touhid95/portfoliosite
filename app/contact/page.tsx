@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import ContactForm from '@/components/ContactForm';
 import { getCmsContent } from '@/lib/cms';
 
 export const metadata: Metadata = {
@@ -14,34 +15,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <style>{`
-        input[type="text"],
-        input[type="email"],
-        textarea {
-          width: 100%;
-          max-width: 400px;
-          padding: 8px;
-          font-family: 'Courier New', Courier, monospace;
-          font-size: 13px;
-          border: 1px solid #E0E0E0;
-          background: #FCFAF2;
-          color: #2C2C2C;
-          margin-top: 5px;
-        }
-        input[type="submit"] {
-          padding: 10px 20px;
-          font-family: 'Courier New', Courier, monospace;
-          font-size: 13px;
-          border: 1px solid #2C2C2C;
-          background: #FCFAF2;
-          color: #2C2C2C;
-          cursor: pointer;
-        }
-        input[type="submit"]:hover {
-          background: #BC2026;
-          color: #FCFAF2;
-        }
-      `}</style>
+
 
       <div className="mb-4">
         <span className="font-mono text-sm text-muted-lighter">PORTFOLIO &nbsp;&mdash;&nbsp; 2026</span>
@@ -99,23 +73,7 @@ export default async function ContactPage() {
       <section className="row mt-4">
         <div className="col-label font-mono text-sm text-muted-light">SEND A<br />MESSAGE</div>
         <div className="col-content">
-          <form action="#" method="post">
-            <div className="mb-3">
-              <label htmlFor="name" className="font-mono text-sm text-muted block">YOUR NAME</label><br />
-              <input type="text" id="name" name="name" placeholder="e.g. John Doe" />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="font-mono text-sm text-muted block">YOUR EMAIL</label><br />
-              <input type="email" id="email" name="email" placeholder="e.g. john@example.com" />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="message" className="font-mono text-sm text-muted block">MESSAGE</label><br />
-              <textarea id="message" name="message" rows={6} placeholder="Write your message here..." />
-            </div>
-            <div>
-              <input type="submit" value="Send Message" />
-            </div>
-          </form>
+          <ContactForm />
         </div>
       </section>
       <hr className="hr-light mb-4 mt-4" />
