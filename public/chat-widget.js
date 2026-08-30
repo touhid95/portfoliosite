@@ -72,6 +72,10 @@
       r: "The career goal is to become a data-driven decision-maker at the intersection of finance and technology. Long-term aspiration: build something at the scale of BlackRock's Aladdin — advanced data science applied to real-world financial risk management."
     },
     {
+      k: ['hi', 'hello', 'hey', 'greetings', 'morning', 'afternoon', 'evening'],
+      r: "Hello! I'm Touhid's personal assistant. How can I help you explore his projects, skills, or experience today?"
+    },
+    {
       k: ['power bi', 'tableau', 'excel', 'dashboard', 'visuali', 'bi'],
       r: 'Proficient in Power BI, Tableau, and Excel for business intelligence dashboards. Used Power BI for financial analytics and Tableau for retail sales visualisation — turning raw data into actionable insights.'
     }
@@ -81,7 +85,7 @@
   var rudeWords = ['stupid', 'idiot', 'dumb', 'hate', 'useless', 'shut up', 'fuck', 'shit', 'bastard', 'asshole', 'crap', 'fool'];
 
   function fallback(msg) {
-    var lower = msg.toLowerCase();
+    var lower = msg.toLowerCase().trim();
     
     if (isBlocked) {
       return "I'm here to have a respectful conversation about Mahfujul Kader Touhid's work. I won't be able to continue this chat.";
@@ -94,7 +98,11 @@
       }
     }
 
-    var queryTerms = lower.split(/\s+/).filter(function (t) { return t.length > 2; });
+    if (lower === 'hi' || lower === 'hello' || lower === 'hey' || lower === 'hi there') {
+      return "Hello! I'm Touhid's assistant. What would you like to know about his projects, skills, or background?";
+    }
+
+    var queryTerms = lower.split(/\s+/).filter(function (t) { return t.length >= 2; });
     var bestMatch = null;
     var maxScore = 0;
 
