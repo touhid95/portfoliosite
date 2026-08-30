@@ -487,7 +487,7 @@ async function callOpenRouter(cfg, systemPrompt, message, history = []) {
 /* ── NVIDIA NIM call ─────────────────────────────────────── */
 async function callNvidia(cfg, systemPrompt, message, history = []) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 55000); // 55s timeout
+  const timer = setTimeout(() => controller.abort(), 12000); // 12s timeout for fast fallback
 
   const apiMessages = [
     { role: 'system', content: systemPrompt },
@@ -712,10 +712,28 @@ Generate a warm, brief (1-2 sentences) welcome back message for them. Do NOT ans
         reply = await callGemini(cfg, systemPrompt, message, history);
         break;
 
-      /* ── Force NVIDIA only ── */
+      /* ── Force NVIDIA only (with automatic fallback on timeout/outage) ── */
       case 'nvidia':
-        if (!hasNvidia) return jsonResponse({ error: 'NVIDIA_API_KEY not set' }, 503);
-        reply = await callNvidia(cfg, systemPrompt, message, history);
+        if (hasNvidia) {
+          try {
+            reply = await callNvidia(cfg, systemPrompt, message, history);
+          } catch (nvidiaErr) {
+            console.error('NVIDIA failed or timed out, falling back to OpenRouter/Gemini:', nvidiaErr.message);
+            if (hasOpenRouter) {
+              reply = await callOpenRouter(cfg, systemPrompt, message, history);
+            } else if (hasGemini) {
+              reply = await callGemini(cfg, systemPrompt, message, history);
+            } else {
+              throw nvidiaErr;
+            }
+          }
+        } else if (hasOpenRouter) {
+          reply = await callOpenRouter(cfg, systemPrompt, message, history);
+        } else if (hasGemini) {
+          reply = await callGemini(cfg, systemPrompt, message, history);
+        } else {
+          return jsonResponse({ error: 'No AI service configured' }, 503);
+        }
         break;
 
       /* ── Auto: OpenRouter first, NVIDIA second, Gemini fallback ── */
