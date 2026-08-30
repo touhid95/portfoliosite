@@ -162,7 +162,7 @@
     var xhr = new XMLHttpRequest();
     xhr.open('POST', API, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.timeout = 15000;
+    xhr.timeout = 45000;
     xhr.onload = function () {
       try {
         var data = JSON.parse(xhr.responseText);
@@ -198,6 +198,7 @@
 
   /* ── RENDER MESSAGE ───────────────────────────────────── */
   function renderMsg(role, text, animate, done) {
+    text = String(text != null ? text : '');
     var wrap   = document.createElement('div');
     var label  = document.createElement('div');
     var bubble = document.createElement('div');

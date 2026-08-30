@@ -40,43 +40,47 @@ const CORS = {
 const OWNER_NAME = 'Mahfujul Kader Touhid';
 const OWNER_EMAIL = 'm.k.touhid95@gmail.com';
 
-/* ── Dynamic OKF Knowledge via Fetch ─────────────────────── */
+/* ── Dynamic OKF Knowledge via Parallel Fetch ────────────── */
 async function fetchOkfKnowledge(request) {
   try {
-    const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
     
     const files = ['profile.md', 'about.md', 'experience.md', 'education.md', 'projects.md', 'research.md', 'contact.md', 'gallery.md'];
-    let knowledgeBase = '';
     
-    for (const file of files) {
-      const res = await fetch(`${baseUrl}/okf/${file}`);
-      if (res.ok) {
-        const content = await res.text();
-        // Extract basic OKF info if present
-        let meta = {};
-        let body = content;
-        if (content.startsWith('---')) {
-          const parts = content.split('---');
-          if (parts.length >= 3) {
-            body = parts.slice(2).join('---').trim();
-            parts[1].trim().split('\n').forEach(line => {
-              const colonIdx = line.indexOf(':');
-              if (colonIdx !== -1) {
-                const key = line.slice(0, colonIdx).trim();
-                const val = line.slice(colonIdx + 1).trim().replace(/^['"]|['"]$/g, '');
-                meta[key] = val;
-              }
-            });
+    const results = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const res = await fetch(`${baseUrl}/okf/${file}`, { cache: 'force-cache' });
+          if (!res.ok) return '';
+          const content = await res.text();
+          let meta = {};
+          let body = content;
+          if (content.startsWith('---')) {
+            const parts = content.split('---');
+            if (parts.length >= 3) {
+              body = parts.slice(2).join('---').trim();
+              parts[1].trim().split('\n').forEach(line => {
+                const colonIdx = line.indexOf(':');
+                if (colonIdx !== -1) {
+                  const key = line.slice(0, colonIdx).trim();
+                  const val = line.slice(colonIdx + 1).trim().replace(/^['"]|['"]$/g, '');
+                  meta[key] = val;
+                }
+              });
+            }
           }
+          let doc = `[DOCUMENT ID: ${meta.id || file}] (Type: ${meta.type || 'unknown'})\n`;
+          if (meta.title) doc += `TITLE: ${meta.title}\n`;
+          doc += `\n${body}\n\n`;
+          return doc;
+        } catch {
+          return '';
         }
-        knowledgeBase += `[DOCUMENT ID: ${meta.id || file}] (Type: ${meta.type || 'unknown'})\n`;
-        if (meta.title) knowledgeBase += `TITLE: ${meta.title}\n`;
-        knowledgeBase += `\n${body}\n\n`;
-      }
-    }
-    return knowledgeBase.trim();
+      })
+    );
+    return results.join('').trim() || 'Knowledge base unavailable.';
   } catch (err) {
     console.error('Failed to fetch OKF files:', err);
     return 'Knowledge base unavailable.';
