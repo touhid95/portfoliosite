@@ -170,7 +170,7 @@
     var xhr = new XMLHttpRequest();
     xhr.open('POST', API, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.timeout = 45000;
+    xhr.timeout = 60000;
     xhr.onload = function () {
       try {
         var data = JSON.parse(xhr.responseText);

@@ -27,7 +27,7 @@
  *  KV_REST_API_TOKEN    Vercel KV token (optional)
  * ──────────────────────────────────────────────────────────────────
  */
-export const runtime = 'edge';
+export const maxDuration = 60; // 60s limit for Hobby tier Node.js
 
 /* ── CORS ────────────────────────────────────────────────── */
 const CORS = {
@@ -434,7 +434,7 @@ function retrieveRelevantChunks(baseKnowledge, extraKnowledge, query, maxChars =
 /* ── OpenRouter call ─────────────────────────────────────── */
 async function callOpenRouter(cfg, systemPrompt, message, history = []) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 22000); // 22s safety timeout
+  const timer = setTimeout(() => controller.abort(), 55000); // 55s timeout
 
   const apiMessages = [
     { role: 'system', content: systemPrompt },
@@ -487,7 +487,7 @@ async function callOpenRouter(cfg, systemPrompt, message, history = []) {
 /* ── NVIDIA NIM call ─────────────────────────────────────── */
 async function callNvidia(cfg, systemPrompt, message, history = []) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 22000); // 22s — safely under Edge 25s limit
+  const timer = setTimeout(() => controller.abort(), 55000); // 55s timeout
 
   const apiMessages = [
     { role: 'system', content: systemPrompt },
@@ -553,7 +553,7 @@ async function callNvidia(cfg, systemPrompt, message, history = []) {
 /* ── Gemini call ─────────────────────────────────────────── */
 async function callGemini(cfg, systemPrompt, message, history = []) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 22000); // 22s safety timeout
+  const timer = setTimeout(() => controller.abort(), 55000); // 55s safety timeout
 
   const apiContents = [
     ...history.map(m => ({
