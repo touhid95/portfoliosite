@@ -180,7 +180,13 @@ async function callNvidia(cfg, prompt) {
         max_tokens: 2048,
         temperature: 0.2,
         top_p: 0.95,
-        stream: false
+        stream: false,
+        extra_body: {
+          chat_template_kwargs: {
+            thinking: true,
+            reasoning_effort: "high"
+          }
+        }
       })
     });
     if (!res.ok) {
@@ -188,7 +194,11 @@ async function callNvidia(cfg, prompt) {
       throw new Error(`NVIDIA ${res.status}: ${errText}`);
     }
     const data = await res.json();
-    const reply = data?.choices?.[0]?.message?.content;
+    let reasoning = data?.choices?.[0]?.message?.reasoning || data?.choices?.[0]?.message?.reasoning_content;
+    let reply = data?.choices?.[0]?.message?.content;
+    if (!reply && reasoning) {
+      reply = reasoning;
+    }
     if (!reply) throw new Error('NVIDIA returned empty response');
     return reply.trim();
   } finally {
@@ -258,7 +268,7 @@ export async function POST(request) {
     },
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
-      model:  process.env.NVIDIA_MODEL   || 'meta/llama-3.1-8b-instruct'
+      model:  process.env.NVIDIA_MODEL   || 'deepseek-ai/deepseek-v4-flash-0731'
     },
     gemini: {
       apiKey: process.env.GEMINI_API_KEY || '',

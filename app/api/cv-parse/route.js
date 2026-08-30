@@ -97,13 +97,23 @@ Return only the JSON object:`;
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 1024,
           temperature: 0.1,
-          stream: false
+          stream: false,
+          extra_body: {
+            chat_template_kwargs: {
+              thinking: true,
+              reasoning_effort: "high"
+            }
+          }
         })
       });
       if (res.ok) {
         const data = await res.json();
-        const reply = data?.choices?.[0]?.message?.content || '';
-        return reply;
+        let reasoning = data?.choices?.[0]?.message?.reasoning || data?.choices?.[0]?.message?.reasoning_content;
+        let reply = data?.choices?.[0]?.message?.content;
+        if (!reply && reasoning) {
+          reply = reasoning;
+        }
+        return reply || '';
       }
     } catch (e) {
       console.error('NVIDIA CV parse error:', e);
@@ -156,7 +166,7 @@ export async function POST(request) {
     },
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
-      model:  process.env.NVIDIA_MODEL   || 'meta/llama-3.1-8b-instruct'
+      model:  process.env.NVIDIA_MODEL   || 'deepseek-ai/deepseek-v4-flash-0731'
     },
     gemini: {
       apiKey: process.env.GEMINI_API_KEY || '',

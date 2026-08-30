@@ -101,9 +101,9 @@ function getConfig() {
 
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
-      model: process.env.NVIDIA_MODEL || 'minimaxai/minimax-m3',
-      maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '1024', 10),
-      temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '0.7')
+      model: process.env.NVIDIA_MODEL || 'deepseek-ai/deepseek-v4-flash-0731',
+      maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '16384', 10),
+      temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '1')
     },
 
     gemini: {
@@ -515,7 +515,13 @@ async function callNvidia(cfg, systemPrompt, message, history = []) {
           max_tokens: cfg.nvidia.maxTokens,
           temperature: cfg.nvidia.temperature,
           top_p: 0.95,
-          stream: false
+          stream: false,
+          extra_body: {
+            chat_template_kwargs: {
+              thinking: true,
+              reasoning_effort: "high"
+            }
+          }
         })
       }
     );
@@ -526,7 +532,17 @@ async function callNvidia(cfg, systemPrompt, message, history = []) {
     }
 
     const data = await res.json();
-    const reply = data?.choices?.[0]?.message?.content;
+    
+    // Extract reasoning or reasoning_content based on python example
+    let reasoning = data?.choices?.[0]?.message?.reasoning || data?.choices?.[0]?.message?.reasoning_content;
+    
+    let reply = data?.choices?.[0]?.message?.content;
+    
+    // If reply is empty but we have reasoning, use reasoning as reply
+    if (!reply && reasoning) {
+      reply = reasoning;
+    }
+    
     if (!reply) throw new Error('NVIDIA returned empty response');
     return reply.trim();
   } finally {
