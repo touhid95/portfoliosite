@@ -90,15 +90,15 @@ function getConfig() {
 
     openrouter: {
       apiKey: process.env.OPENROUTER_API_KEY || '',
-      model: process.env.OPENROUTER_MODEL || 'google/gemma-4-31b-it:free',
-      maxTokens: parseInt(process.env.OPENROUTER_MAX_TOKENS || '512', 10),
+      model: process.env.OPENROUTER_MODEL || 'openrouter/free',
+      maxTokens: parseInt(process.env.OPENROUTER_MAX_TOKENS || '2048', 10),
       temperature: parseFloat(process.env.OPENROUTER_TEMPERATURE || '0.7')
     },
 
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
-      model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct',
-      maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '512', 10),
+      model: process.env.NVIDIA_MODEL || 'minimaxai/minimax-m3',
+      maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '1024', 10),
       temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '0.7')
     },
 
@@ -469,7 +469,10 @@ async function callOpenRouter(cfg, systemPrompt, message, history = []) {
     }
 
     const data = await res.json();
-    const reply = data?.choices?.[0]?.message?.content;
+    let reply = data?.choices?.[0]?.message?.content;
+    if (!reply && data?.choices?.[0]?.message?.reasoning) {
+      reply = data.choices[0].message.reasoning;
+    }
     if (!reply) throw new Error('OpenRouter returned empty response');
     return reply.trim();
   } finally {
