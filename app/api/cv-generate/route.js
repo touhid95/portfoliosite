@@ -267,7 +267,7 @@ export async function POST(request) {
       model:  process.env.OPENROUTER_MODEL   || 'google/gemma-4-31b-it:free'
     },
     nvidia: {
-      apiKey: process.env.NVIDIA_API_KEY || '',
+      apiKey: process.env.NVIDIA_API_KEY_1 || process.env.NVIDIA_API_KEY || '',
       model:  process.env.NVIDIA_MODEL   || 'deepseek-ai/deepseek-v4-flash-0731'
     },
     gemini: {

@@ -100,7 +100,7 @@ function getConfig() {
     },
 
     nvidia: {
-      apiKey: process.env.NVIDIA_API_KEY || '',
+      apiKey: process.env.NVIDIA_API_KEY_1 || process.env.NVIDIA_API_KEY || '',
       model: process.env.NVIDIA_MODEL || 'deepseek-ai/deepseek-v4-flash-0731',
       maxTokens: parseInt(process.env.NVIDIA_MAX_TOKENS || '16384', 10),
       temperature: parseFloat(process.env.NVIDIA_TEMPERATURE || '1')
