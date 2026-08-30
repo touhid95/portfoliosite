@@ -129,6 +129,39 @@ ${jobDescription}
 10. Keep descriptions concise and achievement-oriented`;
 }
 
+async function callOpenRouter(cfg, prompt) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 25000);
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${cfg.openrouter.apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://touhid.dev',
+        'X-Title': 'CV Generator'
+      },
+      body: JSON.stringify({
+        model: cfg.openrouter.model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2048,
+        temperature: 0.2
+      })
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`OpenRouter ${res.status}: ${errText}`);
+    }
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content;
+    if (!reply) throw new Error('OpenRouter returned empty response');
+    return reply.trim();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function callNvidia(cfg, prompt) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 25000);
@@ -188,14 +221,11 @@ async function callGemini(cfg, prompt) {
   }
 }
 
-export default async function handler(request) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS });
-  }
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405, headers: CORS });
-  }
+export async function OPTIONS(request) {
+  return new Response(null, { status: 204, headers: CORS });
+}
 
+export async function POST(request) {
   const adminPwd = process.env.ADMIN_PASSWORD;
   if (!adminPwd) {
     return new Response(JSON.stringify({ error: 'Admin not configured' }),
@@ -222,6 +252,10 @@ export default async function handler(request) {
   }
 
   const cfg = {
+    openrouter: {
+      apiKey: process.env.OPENROUTER_API_KEY || '',
+      model:  process.env.OPENROUTER_MODEL   || 'google/gemma-4-31b-it:free'
+    },
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
       model:  process.env.NVIDIA_MODEL   || 'meta/llama-3.1-8b-instruct'
@@ -232,10 +266,11 @@ export default async function handler(request) {
     }
   };
 
+  const hasOpenRouter = !!cfg.openrouter.apiKey;
   const hasNvidia = !!cfg.nvidia.apiKey;
   const hasGemini = !!cfg.gemini.apiKey;
-  if (!hasNvidia && !hasGemini) {
-    return new Response(JSON.stringify({ error: 'AI service not configured. Set NVIDIA_API_KEY or GEMINI_API_KEY.' }),
+  if (!hasOpenRouter && !hasNvidia && !hasGemini) {
+    return new Response(JSON.stringify({ error: 'AI service not configured. Set OPENROUTER_API_KEY, NVIDIA_API_KEY or GEMINI_API_KEY.' }),
       { status: 503, headers: { 'Content-Type': 'application/json', ...CORS } });
   }
 
@@ -244,7 +279,20 @@ export default async function handler(request) {
     const prompt = buildContentPrompt(extraKnowledge, jobDescription);
 
     let aiContent;
-    if (hasNvidia) {
+    if (hasOpenRouter) {
+      try {
+        aiContent = await callOpenRouter(cfg, prompt);
+      } catch (openRouterErr) {
+        console.error('OpenRouter CV generate error, falling back:', openRouterErr.message);
+        if (hasNvidia) {
+          aiContent = await callNvidia(cfg, prompt);
+        } else if (hasGemini) {
+          aiContent = await callGemini(cfg, prompt);
+        } else {
+          throw openRouterErr;
+        }
+      }
+    } else if (hasNvidia) {
       try {
         aiContent = await callNvidia(cfg, prompt);
       } catch (nvidiaErr) {

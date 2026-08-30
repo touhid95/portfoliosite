@@ -54,7 +54,35 @@ ${cvText.slice(0, 10000)}
 
 Return only the JSON object:`;
 
-  /* Try NVIDIA first */
+  /* Try OpenRouter first */
+  if (cfg.openrouter.apiKey) {
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${cfg.openrouter.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://touhid.dev',
+          'X-Title': 'CV Parser'
+        },
+        body: JSON.stringify({
+          model: cfg.openrouter.model,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 1024,
+          temperature: 0.1
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data?.choices?.[0]?.message?.content || '';
+        if (reply) return reply;
+      }
+    } catch (e) {
+      console.error('OpenRouter CV parse error:', e);
+    }
+  }
+
+  /* Try NVIDIA */
   if (cfg.nvidia.apiKey) {
     try {
       const res = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
@@ -101,17 +129,14 @@ Return only the JSON object:`;
     }
   }
 
-  throw new Error('No AI provider configured. Set NVIDIA_API_KEY or GEMINI_API_KEY.');
+  throw new Error('No AI provider configured. Set OPENROUTER_API_KEY, NVIDIA_API_KEY or GEMINI_API_KEY.');
 }
 
-export default async function handler(request) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS });
-  }
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405, headers: CORS });
-  }
+export async function OPTIONS(request) {
+  return new Response(null, { status: 204, headers: CORS });
+}
 
+export async function POST(request) {
   /* Auth */
   const adminPwd = process.env.ADMIN_PASSWORD;
   if (!adminPwd) {
@@ -125,6 +150,10 @@ export default async function handler(request) {
   }
 
   const cfg = {
+    openrouter: {
+      apiKey: process.env.OPENROUTER_API_KEY || '',
+      model:  process.env.OPENROUTER_MODEL   || 'google/gemma-4-31b-it:free'
+    },
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
       model:  process.env.NVIDIA_MODEL   || 'meta/llama-3.1-8b-instruct'

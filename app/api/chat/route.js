@@ -5,8 +5,13 @@
  * ──────────────────────────────────────────────────────────────────
  *  CONFIGURABLE VIA VERCEL ENVIRONMENT VARIABLES
  * ──────────────────────────────────────────────────────────────────
- *  AI_PROVIDER          "nvidia" | "gemini" | "auto"  (default: auto)
- *                        auto → tries NVIDIA first, falls back to Gemini
+ *  AI_PROVIDER          "openrouter" | "nvidia" | "gemini" | "auto"  (default: openrouter)
+ *                        auto → tries OpenRouter first, then NVIDIA, then Gemini
+ *
+ *  OPENROUTER_API_KEY   Your OpenRouter API key
+ *  OPENROUTER_MODEL     Model slug (default: google/gemma-4-31b-it:free)
+ *  OPENROUTER_MAX_TOKENS Max tokens (default: 512)
+ *  OPENROUTER_TEMPERATURE Temperature 0-1 (default: 0.7)
  *
  *  NVIDIA_API_KEY       Your NVIDIA NIM API key
  *  NVIDIA_MODEL         Model slug (default: minimaxai/minimax-m3)
@@ -81,7 +86,14 @@ async function fetchOkfKnowledge(request) {
 /* ── Runtime config (resolved from env vars) ─────────────── */
 function getConfig() {
   return {
-    provider: (process.env.AI_PROVIDER || 'auto').toLowerCase().trim(),
+    provider: (process.env.AI_PROVIDER || 'openrouter').toLowerCase().trim(),
+
+    openrouter: {
+      apiKey: process.env.OPENROUTER_API_KEY || '',
+      model: process.env.OPENROUTER_MODEL || 'google/gemma-4-31b-it:free',
+      maxTokens: parseInt(process.env.OPENROUTER_MAX_TOKENS || '512', 10),
+      temperature: parseFloat(process.env.OPENROUTER_TEMPERATURE || '0.7')
+    },
 
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY || '',
@@ -307,10 +319,20 @@ If the message does not reveal anything new or useful, return EXACTLY the same C
 
   try {
     let updatedProfile = currentProfile;
-    if (cfg.provider === 'nvidia' || (cfg.provider === 'auto' && cfg.nvidia.apiKey)) {
-       updatedProfile = await callNvidia(cfg, extractionPrompt, message, []);
+    if (cfg.provider === 'openrouter' || (cfg.provider === 'auto' && cfg.openrouter.apiKey)) {
+      try {
+        updatedProfile = await callOpenRouter(cfg, extractionPrompt, message, []);
+      } catch {
+        if (cfg.nvidia.apiKey) {
+          updatedProfile = await callNvidia(cfg, extractionPrompt, message, []);
+        } else if (cfg.gemini.apiKey) {
+          updatedProfile = await callGemini(cfg, extractionPrompt, message, []);
+        }
+      }
+    } else if (cfg.provider === 'nvidia' || (cfg.provider === 'auto' && cfg.nvidia.apiKey)) {
+      updatedProfile = await callNvidia(cfg, extractionPrompt, message, []);
     } else if (cfg.gemini.apiKey) {
-       updatedProfile = await callGemini(cfg, extractionPrompt, message, []);
+      updatedProfile = await callGemini(cfg, extractionPrompt, message, []);
     }
     
     if (updatedProfile && updatedProfile !== currentProfile && !updatedProfile.includes('No profile yet.')) {
@@ -403,6 +425,56 @@ function retrieveRelevantChunks(baseKnowledge, extraKnowledge, query, maxChars =
   }
 
   return context.trim() || combinedKnowledge.slice(0, maxChars);
+}
+
+/* ── OpenRouter call ─────────────────────────────────────── */
+async function callOpenRouter(cfg, systemPrompt, message, history = []) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 22000); // 22s safety timeout
+
+  const apiMessages = [
+    { role: 'system', content: systemPrompt },
+    ...history.map(m => ({
+      role: m.role === 'ai' ? 'assistant' : 'user',
+      content: m.text
+    })),
+    { role: 'user', content: message }
+  ];
+
+  try {
+    const res = await fetch(
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          Authorization: `Bearer ${cfg.openrouter.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://touhid.dev',
+          'X-Title': 'Portfolio AI Assistant'
+        },
+        body: JSON.stringify({
+          model: cfg.openrouter.model,
+          messages: apiMessages,
+          max_tokens: cfg.openrouter.maxTokens,
+          temperature: cfg.openrouter.temperature,
+          reasoning: { enabled: true }
+        })
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`OpenRouter ${res.status}: ${errText}`);
+    }
+
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content;
+    if (!reply) throw new Error('OpenRouter returned empty response');
+    return reply.trim();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /* ── NVIDIA NIM call ─────────────────────────────────────── */
@@ -534,10 +606,11 @@ export async function POST(request, context) {
   const cfg = getConfig();
 
   /* Validate: at least one key must be present */
+  const hasOpenRouter = !!cfg.openrouter.apiKey;
   const hasNvidia = !!cfg.nvidia.apiKey;
   const hasGemini = !!cfg.gemini.apiKey;
 
-  if (!hasNvidia && !hasGemini) {
+  if (!hasOpenRouter && !hasNvidia && !hasGemini) {
     return jsonResponse({ error: 'AI service not configured' }, 503);
   }
 
@@ -579,6 +652,37 @@ Generate a warm, brief (1-2 sentences) welcome back message for them. Do NOT ans
 
     switch (cfg.provider) {
 
+      /* ── Force OpenRouter ── */
+      case 'openrouter':
+        if (!hasOpenRouter) return jsonResponse({ error: 'OPENROUTER_API_KEY not set' }, 503);
+        try {
+          reply = await callOpenRouter(cfg, systemPrompt, message, history);
+        } catch (openRouterErr) {
+          console.error('OpenRouter primary model error:', openRouterErr.message);
+          // Fallback to openrouter/free or nvidia/gemini if primary free model is temporarily rate limited upstream
+          if (cfg.openrouter.model !== 'openrouter/free') {
+            try {
+              const fallbackCfg = { ...cfg, openrouter: { ...cfg.openrouter, model: 'openrouter/free' } };
+              reply = await callOpenRouter(fallbackCfg, systemPrompt, message, history);
+            } catch (freeErr) {
+              if (hasNvidia) {
+                reply = await callNvidia(cfg, systemPrompt, message, history);
+              } else if (hasGemini) {
+                reply = await callGemini(cfg, systemPrompt, message, history);
+              } else {
+                throw openRouterErr;
+              }
+            }
+          } else if (hasNvidia) {
+            reply = await callNvidia(cfg, systemPrompt, message, history);
+          } else if (hasGemini) {
+            reply = await callGemini(cfg, systemPrompt, message, history);
+          } else {
+            throw openRouterErr;
+          }
+        }
+        break;
+
       /* ── Force Gemini only ── */
       case 'gemini':
         if (!hasGemini) return jsonResponse({ error: 'GEMINI_API_KEY not set' }, 503);
@@ -591,10 +695,32 @@ Generate a warm, brief (1-2 sentences) welcome back message for them. Do NOT ans
         reply = await callNvidia(cfg, systemPrompt, message, history);
         break;
 
-      /* ── Auto: NVIDIA first, Gemini fallback ── */
+      /* ── Auto: OpenRouter first, NVIDIA second, Gemini fallback ── */
       case 'auto':
       default:
-        if (hasNvidia) {
+        if (hasOpenRouter) {
+          try {
+            reply = await callOpenRouter(cfg, systemPrompt, message, history);
+          } catch (openRouterErr) {
+            console.error('OpenRouter failed in auto mode, falling back:', openRouterErr.message);
+            if (hasNvidia) {
+              try {
+                reply = await callNvidia(cfg, systemPrompt, message, history);
+              } catch (nvidiaErr) {
+                if (hasGemini) {
+                  reply = await callGemini(cfg, systemPrompt, message, history);
+                } else {
+                  throw openRouterErr;
+                }
+              }
+            } else if (hasGemini) {
+              reply = await callGemini(cfg, systemPrompt, message, history);
+            } else {
+              const fallbackCfg = { ...cfg, openrouter: { ...cfg.openrouter, model: 'openrouter/free' } };
+              reply = await callOpenRouter(fallbackCfg, systemPrompt, message, history);
+            }
+          }
+        } else if (hasNvidia) {
           try {
             reply = await callNvidia(cfg, systemPrompt, message, history);
           } catch (nvidiaErr) {

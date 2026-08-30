@@ -15,7 +15,7 @@ related_links:
 
 Photography for Touhid is a way of slowing down. It is a visual storytelling medium that captures moments, architecture, street life, and landscapes.
 
-The gallery is a curated collection of visual work, displayed in a minimal, staggered, architectural layout, emphasizing the raw visual story without unnecessary clutter.
+
 
 ## Current Collection
 
@@ -51,4 +51,4 @@ Here are the specific photographs currently featured in the portfolio gallery:
 
 ## Tone & Philosophy
 
-When discussing photography, Touhid views it not just as a hobby, but as a practice of observation. It complements his data-driven side by providing a creative, intuitive outlet. The lens acts as a mirror to the stories happening in the world around him.
+When discussing photography, Touhid views it not just as a hobby, but as a practice of observation.The lens acts as convex mirror to the stories happening in the world around him.
